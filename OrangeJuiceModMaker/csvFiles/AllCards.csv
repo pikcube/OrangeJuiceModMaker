@@ -1,0 +1,346 @@
+card
+Card Name,ID
+Beak of the Godbird,coop_chicken_beakofthegodbird
+Call of the Chicken,coop_chicken_callofthechicken
+Chicken Attack,coop_chicken_chickenattack
+Chicken Run,coop_chicken_chickenrun
+Doze,coop_chicken_doze
+Final Warning,coop_chicken_finalwarning
+Flight,coop_chicken_flight
+Group Up,coop_chicken_groupup
+Headless Chicken,coop_chicken_headlesschicken
+Hen Pecked,coop_chicken_henpecked
+Peck,coop_chicken_peck
+Piyo March,coop_chicken_piyomarch
+Present,coop_chicken_present
+Regeneration,coop_chicken_regeneration
+Roost,coop_chicken_roost
+Savage Talons,coop_chicken_savagetalons
+Second Wing,coop_chicken_secondwing
+Swarm,coop_chicken_swarm
+From the Abyss,coop_poppo_bigpoppo
+Home Sweeper,coop_homesweep
+Aurora,fae
+Bunnizard,blizard_ply
+Emerangler,mole_ply
+Globbu,magma_ply
+Guardian,guardian
+Gost,ghost_ply
+Haunted Doll,doll_ply
+Heliseed,hellseed_ply
+Moss Golem,golem_ply
+Mousse,mpoppo_ply
+Ruffshroom,shroom_ply
+Terrawyrmer,snek_ply
+The Harbinger,evilguardian
+Trollite,troll_ply
+Turnislime,blob_ply
+Wolly,wolly_ply
+Attacker,coop_class_atk
+Avenger,coop_class_avg
+Dealer,coop_class_dealer
+Guardian,coop_class_def
+Support,coop_class_sup
+Guardian of Blooming Flowers,summer18_supp_
+Lifeguard on the White Beach,summer18_def_
+Summer Games,summer_games
+Ultimate Weapon in the Sun,summer18_atk_
+Unforgiving Avenger,summer18_extra_
+Balloon Jerk,balloonjerk
+Big Poppo,bpoppo
+Big the Haruo,bchicken
+Big the Jonathan,seagullboss
+Goalpost,goalpost
+M10 Robot,bball
+RoPoChi,ropochi
+Star Devourer,gpoppo
+Summer Beast,bqp
+Swimming Coach,swimmingcoach
+Swimming Ringer,swimmingringer
+Accelerator,accel
+Affluence (X),affluence
+Air Strike,bakugeki
+Angel Hand,angelhand
+Another Ultimate Weapon,ultwep
+Awakening of Talent,awakening
+Banned for Life,banned
+Beast Witch,beastwitch
+Beyond Hell,hell
+Big Bang Bell,bigbang
+Big Rocket Cannon,rocketcannon
+Binding Chains,sokubaku
+Blazing!,blazing
+Blue Crow the Second,blue2nd
+Branch Expansion Strategy,bestrategy
+Cast Off,castoff
+"Chef, I Could Use Some Help!",chefhelp
+Cooking Time,cookingtime
+Crystal Barrier,crystalb
+Dance in the Moonlit Night,dancingmoonnight
+"Dance, Long-Eared Beasts!",danceb
+Delta Field,delta
+Deploy Bits,bitdeploy
+Devil Hand,devilhand
+Do Pirates Fly in the Sky?,piratesfly
+Ellie's Miracle,elliemiracle
+Evil Mastermind,evilm
+Evil Spy Work - Execution,evilspyexec
+Evil Spy Work - Preparation,evilspyprep
+Extended Photon Rifle,photonrifle
+Extraordinary Specs,detarame
+Final Surgery,finalsurgery
+Flying Pirate,flyingpirate
+Full Speed Alicianrone,speedwitch
+Gamble!,gamble
+Golden Egg,golden
+Guidance of the Weathercock,guidance
+Hyper Mode,hypmode
+Ideal World,idealworld
+Immovable Object,immovable
+Intelligence Officer,intofficer
+Invisible Bomb,sbftibomb
+Jonathan Rush,rush
+Leap Through Space (Marking),spaceleapm
+Leap Through Space,spaceleap
+Little Magnum,littlemagnum
+Lulu's Lucky Egg,luckyegg
+Magical Inferno,inferno
+Magical Massacre,saturiku
+Magical Revenge,mrevenge
+"Manager, I Could Use Some Help!",managerhelp
+Melting Memories,melting
+Miracle Red Bean Ice Cream,mribic
+Miracle Walker,miraclewalker
+New Nobility,newnobility
+Observer of Eternity,observer
+Overseer,ruler
+Plushie Master,dancea
+Present for You,present
+Protagonist's Privilege,syuyaku
+Raging Madness,rmadness
+Rbit Hobby Shop,hobbyshop
+Reflective Shell,reflective
+Reproduction of Records,ssmemory
+Revival of Stars,revivalos
+Rival,rival
+Rocket Cannon,rocket
+Safe Journey,safejourney
+Saint Eyes,saint
+Santa's Job,santajob
+Self-Destruct,selfd
+Solid Witch,heavywitch
+Special Stage,specialstage
+Star Blasting Fuse,starbfuse
+Star Collector,sutakorekuta
+Stealth On,stealth
+Subspace Tunnel,stunnel
+Sweet Guardian,sweet
+True White Christsmasher,truechristsmasher
+Turbo Charged,turbo
+Twilight-Colored Dream,twilight
+Ubiquitous,shinsyutu
+Upshift,upshift
+"Waruda Machine, Blast Off!",warudamachine
+Whimsical Windmill,whim
+White Christsmasher,christsmasher
+Witch's Hair Lock,hairlock
+x16 Big Rocket,bigrocket
+Zealous Salesman,zsalesman
+Adventurer's Radar,bty_item_radar
+Fluffy Shokupan,bty_item_fshokupan
+Holy Water,bty_item_holywater
+Lure,bty_item_lurebomb
+Shokupan,bty_item_shokupan
+Slimebomb,bty_item_slimebomb
+Smoke of the Lost Memories,bty_item_smokelostmemories
+Teleportation Potion,bty_item_teleport
+Assault Field,coop_robo_assaultfield
+Attack Down,coop_robo_attackdown
+Balance Currents,coop_robo_balancecurrents
+Defense Down,coop_robo_defensedown
+EMP,coop_robo_emp
+Engage,coop_robo_engage
+Evasion Down,coop_robo_evasiondown
+Health Down,coop_robo_healthdown
+Imaginary Numbers,coop_robo_imaginarynumbers
+Immovable Object,coop_robo_immovableobject
+Malfunction,coop_robo_malfunction
+Perfect Reflective Shell,coop_robo_perfectreflective
+Protect,coop_robo_protect
+Quick Repair,coop_robo_quickrepair
+Recovery Mode,coop_robo_recoverymode
+Robo Beam,coop_robo_extendedphotonrifle
+Scrambled Delta Field,coop_robo_deltafield
+Self Destruction,coop_robo_selfdestruction
+Solid Witch (Binder only),coop_robo_solidwitch
+Turbo,coop_robo_turbo
+Blue Mushroom,blueshroom
+Brown Mushroom,brownshroom
+Green Mushroom,greenshroom
+Grown-up Snowball Fight,xmas2018_offense
+Legendary Red Mushroom,legendaryredshroom
+Orange Mushroom,orangeshroom
+Phantom Blue Mushroom,phantomblueshroom
+Pink Mushroom,pinkshroom
+Purple Mushroom,purpleshroom
+Rainbow Mushroom,rainbowshroom
+Red Mushroom,redshroom
+Snowball Reflector,xmas2018_defense
+Sweet Battle!,vday18_
+White Mushroom,whiteshroom
+Yellow Mushroom,yellowshroom
+Accel Hyper,accelhyper
+Accelerating Sky,accelsky
+Ambush,ambush
+Assault,assault
+Backdoor Trade,backdoortrade
+Bad Pudding,dainashi
+BanaNana,bananana
+Big Magnum,magnum
+Bloodlust,bloodlust
+Brutal Prank,brutalprank
+Cloud of Seagulls,taigun
+Completion Reward,completionreward
+Dangerous Pudding,danger
+Dark Side of Business,darkside
+Dash!,dash
+Deceptive Disarming,ddisarming
+Desperate Modification,desperate
+Dinner,dinner
+Encore,encore
+Exchange,torikae
+Extend,extend
+Extension,extension
+Final Battle,lstbtl
+Flamethrower,flame
+Flip Out,yatuatari
+For the Future of the Toy Store,omochaya
+Forced Revival,sosei
+Gentleman's Battle,gentlemansbattle
+Gift Exchange,prchange
+Go Away,tondeke
+Heat 300%,heat300
+Here and There,acchi
+Holy Night,holy
+Home Improvement,himprovement
+I Wanna See You,iwannaseeyou
+I'm on Fire!,moeruyo
+Indiscriminate Fire Support,firesupport
+Invasion,syuurai
+Little War,littlewar
+Lonely Chariot,chariot
+Long-Distance Shot,enkyori
+Lost Child,lostchild
+Lucky Charm,luckycharm
+Lucky Sevens,lsevens
+Metallic Monocoque,monocoque
+Mimic,mimic
+Mimyuu's Hammer,hammer
+Mix Phenomenon,mixpheno
+Nice Jingle,sutekija
+Nice Present,xms
+Oh My Friend,myfriend
+Out of Ammo,tamagire
+Overtime,ohours
+Party Time,party
+Passionate Research,research
+Path Blockers,pathblockers
+Pet Snacks,psnacks
+Piggy Bank,chokin
+Piyopiyo Procession,piyopiyo
+Play of the Gods,playofthegods
+Poppo the Snatcher,popposnatcher
+Poppoformation,poppotransformation
+Portable Pudding,portablepudding
+Present Thief,presentthief
+President's Privilege,prespriv
+Price of Power,price
+Princess's Privilege,tokken
+Pudding,pudding
+Quick Restoration,quickrestoration
+Rainbow-Colored Circle,niziwa
+Rbits,usabit
+Reverse Attribute Field,hanten
+Saki's Cookie,cookie
+Scary Solicitation,solici
+Scrambled Eve,scrambledeve
+Sealed Guardian,huuin
+Sealed Memories,memseal
+Serene Hush,serenehush
+Serious Battle,seriousbattle
+Shield Counter,shieldinv
+Shield,shield
+Sink or Swim,sinkorswim
+Sky Restaurant 'Pures',pures
+Star-Blasting Light,starblazinglight
+Stiff Crystal,kessyou
+Super All-Out Mode,honki
+Sweet Destroyer,sweetdestroyer
+Tactical Retreat,tactretr
+Tragedy in the Dead of Night,mayonaka
+Treasure Thief,treasurethief
+Unlucky Charm,unluckycharm
+Unpaid Work,unpaidwork
+Wanted,wanted
+We Are Waruda,waruda
+Windy Enchantment,windyenchantment
+Balance Currency,coop_ropochi_balancecurrency
+Beak of the Demi-Bird,coop_ropochi_beakofdemibird
+Big Po's Special,coop_ropochi_bigpospecial
+Catcher,coop_ropochi_catcher
+Delusional Numbers,coop_ropochi_delusionalnumbers
+Identity Crisis,coop_ropochi_identitycrisis
+Pluck,coop_ropochi_pluck
+Po-Bomber / Invisible Bomb,coop_ropochi_po-bomber
+Po-tect,coop_ropochi_potect
+Poppo March,coop_ropochi_poppomarch
+Poppo Universe,coop_ropochi_poppouniverse
+Poppocare,coop_ropochi_poppocare
+Premium Regeneration,coop_ropochi_premiumregen
+Refined Talons,coop_ropochi_refinedtalons
+Robo Tax,coop_ropochi_robotax
+Roost Boost,coop_ropochi_roostboost
+RoPo Barrage,coop_ropochi_ropobarrage
+Second Wing,coop_ropochi_secondwing
+Sky Restaurant 'Poppo',coop_ropochi_skyrespoppo
+Turbo Chicken,coop_ropochi_turbochicken
+Wireless Chicken,coop_ropochi_wirelesschicken
+Death and Taxes,coop_poppo_deathandtaxes
+Elusive,coop_poppo_elusive
+Greed,coop_poppo_greed
+Highway Robbery,coop_poppo_highwayrobbery
+Nap,coop_poppo_nap
+Poppo Galaxy,coop_poppo_poppogalaxy
+Poppo Tax,coop_poppo_poppotax
+Poppocalypse,coop_poppo_poppocalypse
+Poppoformation,coop_poppo_poppoformation
+Ransom Note,coop_poppo_ransomnote
+Sky Restaurant 'Poppo',coop_poppo_skyrespoppo
+Snatcher,coop_poppo_snatcher
+Star Mania,coop_poppo_starmania
+Temptation,coop_poppo_temptation
+Tithe,coop_poppo_tithe
+Ubiquitous,coop_poppo_ubiquitous
+Value Judgment,coop_poppo_valuejudgment
+Warp Phenomenon,coop_poppo_warpphenomenon
+Birds,coop_sbeast_birds
+Chase,coop_sbeast_dash
+Exhaustion,coop_sbeast_exhaustion
+Hide And Seek,coop_sbeast_hideandseek
+Hype It Up,coop_sbeast_hypeitup
+Hype Mode,coop_sbeast_hypemode
+Play Tag,coop_sbeast_playtag
+Play With Birds,coop_sbeast_playwithbirds
+Play,coop_sbeast_play
+Psyched Up,coop_sbeast_psychedup
+Pudding Break,coop_sbeast_puddingbreak
+Pudding Seeker,coop_sbeast_puddingseeker
+Rampage (Hyper),coop_sbeast_rampagehyper
+Rampage,coop_sbeast_rampage
+Rest,coop_sbeast_rest
+Sandwich Thieves,coop_sbeast_sandwichthieves
+Seagull Friend / Dance of the Seagulls,coop_sbeast_seagullfriend
+Seagull Master,coop_sbeast_seagullmaster
+Splash Water,coop_sbeast_splashwater
+Tire Out,coop_sbeast_tireout
+Watermelon Splitting,coop_sbeast_watermelonsplitting

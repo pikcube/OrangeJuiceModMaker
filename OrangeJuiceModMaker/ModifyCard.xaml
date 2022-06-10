@@ -1,0 +1,144 @@
+﻿<Window x:Class="OrangeJuiceModMaker.ModifyCard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OrangeJuiceModMaker"
+        mc:Ignorable="d"
+        Loaded="ModifyCard_OnLoaded"
+        Title="ModifyCard" Height="500" Width="600" MinHeight="450" MinWidth="540">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="256"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Top Items-->
+            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="128"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Height="128">
+                    <Rectangle.Fill>
+                        <ImageBrush x:Name="LowCardArt"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <TextBlock Grid.Row="1" Grid.Column="2"
+                           Text="Set:"
+                           FontSize="20"/>
+                <TextBlock Grid.Row="3" Grid.Column="2"
+                           Text="Card:"
+                           FontSize="20"/>
+                <ComboBox Grid.Row="1" Grid.Column="4"
+                          x:Name="SetSelectionBox" SelectionChanged="SetSelectionBox_OnSelectionChanged" FontSize="15"/>
+                <ComboBox Grid.Row="3" Grid.Column="4"
+                          x:Name="CardSelectionBox" SelectionChanged="UnitSelectionBox_OnSelectionChanged"  FontSize="15"/>
+            </Grid>
+
+            <!--Picture Controls-->
+            <Grid Grid.Row="3" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="256"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Grid.Row="0" Grid.ColumnSpan="2">
+                    <Rectangle.Fill>
+                        <ImageBrush x:Name ="CardArt"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Grid>
+
+            <Grid Grid.Row="3" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!--Labels-->
+                <TextBlock Grid.Row="0" Text="Card Information"
+                           FontSize="20" TextAlignment="Center"/>
+
+                <!--Bottom Section-->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Card Name:"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Card Quote:"/>
+
+                    <TextBox Grid.Column="2" Grid.Row="0" Text="Ubiquitous" x:Name="CardName" TextChanged="CardName_OnTextChanged"/>
+                    <TextBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Text="???" x:Name="FlavorUpdateBox" TextWrapping="Wrap" 
+                             TextChanged="FlavorUpdateBox_OnTextChanged" AcceptsReturn="True"/>
+                </Grid>
+
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="Replace 128x128..." x:Name="ReplaceSmallButton" Click="ReplaceSmallButton_OnClick"/>
+                    <Button Grid.Column="2" Content="Replace 256x256..." x:Name="ReplaceLargeButton" Click="ReplaceLargeButton_OnClick"/>
+
+                </Grid>
+                <Button Grid.Row="6"
+                        Content="Replace Pictures With..." FontSize="20"
+                        x:Name="ReplacementCharacterCardButton"
+                        Click="ReplacementCharacterCardButton_OnClick"/>
+
+                <Button Grid.Row="8"
+                    Content=" Save Card to Mod "
+                    FontSize="20"
+                    x:Name="SaveButton"
+                    Click="SaveButton_OnClick"/>
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,201 @@
+lookup
+Name,id,Description,Flavor
+Dash!,dash,"For this turn, roll two dice for movement.",Faster! -Suguri
+Extend,extend,"Stock Effect\nAfter suffering KO, you will revive on the following turn.",All good for now! -Marc
+Flip Out,yatuatari,"Stock Effect\nNext time you land on a drop panel, the player(s) with the highest number of stars will lose the same number of stars as you.",......! -Mei
+Long-Distance Shot,enkyori,Deals 1 damage to the selected enemy unit.,I can hit you from anywhere. -Iru
+Nice Jingle,sutekija,Stock Effect.\nThe next bonus panel gives you twice as many stars.,We've got a bunch. -Aru
+Nice Present,xms,Draw 2 cards.,You're going to help me deliver the presents. -Aru
+Princess's Privilege,tokken,Discard all cards in your hand and draw 3 cards.\nCan only be used when holding only Princess's Privilege or you have at least 3 cards in your hand.,You may come and visit my house some day. -Fernet
+Pudding,pudding,Fully restore HP.,Hooray! -QP
+Saki's Cookie,cookie,Heals 1 HP.,Have a cookie! -Saki
+Stiff Crystal,kessyou,Stock Effect\nThis card negates the effect of a trap card. Gain 5 stars per level of cancelled trap.,Such a pain in the neck. -Kyoko
+Big Magnum,magnum,"Pay 1 HP when you use this card. During this battle, gain +2 ATK. If you would suffer KO from using this card, the card cannot be used.",Go! Big Magnum! -Captain Tequila
+Final Battle,lstbtl,This battle will last until either unit suffers KO (Maximum of 10 rounds).,To protect everyone!\n-Suguri & Hime
+I'm on Fire!,moeruyo,"During this battle,\ngain +1 ATK and -1 DEF.",Let's play our lives away! -Kae
+Rainbow-Colored Circle,niziwa,"During this battle, gain +2 EVD and -1 DEF.",Like drawing a rainbow-colored circle.
+Rbits,usabit,"During this battle, gain +2 DEF. You may not use the Evade command.",Formation Orbit! -QP
+Reverse Attribute Field,hanten,"During this battle, the positive and negative values of each ability of both units are inverted after adjustment.","Aren't you too serious about this game? You're so da... I mean, far too immature! -Mei"
+Shield,shield,"Gain +3 DEF during this battle. However, you may not attack. This card can only be used by the player who attacks second.",The most important thing is: make it back here alive. -Sham
+Assault,assault,"Battle the player who set this card, starting with their attack.",I'll make you leave the guild today for sure! -Peat
+Bad Pudding,dainashi,Discard a random card.,"Pudding with soy sauce, tastes like sea urchin! -Yuki"
+Dangerous Pudding,danger,Stock Effect\nYour next turn will be skipped.,'One glance is all it took for that pudding to steal my heart.'
+Exchange,torikae,"Exchange the cards in your hand, your stars and your current panel position with the player who set this card.","Heavy... ?Suguri\n""So drafty without my cap..."" -Marc"
+Flamethrower,flame,"KO's a player. If the player has any cards in their hand, they will lose all of them instead of suffering KO.",Heeehaaaaah! -Punk
+For the Future of the Toy Store,omochaya,Lose half your stars. The player who set this card will gain the lost stars. This card can only be used with less than 50 stars.,If only! If only there was no Santa! -Arthur
+Go Away,tondeke,You are moved to a randomly chosen panel.,"Ahaha, I like this. -Nanako"
+Heat 300%,heat300,"Stock Effect(1):\nIn the next battle, gain -2 DEF.",All I need to do is dodge every attack! -Suguri
+Invasion,syuurai,You will have an encounter. The enemy will attack first.,"What, I was attacked...? -Suguri"
+Mimyuu's Hammer,hammer,Deals 1 damage.,Thank you for dying! -Mimyuu
+Piggy Bank,chokin,Gain stars equal to five times the number of chapters passed since this card was set.,"Dad, can't I break the piggy yet? -Mescal"
+Sky Restaurant 'Pures',pures,Lose half your stars and fully restore HP.,We have a guest to treat! -Chris
+Tragedy in the Dead of Night,mayonaka,Discard a random card. That card will go to the player who set this card.,'Such happiness will be snatched away just like that.'
+Cloud of Seagulls,taigun,A randomly chosen unit will receive 2 damage.,Squaawk! -Seagull
+Dinner,dinner,Heals all units for 3 HP.,Let's have supper together. -Natsumi
+Forced Revival,sosei,All units suffering KO are revived with 1 HP.,You'll all be up in a jiffy. -Kiriko
+Gift Exchange,prchange,All cards are gathered from the players and dealt back randomly. The total number of each player's cards remains unchanged.,"A gift exchange? Let's do it!\n-Rbit, Red and Blue"
+Here and There,acchi,All players are moved to randomly chosen panels.,To the next world! -Marie Poppo
+Holy Night,holy,Permanent Effect\nStart-of-chapter bonus stars are increased by one.,"Aha, that's why it's a party night. -Hime"
+Little War,littlewar,Effect Duration: 3 chapters\nOffense and defense will happen twice in all battles.,I believe... I have the power to stop this... -Suguri
+Oh My Friend,myfriend,A boss will show up.,Machines have friends too. -NoName
+Out of Ammo,tamagire,Effect Duration: 1 chapter\nNo player may use any cards.,Ran out of ammo! -Peat
+Sealed Guardian,huuin,Every unit's HP becomes 1.,Meet the guardian angel of this vessel. -Shifu
+Super All-Out Mode,honki,Stock Effect\nAll units gain +2 ATK during their next battle.,This is gonna hurt even if you know it's coming!! -Tomomo
+We Are Waruda,waruda,Move all trap cards onto randomly chosen panels.,Useless. No one can beat Tomato. -Tomato
+Accelerator,accel,"Effect Duration: 1 chapter\nRoll two dice for movement, battle, bonus and drop.",I'm accelerating. -Suguri
+Air Strike,bakugeki,Every unit except your own receives 1 to 3 damage. Gain 15 stars on every KO.,"Hmph, go down, all of you. -Fernet"
+Binding Chains,sokubaku,"Stock Effect\nAll Units except yours will skip their next turn. Apply ""Bound"" to all active enemies. Effect Duration: 2 Chapters. Gain -2 EVD and -1 MOV.",I don't like doing this sort of thing. -Hime
+Blue Crow the Second,blue2nd,"During this battle, gain ATK and DEF but lose EVD equal to the number of cards in your hand.",I'm gonna settle this! -Peat
+Extraordinary Specs,detarame,"Effect Duration: 1 chapter\nRoll 6 for movement, battle, bonus and drop.",I'd appreciate it if you dropped your weapons. -Sora
+Gamble!,gamble,A randomly chosen unit is KO'd.,Why not use this to decide whose turn it is? -Yuki
+Hyper Mode,hypmode,"Gain +2 ATK during this battle. If your unit suffers KO during this battle, you give no stars or Wins and the unit will revive next turn.",HYPER MODE! -QP
+Magical Massacre,saturiku,All units whose HP is full or higher will suffer KO. Gain -1 REC on next Revive roll for each enemy KO'd.,Disappear. -Tomomo
+Present for You,present,All players draw cards until they have a full hand. Those with full hand draw 1 card instead. Gain stars equal to 10x the number of all cards drawn.,Presents for good boys and girls. -Aru
+Protagonist's Privilege,syuyaku,"Effect Duration: 3 chapters\nWhen you are allowed to attack first, the opposing unit cannot attack (once per combat).",This is the privilege of the main character! -Kai
+Ubiquitous,shinsyutu,"Move to target unit's panel. In addition, steal stars equal to 10x their level.",Poppo! Poppopopopopo!\n-Marie Poppo
+x16 Big Rocket,bigrocket,?Cost: Level x10\nDeals damage equal to your level to target unit. A KO from this effect gives you 2 Wins.,Charged! Go! -Marc
+Banned for Life,banned,?Cost: Stars / 10.\nCan only play Gift cards. Using this card sends it to another player.\nDiscards entire hand upon discard.,"Manager, it's your turn!! -Chris"
+Turbo Charged,turbo,Drop to 1 HP.\nGain +1 ATK per lost HP.\nEffect Duration: As many Chapters as lost HP.\nLose 1 ATK per turn for the duration.\nEffect expires on KO.,Rumble rumble rumble. -Shifu Robot
+Immovable Object,immovable,Effect Duration: 2 Chapters\nCannot move.\nGain +2 DEF. Can counterattack.\nEnemies who move into the same panel must battle you.,"With this power, everything in the sky will be ours. -Guild Master"
+Golden Egg,golden,"If target is Chicken, Stock Effect (3). Drop Panels will act as Bonus Panels.\nOtherwise, Stock Effect (3).\nBonus Panels will act as Drop Panels.",Cluuuuck! -Chicken
+Reflective Shell,reflective,Base ATK is 0 in this battle.\nAbsorb up to 2 damage.\nGain an additional +2 ATK for every damage absorbed.\nCan only be used when defending.,Enemy detected. Destroying. -Robo Ball
+Jonathan Rush,rush,"Move to an enemy and attack them.\nTarget gains -1 DEF.\nAfter the battle, your turn ends.",Squaawk! -Seagull
+Ambush,ambush,"Engage in battle with another player or players on your panel. Once these battles are over, your turn is over.",Owwwww!! -Sham
+Lonely Chariot,chariot,"Stock Effect\nAlways roll 5 to move. After your turn, take 1 damage. Effect expires on KO.\nIf you suffer KO from this effect, pay Lvl x5 stars.",'You guys'? You're mistaken...\nI ride alone! -Lone Rider
+Mimic,mimic,Choose a player. All hyper cards in your hand become the type that that player uses.,Marie Poppo is trying to become something else.
+Passionate Research,research,"Look at the first 3 cards of the deck. If there are any hyper cards, take them. Return the rest of the cards to the deck in the same order.","Well, this sort of thing happens all the time. It was quite fun, anyway. -Scholar"
+President's Privilege,prespriv,Effect Duration: 1 chapter\nYou may play cards without paying their cost. You may play 1 additional card this turn.,"There you guys are... Come to the Student Council Office after school,\nwill you? -Himeji"
+Shield Counter,shieldinv,Deal damage to attacker equal to their ATK - DEF (min. 1). You take no damage. No attacks take place. May only be played by the defender.,"Shield, invert! -Sora"
+Tactical Retreat,tactretr,"?Cost: Level x5\nEnd this battle. Attacker gains this card's cost. May only be used by the defender. If opponent plays a battle card, this effect is void.",Farewell! -Tomato
+Piyopiyo Procession,piyopiyo,Player suffers 3 random encounters (the player attacks first).,Piyopiyopiyopiyopiyopiyopiyopiyooo! -Colored Piyo Army
+Sealed Memories,memseal,"For 3 turns, all target's cards are reversed (target sees them face down, and other players can see their cards).",Order within the world...? What the heck does pudding have to do with that!? -QP
+Mix Phenomenon,mixpheno,Effect Duration: 3 chapters\nAll panels other than the home panels become random panels.,A hole in the wall-like force between dimensions... it would appear that this phenomenon is mixing the worlds themselves together. -Yukito
+Scary Solicitation,solici,"All active players except the one who played this card must draw cards, paying 15 stars per card, up to their card maximum.","You'll buy it, of course. You'll buy it. Won't you? -Merchant"
+Accel Hyper,accelhyper,Roll double dice for attack.,Unlimited Charge! -Sora
+Brutal Prank,brutalprank,Discard all Hyper cards in hand. Lose 10 stars and heal 1 HP for each discarded card.,"Noooo, Mr. Cow! Mr. Frog! ?Yuuki\n""Hahahaha! Wail and weep!!"" -Yuki"
+Completion Reward,completionreward,Gain 7 stars for every trap you have set and someone has stepped on.,"Yay, I've got my pay! ?Chris\n""Don't waste it, okay?"" -Manager"
+Extension,extension,Gain the effect of one randomly chosen Battle card (including Hyper cards).,It's my job to kill you. -Nath
+Gentleman's Battle,gentlemansbattle,Choose a player with full HP and battle them. Your turn ends after the battle.,Take this! -Guildmaster
+Play of the Gods,playofthegods,"Play one random Event card (including Hyper cards) from any other player's hand or the deck, at no additional cost.","We will get golden eggs! ?QP\n""And make the best pudding out of them!"" -Saki"
+Present Thief,presentthief,Steals all the cards from the first player to step on the trap. Gives all the stolen cards to the second player to step on the trap.,These do no good! -Nico
+Quick Restoration,quickrestoration,All damage taken during the battle will be healed after the battle. Effect is cancelled if the player is KO'd.,I'm not going to die. -Suguri
+Scrambled Eve,scrambledeve,"All players return their hand to the deck, and the deck is shuffled. After 3 chapters, all players draw as many cards as they discarded from this effect.",Wait! Give me back the presents! -Aru
+Star-Blasting Light,starblazinglight,All trap cards on the field are discarded. Trap setters take 1 damage for each discarded trap.,A light capable of burning down the city... even the planet... I can tell its source is up there in the sky. -Sora
+Unlucky Charm,unluckycharm,"?Cost: Level x5\nLose Lvl x1 stars at the start of your turn. Using this card sends it to another player. If Cost is higher than your star count, you may use this card for free.","Pitch black darkness disrupts my slumber, hence I yearn for light... -Krilalaris"
+Windy Enchantment,windyenchantment,Gain +1 MOV. Cannot Norma while holding this card. Discard upon use.,People call her Barefoot Alicianrone.
+Beyond Hell,hell,"During this battle, gain +1 to ATK, DEF and EVD for every HP you are missing.",Syura's powers go beyond Hell itself! Allow me to demonstrate! -Syura
+Deploy Bits,bitdeploy,"During this battle, gain a total of +7 points to ATK, DEF, and/or EVD, distributed randomly.","No matter what, you can't escape my Bits. -Nanako"
+Big Bang Bell,bigbang,"Every unit on this and 2 adjacent squares takes 2 damage, +1 for every 2 chapters since setting the trap. On KO, half of their stars go to the player who set this trap.",Mauuuuuryaaaaaaahh! -Saki
+Cast Off,castoff,"Stock Effect\nSwap unit's base ATK and DEF. Lasts until KO, or Cast Off is used again.",This calls for a good distraction... -Kyousuke
+Blazing!,blazing,"Inflicts Blazing! on units within 2 panels. Effect Duration: 3 Chapters. ATK +1, DEF -1. Effect expires on KO. This effect can stack.",Good! Good! This feeling really is the best! -Kae
+Plushie Master,dancea,"Set ""Dance, Long-Eared Beasts!"" trap on 3-5 random panels.","Dance, long-eared beasts! -Krilalaris"
+"Dance, Long-Eared Beasts!",danceb,"Take 2 damage. The player who set this card gains 1 HP. Stock Effect: During next battle, gain -2 ATK.\nNo effect on the player who set this card.","Dance, long-eared beasts! -Krilalaris"
+Self-Destruct,selfd,"On KO, also KO the opponent. Enemy gains no stars or wins, and loses half of their stars.",I'm sorry... I can't make it back... -Alte
+Crystal Barrier,crystalb,"Stock Effect (3)\nCancel a trap, a battle, or drop panel. Take 1 damage. Consumes 1 stack. Effect expires on KO.","What a piece of junk, huh... -Kyoko"
+Delta Field,delta,All other units receive the following effect until your next turn: All dice rolls will be 1.,"If you insist on staying here, I'll take you back no matter how! -Sham"
+Whimsical Windmill,whim,"Fight all other players in order. The enemy goes first. During battle, gain +1 EVD.",We just want to fly around freely. -Sherry
+Star Blasting Fuse,starbfuse,"Set ""Invisible Bomb"" on 3-5 random panels.","Because I am Star Breaker, the blasting fuse to the world's end. -Star Breaker"
+Invisible Bomb,sbftibomb,Reduces HP to 1. Does not affect the player who set the trap. Only visible to the player who used this card.,"Because I am Star Breaker, the blasting fuse to the world's end. -Star Breaker"
+Melting Memories,melting,?Cost: Number of cards held by other players x5\nAll other players discard and replace a card from their hand. Reverse all enemy cards.,How foolish you are to have challenged a God. Prepare to taste your bitter defeat! -Sweet Breaker
+Sweet Guardian,sweet,"Draw 2 cards with ""Pudding"" in their name from the center deck.",My little... pudding... -QP
+Awakening of Talent,awakening,"Until end of turn, roll 5 for move, battle, bonus or drop. This card can also be used as a Battle card.",I'll commence... my operation now. -Sora
+Subspace Tunnel,stunnel,?Cost: Level x5\nEffect Duration: Player level\nTurn 4-6 panels into Warp Move panels and then warp to one of them.,Po! Po! Po! Popoppo!! -Marie Poppo
+Santa's Job,santajob,"During standby, you may choose another card of usable Lvl to send to another random player. Gain stars equal to Card Lvl x5. Target cannot challenge players to a battle until your next turn. This card is discarded upon KO or use.","Children of the world, we are coming for you! -Aru"
+Another Ultimate Weapon,ultwep,?Cost: All held stars.\nGain +1 ATK and DEF and an additional +1 ATK and DEF for every 20 stars spent on this card.,"With you gone, I am their ultimate weapon now. -Nath"
+Evil Spy Work ? Preparation,evilspyprep,"Place 4 ""Evil Spy Work - Execution"" cards at random positions in the Center Deck.",Fear Mimyuu's pranks. -Mimyuu
+Evil Spy Work ? Execution,evilspyexec,"This card cannot be played.\nWhen holding this card, take 3 damage at the end of your turn, and remove this card from the game.",You fell for it! Eat it!! -Mimyuu
+"Waruda Machine, Blast Off!",warudamachine,"During this battle, gain ATK and DEF but lose EVD equal to the number of cards in your opponent's hand.",Revenge! -Tomato
+Final Surgery,finalsurgery,KO all units with 1 HP and gain stars equal to 25x the number of KO'd units.,"Just hold still, I'll fix you up real quick. -Kiriko"
+Overseer,ruler,"A boss appears. If a boss is already on the field, treat this card as a battle card: Cancel any battle card the opponent selected. End the battle and start a new battle where opponent fights the Boss instead. Can only use against players.",Hahaha! Here comes my friend! -NoName
+Witch's Hair Lock,hairlock,Stop target unit's next move action.,No one can get out of Repa's hair. -Ceoreparque
+Solid Witch,heavywitch,Effect Duration: 1 chapter.\nTake no damage.,No flimsy attacks can hurt me! -Miusaki
+Dark Side of Business,darkside,"Gain +2 ATK, enemy gains -2 DEF. For every point of damage you would deal, steal 5 stars from your opponent instead.",'Extortion' - An act of monetary gain by inflicting violence upon a weaker target.
+Party Time,party,All units are randomly warped onto the same panel. End your turn.,"At tonight's banquet, the Beasts of Darkness shall dance wildly. -Krilalaris"
+Treasure Thief,treasurethief,Steal a random card from all players on the same tile as you.,"Pokya Po! (Treasure, get!) -Marie Poppo"
+Lost Child,lostchild,Move backwards while this card is held. Cannot Norma while holding this card. This card is discarded upon KO or use.,Where am I? -Tsih
+Wanted,wanted,Stock Effect\nYou give double wins on KO from battle. Effect expires on KO.,Over here! My nose is never wrong! -QP
+Price of Power,price,You may play cards one level higher than your current level. All card costs are increased by 5. This card is discarded on use.,"Even if I survive the war... With this body, there's nothing I can do. -Nath"
+Sweet Battle!,vday18_,When held: Pick up 2x chocolate.\nWhen played in battle: Steal 200 chocolate for each damage dealt.\nThis card is discarded upon KO or use.,Here comes another cute and sweet battle! -QP
+Evil Mastermind,evilm,"Draw a trap card from the deck. Set all trap cards in hand on random panels. If not holding any trap cards, draw 3 from the deck and set a random one on your current panel.",Fear my powers! -Yuki
+Miracle Red Bean Ice Cream,mribic,"+1 ATK while this card is held.\nTomomo (Casual): When played, turn into Tomomo (Sweet Eater) and fully restore HP.\nTomomo (Sweet Eater): When held, this card becomes Magical Revenge.\nDiscard upon use.",Miracle red bean ice cream! -Tomomo
+Magical Revenge,mrevenge,"For each missing HP, random enemy takes 1 damage. If a unit is KO'd, you gain 1 Win.\nWhen not held by Tomomo (Sweet Eater), this card becomes Miracle Red Bean Ice Cream.",It's Magical Revenge time! -Tomomo
+Revival of Stars,revivalos,?Cost: Level x3\nEffect Duration: 3 Chapters.\nTurn all Drop Panels into Bonus Panels and Encounter and Boss Panels into Draw Panels. -1 ATK when on a marked panel.,The dream you protected has spread across the whole planet. -Suguri
+Stealth On,stealth,Effect Duration: 3 chapters.\nCannot be challenged to battle or targeted by Boost cards by other players.\nDo not trigger Encounter or Boss panels.\nEffect expires on entering battle.\nGain +2 ATK when entering battle.,Look at me vanish! -Tsih
+Do Pirates Fly in the Sky?,piratesfly,"Set ""Flying Pirate"" on 2-3 random panels.",There ain't no law against pirates flying in the sky. -Tequila
+Flying Pirate,flyingpirate,Fight a Pirate Crew Member summoned by the player who set this card. The enemy will attack first. No effect on the player who set this card.,Captain! -Pirate Minion
+White Christsmasher,christsmasher,"Discard your current hand and deal 2 damage to players within 1 panel of you.\nFor each player KO'd, gain a win and KO'd Player's Lvl x5 stars.\nWhen carrying ""Red & Blue"", this card becomes ""True White Christsmasher"".",White Christsmasher! -Mei
+True White Christsmasher,truechristsmasher,"Deal 4 damage to players within 2 panels of you.\nFor each player KO'd, gain 2 wins and KO'd Player's Lvl x10 stars.\nWhen not carrying ""Red & Blue"", this card becomes ""White Christsmasher"".","White Christsmasher! -Mei, Red & Blue"
+Red & Blue,redblue,"When holding this card, gain +1 ATK, DEF and EVD in battle.\nOn discard or KO, this card is removed from the game. ",We can't do this anymore! -Red & Blue
+Cooking Time,cookingtime,?Cost: Level x5\nAll players recover your Lvl x HP.\nGain 5 stars for each HP recovered. ,It's meal time! -Natsumi
+Miracle Walker,miraclewalker,"Turn all your cards, including this one, into random Hyper cards.\nYou may play one more card this turn.",Hooray! Nico will try her best! -Nico
+Branch Expansion Strategy,bestrategy,"?Cost: Number of cards held x5\nTurn all your cards, including this one, into ""Rbit Hobby Shop.""\nYou may play one more card in this turn.",Phaaw... -Arthur
+Rbit Hobby Shop,hobbyshop,"Pay X stars to the player who set this card, where X is the Lvl of the player who set this card. Draw a card from the deck. This card remains on board when triggered but can be replaced by a new trap. No effect on the player who set this trap.","All right, it's time to open the shop. -Arthur"
+Extended Photon Rifle,photonrifle,"?Cost: Level x5\nDeal 1 damage to another random unit. If KO'd, gain 1 win. Repeat as many times as your current level.",I'll shoot you all down. -Iru
+Leap Through Space (Marking),spaceleapm,"Mark the panel where your unit is. When a marked panel exists, this card becomes ""Leap through Space."" This card is not discarded upon use.",Poof. -Mira
+Leap Through Space,spaceleap,"Warp to the marked panel and unmark it. Apply Binding Smoke to enemies within 1 panel radius. If no marked panels exist, this card becomes ""Leap through Space (Marking).""",Poof. -Mira
+Special Stage,specialstage,"?Cost: Level x10\nGo to Live Mode for (your Lvl) turns. Gain -3 MOV, can only trigger movement type panels and cannot use cards. Cannot be challenged or be the target of Boost cards. If an opponent ends their turn in 2 panel radius, steal (your Lvl) x5 stars from them. Ends on KO.",We are the strongest idols! -Sora & Sham
+Angel Hand,angelhand,"Heal target player to full HP and gain 10 stars per healed HP. In even-numbered chapters, this card turns into Devil Hand.",This is the power of mercy. -Yuuki
+Devil Hand,devilhand,"Lower a random player's HP to 1 and gain 10 stars per lowered HP. In odd-numbered chapters, this card turns into Angel Hand.",Eat the power of the devil! -Yuuki
+Rival,rival,"Battle target player. You attack first. During battle, gain +1 ATK.",Just like you... I have my battles to fight. -Islay
+Magical Inferno,inferno,KO all units on any other panel in the same uninterrupted column or row as the panel your unit is on. You gain stars from each KO'd unit as though KO'd in battle. Then end your turn.,Inferno! -Mio
+Desperate Modification,desperate,"For this battle, randomly roll either a natural 1 or 6 for each attack, defense and evasion.",Poor Blue Crow. You loaded him with all that heavy stuff! -Marc
+Path Blockers,pathblockers,"Stock Effect (1). Choose an active unit. If that unit moves onto a panel with a set Trap, they must stop on that panel.",Nobody will get past Waruda! -Tomato
+Accelerating Sky,accelsky,Effect Duration: 3 chapters.\nAll players gain +1 EVD and -1 DEF.,Girls are leaping through the sky...-
+Poppoformation,poppotransformation,"Stock Effect (1). ATK, DEF and EVD become -1 in your next battle.",Poppo! Poppopopo!!! -Everyone
+Poppo the Snatcher,popposnatcher,"Gain -1 DEF. Whenever passing another unit on your turn, steal target Lvl x3 stars from them. Cannot Norma while holding this card. This card is discarded upon KO or use.",Pokyakya!! -Poppo
+Bloodlust,bloodlust,Lose 1 HP at the start of your turn. Heal 1 HP for every damage you deal. Cannot Norma while holding this card. This card is discarded upon KO or use.,The true power of my beast... I wonder if it's like this. -Krilalaris
+Sink or Swim,sinkorswim,"Gain -1 ATK, -1 DEF and -1 EVD. If you win this battle, take 50% more of your opponent's stars.","Alright, it's time to play the long odds! -Yuki"
+Serious Battle,seriousbattle,"During this battle, ATK, DEF and EVD of both units will be 0.",This battle will be a true test of strength! -Tomomo
+Portable Pudding,portablepudding,"At the start of this battle, reset your HP to your max HP.",I've got pudding for lunch today! -QP
+Sweet Destroyer,sweetdestroyer,"Steal a random ""pudding"" card from each other player. You may play another card this turn. At the end of your turn, discard as many cards as you gained.",The sweets that bring harm to the world... I will destroy them all! -Sweet Breaker
+Backdoor Trade,backdoortrade,"?Cost: Level x5\nPerform a Norma check, then your turn ends.\nCan only be used by the player with the lowest level. Cannot be used at Norma level 5.","Here's what you asked for. ?Captain Tequila\n""Great work! I knew I could count on a real villain like you!"" -Mimyuu"
+Serene Hush,serenehush,Effect Duration: 1 Chapter.\nNo battles can take place.,"We have nothing to do... ?Sumika\n""Let's enjoy the peace and quiet."" -Suguri"
+Unpaid Work,unpaidwork,Effect Duration: 1 Chapter.\nNo units will gain stars from any sources.,Where's my payment! -Chris
+Indiscriminate Fire Support,firesupport,"Effect Duration: Infinite.\nA random unit takes 1 damage. At the start of your turn, repeat this effect. The effect ends when a unit suffers KO.",...... -Sora
+Lucky Charm,luckycharm,"Gain Lvl x1 stars at the start of your turn. You cannot use any other cards. This card is discarded upon use. On defeat, give Lvl x 3 more stars.","Woo-hoo, so many stars! Today's my day!! -Tomomo"
+Metallic Monocoque,monocoque,"When a non-battle effect deals any damage to you, that damage is reduced by 1, and you lose Lvl x 2 stars.",What a timid generation we live in. -Sherry
+I Wanna See You,iwannaseeyou,The player who set this trap moves to the panel on which the trap was activated. The player who activated the trap then gains this card instead of it being discarded.,Kyupita... I want to see you. -Kyousuke
+Encore,encore,"When this card is activated either on Bonus, Drop, Draw or Encounter, that panel's effect takes place twice.",Encore! Encore!
+Overtime,ohours,"For this turn, roll 3 dice for movement. Skip next turn.",I-I have no complaints as long as I get paid... -Chris
+Deceptive Disarming,ddisarming,"If opponent uses a battle card in this battle, if not restricted by player order its effect is applied as though you played it instead. If successful, opponent does not pay the card cost.",The train's full of dangerous stuff?! -Tomato
+Pet Snacks,psnacks,Each different wild unit gains +1/+1/+1 during its next battle. This effect can stack.,"Guys, it's snack time! Come eat! -Syura"
+Home Improvement,himprovement,"At the start of your next turn, randomly swap home panel positions. The first player to land on each home draws a card.",Sumika's going to build herself a nice and cozy home. -Sumika
+BanaNana,bananana,Roll to move again without activating this panel.,"Thought you'd found a banana? Too bad, it was just me, Nanako! -Nanako"
+Lucky Sevens,lsevens,"While holding this card, your natural die rolls can range from 0 to 7, and the minimum roll result is 0 when rolling 0.\nCannot perform a Norma check after rolling a 0 for move on the same turn.",I can even control my dice rolls. -Yuki
+Observer of Eternity,observer,Add 2 random Boost/Event cards that deal damage to your hand.\nYou may play another card this turn.,"Now then, let's see how this will turn out. -Suguri"
+Reproduction of Records,ssmemory,"Add a copy of the two most recent cards in the discard pile that aren't ""Reproduction of Records"" to your hand. Those cards will be treated as being Level 1 and having no base cost while in your hand.",Sumika's sweet memory! -Sumika
+Ellie's Miracle,elliemiracle,"?Cost: Level x10\nEffect Duration: 2 chapters. Gain +X ATK, +Y DEF, and +Z EVD, where X = Your total Norma completed, Y = your number of Wins Norma completed, and Z = your number of Star Norma completed.",Receive my miracle! -Ellie
+Lulu's Lucky Egg,luckyegg,"Can only be played with 2 HP or less. Gain one of the following effects at random:\n-Roll a die and gain the die number x 20 stars.\n-Draw 5 cards.\n-Heal to full HP and permanently gain +1 ATK, +1 DEF, and +1 EVD. This effect can only trigger once.",Ugh... Lulu's about to lay an egg... -Lulu
+Rocket Cannon,rocket,"Choose one of the following two effects to activate:\n1. This card becomes ""Big Rocket Cannon"".\n2. Deal 1 damage to target enemy. If KO'd, you gain wins as though KO'd in battle.",Red Barrel... It's time to use that! -Marc
+Big Rocket Cannon,rocketcannon,"Deal 3 damage to target enemy. If KO'd, you gain wins as though KO'd in battle.\nThis card becomes ""Rocket Cannon"" when you use another card or you suffer KO.",Go! -Marc
+Full Speed Alicianrone,speedwitch,"Roll a die and move result x 3 panels. Deal damage equal to the result to each unit you pass during the move. If they are KO'd by the damage, gain Wins as though from a normal battle. After this effect, your turn ends.",I'll go fast and cut my way through! -Alicianrone
+Beast Witch,beastwitch,"When another player loses stars from an Encounter panel battle and those stars would go to the Encounter panel unit, you will receive them instead. If this effect is triggered, discard this card at the end of your turn. If several players carry Beast Witch, the stars are split between them.",All beasts! Obey me! -Teotoratta
+Intelligence Officer,intofficer,Gain one of the following effects depending on the top-of-the-deck card:\nEvent +3 ATK\nBoost +3 DEF\nOthers +3 EVD,I can see through everything! -Arnelle
+Raging Madness,rmadness,"Gain +1 Rage Counter. Target another active unit and enter Raging Mode: gain +X ATK and +X EVD where X is the number of your Rage Counters. Raging Mode ends and Rage Counters become 0 upon target's KO. Gain +2 Wins if you KO target in battle, and -50% Stars and Wins if you KO any other unit.",Gyaoooh! -Maynie
+Saint Eyes,saint,"Stock Effect (3). In a battle where you attack first, gain -1 ATK and +1 DEF for every 2 stock, and +1 ATK per stock. This effect can stack.",I'm going to use my saint eyes! -Kyupita
+"Chef, I Could Use Some Help!",chefhelp,"Summon Chef. Fights battles on behalf of your unit. Gives 2 Wins on KO. Gives stars gained in battle to your unit. Effect ends with Chef's KO. This card turns to ""Manager, I Could Use Some Help!"" if you have 4 or more Store Manager Counters and your Lvl is 4 or higher.",Chef! I'm going to need your help! -Chris
+"Manager, I Could Use Some Help!",managerhelp,"Summon Store Manager. Fights battles on behalf of your unit. Gives 2 Wins on KO. Gives stars gained in battle to your unit. Effect ends with Store Manager's KO, and your Store Manager Counters reset to 0. This card turns to ""Chef, I Could Use Some Help!"" if you have less than 4 Store Manager Counters.","Manager, help me! -Chris"
+Safe Journey,safejourney,"Lose 5 stars at the start of each turn. Ignore Drop panels, traps, and card effect damage. This effect ends when you stop on your own Home panel or have less than 5 stars.","Now, let's get going. -Halena"
+Guidance of the Weathercock,guidance,Stock Effect.\nRoll 2 dice for everything except for battle. This effect ends when you stop on your own Home panel. Can only check Norma on own Home panel.,*Cheep cheep*! Cook wants to go this way. -Cook
+Upshift,upshift,"?Cost: 10 + 10x existing stack of Upshift. Stock Effect (2).\nGain +1 MOV. This effect can be stacked (max 6).\nIf you end your turn without moving to the end of your final move roll, lose a stack of Upshift.",...Don't follow me. -Lone Rider
+Zealous Salesman,zsalesman,"Gain Freight cards equal to your level. With Freight cards in your hand, this card can be played as a Battle card: During this battle, gain +1 ATK for every Freight card in your hand.","Breaking the load regulations, you say? I have a permit right here! -Merchant"
+Freight,freight,"If the opponent has not played a Battle card, give them a Freight card and cancel the battle. May only be used by the defender.\nWhen stopping on your Home panel, discard this card and gain 5 Stars.","You may keep all that freight, yes you may. -Merchant"
+Dance in the Moonlit Night,dancingmoonnight,"On successful Evasion, deal damage to the opponent equal to what you would have taken from them.\nIf used by Hime (Moonlight) during full moon (every 5 chapters), deal double that damage but cannot use the Defend command.",Now let us dance. -Hime
+New Nobility,newnobility,"Stock Effect: All opposing units randomly gain -1 ATK, DEF or EVD during their next battle.\nIf held by Fernet, this card can be transformed into ""Affluence (1)"" instead.",Pleased to make your acquaintance. I hope we can get along well in the future. -Fernet
+Affluence (X),affluence,"?Cost: (X) x10. If this card is Affluence (4):\nActive players battle you in a random order. They gain -3 ATK. You cannot attack. If you are not KO'd, opponent gives you (their Lvl) x 10 stars.\nIf not Affluence (4): Upgrade this card.\nIf not held by Fernet, this card becomes New Nobility.","You wish to ask me for a favor...? My my, of course I'd be ever so happy to help a friend. -Fernet"
+Twilight-Colored Dream,twilight,"?Cost: Level x7\nEffect Duration: (Your Lvl) x Chapters\nTurn all Bonus and Draw panels into Encounter panels. If an enemy moves onto an Encounter panel with a Battle card you set as a Trap, they must stop on that panel. ","Look at all those countless planes crossing the sky... It's like watching a dream, is it not? -Malt"
+Little Magnum,littlemagnum,"During this battle, gain +1 ATK. Additionally, gain +X ATK where X is the damage you have taken during this battle.",Stop bullying Daddy! -Mescal
+Ideal World,idealworld,"Place an Invasion trap on each Home panel that has no active trap.\nEach player will battle a robotic wild unit during their next 2 encounters, and this robotic unit will gain +1 ATK. This effect can stack.",Everything's under my control. -Shifu
+Star Collector,sutakorekuta,"Effect Duration: 3 Chapters.\nWhenever another player gains stars from a panel or battle KO, they gain up to your Lvl fewer stars, and you gain your Lvl stars. Effect expires on KO.","Fufufu, look how many stars I have here. -Reika"
+Ultimate Weapon in the Sun,summer18_atk_,"During this battle, gain +3 ATK.",I'll commence... my vacation now. -Sora
+Lifeguard on the White Beach,summer18_def_,All allies gain a damage reduction of 2 during their next battle.,"Geez, you're going overboard. -Suguri"
+Guardian of Blooming Flowers,summer18_supp_,Revive one KO'd ally with full HP.,You're fine now. The pain's gone. -Hime
+Unforgiving Avenger,summer18_extra_,"During this battle, damage taken by both sides is doubled.",Mimyuu! Who did this to you... -Tomato
+Slimebomb,bty_item_slimebomb,Throw a slimebomb on a panel around you (radius 3). All panels in 1 panel radius will be covered with Goo for 2 chapters.,"Pure goo in a bottle, ready to throw! -Alchemist"
+Teleportation Potion,bty_item_teleport,"Teleport on any panel, then play your turn.","One sip, and poof! -Alchemist"
+Lure,bty_item_lurebomb,Throw a lure on a panel around you (radius 3). All panels around in 1 panel radius will turn into encounter panels for 3 chapters.,The smell of this thing should be strong enough to attract most small fry around the place... -Alchemist
+Shokupan,bty_item_shokupan,"Effect duration: 3 chapters\nHeal 1 HP every turn. The effect is removed upon getting KO'd, and cannot stack.",No one can ever bake something better than this masterpiece. -Star Baker
+Fluffy Shokupan,bty_item_fshokupan,Heal 2 HP every turn until your next KO. The effect cannot stack.,Fluffiness will conquer the world! -Sky Baker
+Holy Water,bty_item_holywater,"For this battle, gain 5 HP and +1 ATK, DEF, EVD.","Fufufu, this pure water will cure your thirst, you have my word on it! -Innkeeper"
+Smoke of the Lost Memories,bty_item_smokelostmemories,Forget your past mistakes and trigger a Bounty Battle. Can only be used on a panel with a discovered monster location. You must possess the bounty to start the battle. Your turn ends after playing this card.,Don't let it run away! -Alchemist
+Adventurer's Radar,bty_item_radar,Effect Duration: 2 to 5 chapters\nAble to discern all monster locations for the duration of the effect.,It will greatly ease your expedition... if it works long enough! -Armorer

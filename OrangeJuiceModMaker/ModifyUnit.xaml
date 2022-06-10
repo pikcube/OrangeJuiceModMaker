@@ -1,0 +1,341 @@
+﻿<Window x:Class="OrangeJuiceModMaker.ModifyUnit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OrangeJuiceModMaker"
+        mc:Ignorable="d"
+        Closed="ModifyUnit_OnClosed"
+        Title="ModifyUnit" Height="620" Width="1200" Loaded="Window_Loaded" MinWidth="1170" MinHeight="590" SizeChanged="ModifyUnit_OnSizeChanged">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="256"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="256"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="256"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            
+        </Grid.RowDefinitions>
+
+        <!--Top Items-->
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="Modify Unit:"
+                       FontSize="20"/>
+            <ComboBox Grid.Column="2"
+                      x:Name="UnitSelectionBox" SelectionChanged="UnitSelectionBox_SelectionChanged" FontSize="15"/>
+            <Button Grid.Column="4"
+                    Content=" Save Unit to Mod "
+                    FontSize="20"
+                    x:Name="SaveButton"
+                    Click="SaveButton_OnClick"/>
+        </Grid>
+
+        <!--Labels-->
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="Unit Card"
+                   FontSize="20" TextAlignment="Center"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="3" Text="Unit Poses"
+                   FontSize="20" TextAlignment="Center"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="5" Text="Hyper Card"
+                   FontSize="20" TextAlignment="Center"/>
+
+        <!--Card Unit Image Scroll Box-->
+        <Grid Grid.Row="5" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width = "22" Content="◀" FontSize="10" x:Name="CharacterCardLeftButton" Click="CharacterCardLeftButton_OnClick"/>
+            <TextBox Grid.Column="1" 
+                     FontSize="14" 
+                     Text="Marie Poppo" 
+                     TextAlignment="Center" VerticalAlignment="Center" IsReadOnly="True"
+                     x:Name="CharacterCardNameTextBox"/>
+            <Button Grid.Column="2" Width="22" Content="▶" FontSize="10" x:Name="CharacterCardRightButton" Click="CharacterCardRightButton_OnClick"/>
+        </Grid>
+
+
+        <!--Board Unit Image Scroll Box-->
+        <Grid Grid.Row="5" Grid.Column="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width = "22" Content="◀" FontSize="10" x:Name="CharacterLeftButton" Click="CharacterLeftButton_Click"/>
+            <TextBox Grid.Column="1" 
+                     FontSize="14" 
+                     Text="Idle" 
+                     TextAlignment="Center" VerticalAlignment="Center" IsReadOnly="True"
+                     x:Name="CharacterNameTextBox"/>
+            <Button Grid.Column="2" Width="22" Content="▶" FontSize="10" x:Name="CharacterRightButton" Click="CharacterRightButton_Click"/>
+        </Grid>
+        
+        <!--Hyper Image Scroll Box-->
+        <Grid Grid.Row="5" Grid.Column="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width = "22" Content="◀" FontSize="10" x:Name="HyperLeftButton" Click="HyperLeftButton_Click"/>
+            <TextBox Grid.Column="1" 
+                     FontSize="14" 
+                     Text="Ubiquitous" 
+                     TextAlignment="Center" VerticalAlignment="Center" 
+                     x:Name="HyperNameTextBox" IsReadOnly="True"/>
+            <Button Grid.Column="2" Width = "22" Content="▶" FontSize="10" x:Name="HyperRightButton" Click="HyperRightButton_Click"/>
+        </Grid>
+
+        <!--Other Options-->
+        <Grid Grid.Column="7" Grid.Row="3" Grid.RowSpan="7">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height ="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="128"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Small Unit Card" TextAlignment="Center" FontSize="20"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Small Hyper Card" TextAlignment="Center" FontSize="20"/>
+                <Rectangle Grid.Row="2" Grid.Column="0" Width="128">
+                    <Rectangle.Fill>
+                        <ImageBrush x:Name="SmallCardArt"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle Grid.Row="2" Grid.Column="2" Width="128">
+                    <Rectangle.Fill>
+                        <ImageBrush x:Name="SmallHyperArt"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+            </Grid>
+
+            <TextBlock Grid.Row="4" Text="Music Options" TextAlignment="Center" FontSize="20"/>
+            <Slider Grid.Row="6" x:Name="ProgressSlider" ValueChanged="ProgressSlider_ValueChanged"/>
+            <Grid Grid.Row="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button Grid.Column="0" Grid.Row="0" Content="◀◀" x:Name="RWButton" Click="ButtonBase_OnClick"/>
+                <Button Grid.Column="2" Grid.Row="0" Content="▶" x:Name="PlayPauseButton" Click="PlayPauseButton_OnClick"/>
+                <Button Grid.Column="4" Grid.Row="0" Content="▶▶" x:Name="FFButton" Click="ButtonFFOnClick"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Current Position" TextAlignment="Center"/>
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="Loop Position" TextAlignment="Center"/>
+                <TextBlock Grid.Column="4" Grid.Row="2" Text="Volume ±20" TextAlignment="Center"/>
+                <TextBox Grid.Column="0" Grid.Row="4" Text="0" TextAlignment="Right" x:Name="CurrentPositionBox" TextChanged="CurrentPositionBox_OnTextChanged" PreviewTextInput="CheckForNumber"/>
+                <TextBox Grid.Column="2" Grid.Row="4" Text="0" TextAlignment="Right" x:Name="LoopPointBox" TextChanged="LoopPointBox_OnTextChanged" PreviewTextInput="CheckForNumber"/>
+                <TextBox Grid.Column="4" Grid.Row="4" Text="0" TextAlignment="Right" x:Name="VolumeBox" TextChanged="VolumeBox_OnTextChanged" PreviewTextInput="CheckForNumber"/>
+                <Button Grid.Column="0" Grid.Row="6" Content="Set Loop Here" Click="SetLoopButtonClick" x:Name="SetLoopButton"/>
+                <CheckBox Grid.Column="2" Grid.Row="6" Content="Preview Loop" x:Name="PreviewLoopCheckBox"/>
+                <TextBlock Grid.Column="4" Grid.Row="6" Text="Volume will not preview in app" TextWrapping="Wrap"/>
+            </Grid>
+            <Button Grid.Row="10" Content="Replace with..." FontSize="20" x:Name="MusicReplaceButton" Click="MusicReplaceButton_OnClick"/>
+            <TextBlock Grid.Row="12" Text="Danger Zone" TextAlignment="Center" FontSize="20"/>
+            <CheckBox Grid.Row="14" Content="Enable options. Be careful, these can't be undone!" x:Name="EnableDangerZone" Checked="EnableDangerZone_OnChecked" Unchecked="EnableDangerZone_OnChecked"/>
+            <Grid Grid.Row="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Content="Restore Default Unit Card" IsEnabled="False" x:Name="resetUnitCard" Click="ResetUnitCard_OnClick"/>
+                <Button Grid.Row="0" Grid.Column="2" Content="Restore Default Hyper Card" IsEnabled="False" x:Name="resetHyperCard" Click="ResetHyperCard_OnClick"/>
+                <Button Grid.Row="2" Grid.Column="0" Content="Restore Default Unit Poses" IsEnabled="False" x:Name="resetPoses" Click="ResetPoses_OnClick"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="Restore Default Music" IsEnabled="False" x:Name="resetMusic" Click="ResetMusic_OnClick"/>
+                <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Content="Reset Unit to Default" IsEnabled="False" x:Name="resetAll" Click="ResetAll_OnClick"/>
+
+            </Grid>
+
+            
+        </Grid>
+
+        <!--Picture Controls-->
+        <Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Row="0" Grid.Column="2"
+                       Width="256"
+                       Height="256"
+                       x:Name="UnitPoseRectangle"
+                       VerticalAlignment="Top" PreviewMouseDown="UIElement_OnMouseDown">
+                <Rectangle.Fill>
+                    <ImageBrush x:Name="CharacterArt"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle Grid.Row="0" Grid.Column="4"
+                       Width="256"
+                       Height="256"
+                       VerticalAlignment="Top">
+                <Rectangle.Fill>
+                    <ImageBrush x:Name="HyperArt"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle Grid.Row="0" Grid.Column="0"
+                       Width="256"
+                       Height="256"
+                       VerticalAlignment="Top">
+                <Rectangle.Fill>
+                    <ImageBrush x:Name="CardArt"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Button Grid.Row="2" Grid.Column="2" Grid.RowSpan="3"
+                    Content="Replace with..." FontSize="20"
+                    x:Name="ReplacementBoardButton"
+                    Click="ReplacementBoardButton_OnClick"/>
+            <Button Grid.Row="2" Grid.Column="4"
+                    Content="Replace with..." FontSize="20"
+                    x:Name="ReplacementHyperButton"
+                    Click="ReplacementHyperButton_OnClick"/>
+            <Button Grid.Row="2" Grid.Column="0"
+                    Content="Replace with..." FontSize="20"
+                    x:Name="ReplacementCharacterCardButton"
+                    Click="ReplacementCharacterCardButton_OnClick"/>
+            <Grid Grid.Row="4" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Replace 128x128..." x:Name="SmallCardButton" Click="SmallCardButton_OnClick"/>
+                <Button Grid.Column="2" Content="Replace 256x256..." x:Name="LargeCardButton" Click="LargeCardButton_OnClick"/>
+            </Grid>
+            <Grid Grid.Row="4" Grid.Column="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Replace 128x128..." x:Name="SmallHyperButton" Click="SmallHyperButton_OnClick"/>
+                <Button Grid.Column="2" Content="Replace 256x256..." x:Name="LargeHyperButton" Click="LargeHyperButton_OnClick"/>
+            </Grid>
+
+        </Grid>
+
+        <!--Bottom Section-->
+        <Grid Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="181"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="176"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Card Name:"/>
+            <TextBlock Grid.Column="12" Grid.Row="0" Text="Hyper Name:"/>
+            <TextBlock Grid.Column="0" Grid.Row="2" Text=""/>
+            <TextBlock Grid.Column="12" Grid.Row="2" Text="Hyper Quote:"/>
+            <TextBlock Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="7" Text="Click the center of the face for in-game preview"/>
+            <TextBlock Grid.Column="4" Grid.Row="2" Text="Offset Right:"/>
+            <TextBlock Grid.Column="8" Grid.Row="2" Text="Offset Down:"/>
+
+            <TextBox Grid.Column="2" Grid.Row="0" Text="Marie Poppo" x:Name="CardNameUpdateBox" TextChanged="CardNameUpdateBox_OnTextChanged"/>
+            <TextBox Grid.Column="14" Grid.Row="0" Text="Ubiquitous" x:Name="HyperNameUpdateBox" TextChanged="HyperNameUpdateBox_OnTextChanged"/>
+            <TextBox Grid.Column="12" Grid.Row="3" Grid.ColumnSpan="3" Grid.RowSpan="1" Text="???" AcceptsReturn="True"
+                     x:Name="HyperFlavorUpdateBox" TextWrapping="Wrap" TextChanged="HyperFlavorUpdateBox_OnTextChanged"/>
+            <TextBox Grid.Column="6" Grid.Row="2" PreviewTextInput="CheckForNumber" TextAlignment="Right" Text="0" x:Name="FaceXBox" TextChanged="FaceXBox_OnTextChanged"/>
+            <TextBox Grid.Column="10" Grid.Row="2" PreviewTextInput="CheckForNumber" TextAlignment="Right" Text="0" x:Name="FaceYBox" TextChanged="FaceYBox_OnTextChanged"/>
+        </Grid>
+
+    </Grid>
+</Window>
