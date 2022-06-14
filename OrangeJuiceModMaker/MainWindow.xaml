@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="400" Loaded="Window_Loaded">
+        Title="MainWindow" Height="430" Width="420" Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height ="10"/>
@@ -16,6 +16,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -30,6 +32,41 @@
         <Button Grid.Column="3" Grid.Row="1" x:Name="NewModButton" Content="  New Mod  " Click="NewModButton_OnClick"/>
         <ComboBox Grid.Column="1" Grid.Row="3" x:Name="SelectedModeComboBox" SelectionChanged="SelectedModeComboBox_OnSelectionChanged"/>
         <Button Grid.Column="3" Grid.Row="3" x:Name="EditButton" Click="EditButton_OnClick" Content=" Edit "/>
+        <TextBlock Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Text="Preview Image (Click to Replace)" TextAlignment="Center" MouseDown="Viewbox_MouseDown"/>
+        <Viewbox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" MouseDown="Viewbox_MouseDown">
+            <Rectangle Width="3200" Height="1800">
+                <Rectangle.Fill>
+                    <ImageBrush x:Name="Preview"/>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Viewbox>
+        <Viewbox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="3" MouseDown="Viewbox_MouseDown">
+            <TextBlock Text="For best results upload a 16:9 image" x:Name="Text16By9"/>
+        </Viewbox>
+        <Grid Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Text="Other Options" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+            <Button Grid.Column="2" Grid.Row="0" Content="Open Orange Juice" x:Name="OpenOj" Click="OpenOJ_OnClick"/>
+            <Button Grid.Column="2" Grid.Row="2" Content="Clean Mod Folder" x:Name="CleanDirectory" Click="CleanDirectory_OnClick"/>
+            <Button Grid.Column="4" Grid.Row="0" Content="Validate Mod" x:Name="ValidateModButton" Click="ValidateModButton_OnClick"/>
+            <Button Grid.Column="6" Grid.Row="0" Content="Disable Mod" x:Name="DisableModButton" Click="DisableModButton_OnClick"/>
+            <Button Grid.Column="6" Grid.Row="2" Content="Delete Mod" x:Name="DeleteModButton" Click="DeleteModButton_OnClick"/>
+            <Button Grid.Column="4" Grid.Row="2" Content="Repair Mod" x:Name="RepairModButton" Click="RepairModButton_OnClick"/>
+        </Grid>
     </Grid>
 
 

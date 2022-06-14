@@ -157,7 +157,10 @@ namespace OrangeJuiceModMaker
             string[] paths = modifiedUnit.HyperCardPaths;
             string[] pathsLow = modifiedUnit.HyperCardPathsLow;
 
+            int pre = SelectedHyper;
             ReplacePicture(modifiedUnitCharacterCard, paths, pathsLow, () => SelectedHyper, () => ++SelectedHyper);
+            SelectedHyper = pre;
+            ReloadImages();
         }
 
         private void ReplacementCharacterCardButton_OnClick(object sender, RoutedEventArgs e)
@@ -166,8 +169,11 @@ namespace OrangeJuiceModMaker
             string[] paths = modifiedUnit.CharacterCardPaths;
             string[] pathsLow = modifiedUnit.CharacterCardPathsLow;
 
+            int pre = SelectedCharacterCard;
             ReplacePicture(modifiedUnitCharacterCard, paths, pathsLow, () => SelectedCharacterCard,
                 () => ++SelectedCharacterCard);
+            SelectedCharacterCard = pre;
+            ReloadImages();
         }
 
         private void ReplacementBoardButton_OnClick(object sender, RoutedEventArgs e)
@@ -176,7 +182,10 @@ namespace OrangeJuiceModMaker
                 Path.GetFileNameWithoutExtension(modifiedUnit.CharacterArt[SelectedCharacter]);
             string[] paths = modifiedUnit.CharacterArt;
 
+            int pre = SelectedCharacter;
             ReplacePicture(modifiedUnitCharacterCard, paths, null, () => SelectedCharacter, () => ++SelectedCharacter);
+            SelectedCharacter = pre;
+            ReloadImages();
         }
         private async void MusicReplaceButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -214,7 +223,7 @@ namespace OrangeJuiceModMaker
                             Arguments = $"-i \"{tempPath}\" -ar 44100 \"{mp3Path}\"",
                             UseShellExecute = false,
                             CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden,
+                            WindowStyle = ProcessWindowStyle.Hidden
                         };
                         Process? p = Process.Start(psi);
                         p?.WaitForExit();
@@ -228,7 +237,7 @@ namespace OrangeJuiceModMaker
                             Arguments = $"-i \"{tempPath}\" -ar 44100 \"{oggPath}\"",
                             UseShellExecute = false,
                             CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden,
+                            WindowStyle = ProcessWindowStyle.Hidden
                         };
                         Process? p = Process.Start(psi);
                         p?.WaitForExit();
@@ -237,14 +246,14 @@ namespace OrangeJuiceModMaker
                     t.Wait();
                 });
 
-                int KickingMachine = 30;
-                while (KickingMachine > 0)
+                int kickingMachine = 30;
+                while (kickingMachine > 0)
                 {
                     if (t.IsCompleted)
                     {
                         break;
                     }
-                    KickingMachine--;
+                    kickingMachine--;
                     await Task.Run(() => Thread.Sleep(1000));
                 }
                 if (t.IsCompleted)
@@ -265,14 +274,14 @@ namespace OrangeJuiceModMaker
                         leave = true;
                         break;
                     case MessageBoxResult.No:
-                        await KillFFMPEG();
+                        await KillFfmpeg();
                         break;
                     case MessageBoxResult.None:
                     case MessageBoxResult.OK:
                     case MessageBoxResult.Cancel:
                     default:
                         leave = true;
-                        await KillFFMPEG();
+                        await KillFfmpeg();
                         modifiedUnit.Music = null;
                         await RefreshGrid();
                         return;
@@ -283,12 +292,12 @@ namespace OrangeJuiceModMaker
             File.Delete(tempPath);
             modifiedUnit.Music = new Music(oggPath)
             {
-                loop_point = 0,
-                unit_id = modifiedUnit.UnitId,
-                volume = 0,
+                LoopPoint = 0,
+                UnitId = modifiedUnit.UnitId,
+                Volume = 0
             };
             musicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
-            LoopPointBox.Text = (modifiedUnit.Music.loop_point ?? 0).ToString();
+            LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
             MusicReplaceButton.IsEnabled = true;
             MusicReplaceButton.Content = "Replace with...";
@@ -298,11 +307,11 @@ namespace OrangeJuiceModMaker
         {
             EnableDangerZone.IsChecked ??= false;
 
-            resetAll.IsEnabled = EnableDangerZone.IsChecked.Value;
-            resetHyperCard.IsEnabled = EnableDangerZone.IsChecked.Value;
-            resetMusic.IsEnabled = EnableDangerZone.IsChecked.Value;
-            resetPoses.IsEnabled = EnableDangerZone.IsChecked.Value;
-            resetUnitCard.IsEnabled = EnableDangerZone.IsChecked.Value;
+            ResetAll.IsEnabled = EnableDangerZone.IsChecked.Value;
+            ResetHyperCard.IsEnabled = EnableDangerZone.IsChecked.Value;
+            ResetMusic.IsEnabled = EnableDangerZone.IsChecked.Value;
+            ResetPoses.IsEnabled = EnableDangerZone.IsChecked.Value;
+            ResetUnitCard.IsEnabled = EnableDangerZone.IsChecked.Value;
         }
         private void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -370,7 +379,7 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            if (!isPlaying)
+            if (!IsPlaying)
             {
                 musicPlayer.Position = TickFromSamples(CurrentPositionBox.Text.ToLongOrDefault());
             }
@@ -383,14 +392,14 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
-            modifiedUnit.Music.loop_point = LoopPointBox.Text.ToIntOrNull();
+            modifiedUnit.Music.LoopPoint = LoopPointBox.Text.ToIntOrNull();
         }
 
         private void VolumeBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             if (modifiedUnit.Music is not null)
             {
-                modifiedUnit.Music.volume = VolumeBox.Text.ToIntOrNull();
+                modifiedUnit.Music.Volume = VolumeBox.Text.ToIntOrNull();
             }
         }
 

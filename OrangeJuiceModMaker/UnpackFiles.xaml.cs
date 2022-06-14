@@ -14,15 +14,15 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class UnpackFiles : Window
     {
-        private string _gameDirectory;
+        private string gameDirectory;
         public UnpackFiles(string gameDirectory)
         {
             InitializeComponent();
-            this._gameDirectory = gameDirectory;
+            this.gameDirectory = gameDirectory;
         }
 
-        private int _zi = 9521;
-        private int _z = 0;
+        private int zi = 9521;
+        private int z = 0;
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -42,11 +42,11 @@ namespace OrangeJuiceModMaker
                         @continue = true;
                         ProcessStartInfo unpackinfo = new()
                         {
-                            Arguments = $@"e ""{_gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -y",
+                            Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -y",
                             FileName = "7za.exe",
                             UseShellExecute = false,
                             WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true,
+                            CreateNoWindow = true
                         };
                         Process p = Process.Start(unpackinfo) ?? throw new Exception("Unpack Failed");
 
@@ -57,15 +57,15 @@ namespace OrangeJuiceModMaker
                         ConvertImages(pak, ref y);
                         ++finished;
                     });
-
                     while (!@continue)
                     {
+                        await Task.Run(() => Thread.Sleep(1));
                     }
                 }
 
                 while (finished != 2)
                 {
-                    Status.Text = $"Unpacking {(x > 2 ? "Complete" : $"{x}/2")}{Environment.NewLine}Converting {y}/{(x == 3 ? _z : _zi)}";
+                    Status.Text = $"Unpacking {(x > 2 ? "Complete" : $"{x}/2")}{Environment.NewLine}Converting {y}/{(x == 3 ? z : zi)}";
                     await Task.Run(() => Thread.Sleep(10));
                 }
 
@@ -86,9 +86,9 @@ namespace OrangeJuiceModMaker
             }
             catch (Exception exception)
             {
-                string[] Error =
+                string[] error =
                     { exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
-                File.WriteAllLines("unpack_error.txt", Error);
+                File.WriteAllLines("unpack_error.txt", error);
                 throw;
             }
         }
@@ -97,7 +97,7 @@ namespace OrangeJuiceModMaker
         {
             string[] unpackedFiles = Directory.GetFiles($@"pakFiles\{pak}", "*.dat", SearchOption.AllDirectories);
 
-            _z += unpackedFiles.Length;
+            z += unpackedFiles.Length;
 
             string[][] sets = new string[unpackedFiles.Length / 1000 + 1][];
             for (int i = 0; i < sets.Length - 1; ++i)

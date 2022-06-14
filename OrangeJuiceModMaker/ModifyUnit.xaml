@@ -181,9 +181,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Grid.Column="0" Grid.Row="0" Content="◀◀" x:Name="RWButton" Click="ButtonBase_OnClick"/>
+                <Button Grid.Column="0" Grid.Row="0" Content="◀◀" x:Name="RwButton" Click="ButtonBase_OnClick"/>
                 <Button Grid.Column="2" Grid.Row="0" Content="▶" x:Name="PlayPauseButton" Click="PlayPauseButton_OnClick"/>
-                <Button Grid.Column="4" Grid.Row="0" Content="▶▶" x:Name="FFButton" Click="ButtonFFOnClick"/>
+                <Button Grid.Column="4" Grid.Row="0" Content="▶▶" x:Name="FfButton" Click="ButtonFFOnClick"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Current Position" TextAlignment="Center"/>
                 <TextBlock Grid.Column="2" Grid.Row="2" Text="Loop Position" TextAlignment="Center"/>
                 <TextBlock Grid.Column="4" Grid.Row="2" Text="Volume ±20" TextAlignment="Center"/>
@@ -210,11 +210,11 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Row="0" Grid.Column="0" Content="Restore Default Unit Card" IsEnabled="False" x:Name="resetUnitCard" Click="ResetUnitCard_OnClick"/>
-                <Button Grid.Row="0" Grid.Column="2" Content="Restore Default Hyper Card" IsEnabled="False" x:Name="resetHyperCard" Click="ResetHyperCard_OnClick"/>
-                <Button Grid.Row="2" Grid.Column="0" Content="Restore Default Unit Poses" IsEnabled="False" x:Name="resetPoses" Click="ResetPoses_OnClick"/>
-                <Button Grid.Row="2" Grid.Column="2" Content="Restore Default Music" IsEnabled="False" x:Name="resetMusic" Click="ResetMusic_OnClick"/>
-                <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Content="Reset Unit to Default" IsEnabled="False" x:Name="resetAll" Click="ResetAll_OnClick"/>
+                <Button Grid.Row="0" Grid.Column="0" Content="Restore Default Unit Card" IsEnabled="False" x:Name="ResetUnitCard" Click="ResetUnitCard_OnClick"/>
+                <Button Grid.Row="0" Grid.Column="2" Content="Restore Default Hyper Card" IsEnabled="False" x:Name="ResetHyperCard" Click="ResetHyperCard_OnClick"/>
+                <Button Grid.Row="2" Grid.Column="0" Content="Restore Default Unit Poses" IsEnabled="False" x:Name="ResetPoses" Click="ResetPoses_OnClick"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="Restore Default Music" IsEnabled="False" x:Name="ResetMusic" Click="ResetMusic_OnClick"/>
+                <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Content="Reset Unit to Default" IsEnabled="False" x:Name="ResetAll" Click="ResetAll_OnClick"/>
 
             </Grid>
 

@@ -15,7 +15,7 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class ModifyCard
     {
-        private readonly CsvHolder[] files = MainWindow.CSVFiles.Where(z => z.Type == "card").Where(z => z.Rows.Any()).ToArray();
+        private readonly CsvHolder[] files = MainWindow.CsvFiles.Where(z => z.Type == "card").Where(z => z.Rows.Any()).ToArray();
         private string[][] loadedRows;
         private ModTexture? loadedTexture;
         private readonly List<ModTexture> modifiedTextures = new();
@@ -37,15 +37,14 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            if (modifiedTextures.All(z => z.ID != loadedRows[CardSelectionBox.SelectedIndex][1]))
+            if (modifiedTextures.All(z => z.Id != loadedRows[CardSelectionBox.SelectedIndex][1]))
             {
                 modifiedTextures.Add(new ModTexture($@"cards\{loadedRows[CardSelectionBox.SelectedIndex][1]}"));
             }
-            loadedTexture = modifiedTextures.First(z => z.ID == loadedRows[CardSelectionBox.SelectedIndex][1]);
-            CardName.Text = loadedTexture.custom_name ?? loadedRows[CardSelectionBox.SelectedIndex][0];
-            FlavorUpdateBox.Text = loadedTexture.custom_flavor ?? MainWindow.FlavorLookUp.Rows.FirstOrDefault(z => z[1] == loadedRows[CardSelectionBox.SelectedIndex][1])?[3] ?? "";
-            CardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentArtPath, UriKind.RelativeOrAbsolute));
-            LowCardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentLowArtPath, UriKind.RelativeOrAbsolute));
+            loadedTexture = modifiedTextures.First(z => z.Id == loadedRows[CardSelectionBox.SelectedIndex][1]);
+            CardName.Text = loadedTexture.CustomName ?? loadedRows[CardSelectionBox.SelectedIndex][0];
+            FlavorUpdateBox.Text = loadedTexture.CustomFlavor ?? MainWindow.FlavorLookUp?.Rows.FirstOrDefault(z => z[1] == loadedRows[CardSelectionBox.SelectedIndex][1])?[3] ?? "";
+            ReloadArt();
             FlavorUpdateBox.IsEnabled = FlavorUpdateBox.Text != "";
 
 
@@ -66,7 +65,7 @@ namespace OrangeJuiceModMaker
             OpenFileDialog o = new()
             {
                 Title = "Select image. For best results select 256x256 png",
-                Filter = "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*",
+                Filter = "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*"
             };
 
             if (o.ShowDialog() is not true)
@@ -78,8 +77,8 @@ namespace OrangeJuiceModMaker
             LowCardArt.ImageSource = null;
 
             string newFile = o.FileName;
-            string tempName = @$"temp\{loadedTexture.ID}256.temp";
-            string tempSmall = @$"temp\{loadedTexture.ID}128.temp";
+            string tempName = @$"temp\{loadedTexture.Id}256.temp";
+            string tempSmall = @$"temp\{loadedTexture.Id}128.temp";
             using MagickImage image = new(newFile);
             image.Format = MagickFormat.Png;
             if (image.Width != 256 || image.Height != 256)
@@ -103,8 +102,7 @@ namespace OrangeJuiceModMaker
             loadedTexture.CurrentArtPath = tempName;
             loadedTexture.CurrentLowArtPath = tempSmall;
 
-            CardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentArtPath));
-            LowCardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentLowArtPath));
+            ReloadArt();
 
         }
 
@@ -114,7 +112,7 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            loadedTexture.custom_name = CardName.Text;
+            loadedTexture.CustomName = CardName.Text;
         }
 
         private void FlavorUpdateBox_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -123,7 +121,7 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            loadedTexture.custom_flavor = FlavorUpdateBox.Text;
+            loadedTexture.CustomFlavor = FlavorUpdateBox.Text;
         }
 
         private void SetSelectionBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -142,7 +140,7 @@ namespace OrangeJuiceModMaker
             OpenFileDialog o = new()
             {
                 Title = "Select 128x128 png or dds",
-                Filter = "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*",
+                Filter = "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*"
             };
 
             if (o.ShowDialog() is not true)
@@ -155,8 +153,7 @@ namespace OrangeJuiceModMaker
 
             ReplaceFile(o.FileName, 128);
 
-            CardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentArtPath));
-            LowCardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentLowArtPath));
+            ReloadArt();
         }
 
         private void ReplaceLargeButton_OnClick(object sender, RoutedEventArgs e)
@@ -168,7 +165,7 @@ namespace OrangeJuiceModMaker
             OpenFileDialog o = new()
             {
                 Title = "Select 256x256 png or dds",
-                Filter = "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*",
+                Filter = "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*"
             };
 
             if (o.ShowDialog() is not true)
@@ -181,8 +178,26 @@ namespace OrangeJuiceModMaker
 
             ReplaceFile(o.FileName, 256);
 
-            CardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentArtPath));
-            LowCardArt.ImageSource = new BitmapImage(new Uri(loadedTexture.CurrentLowArtPath));
+            ReloadArt();
+        }
+
+        private void ReloadArt()
+        {
+            if (loadedTexture is null)
+            {
+                return;
+            }
+
+            BitmapImage cardArtBi = new();
+            BitmapImage lowArtBi = new();
+            cardArtBi.BeginInit();
+            lowArtBi.BeginInit();
+            cardArtBi.StreamSource = new MemoryStream(File.ReadAllBytes(loadedTexture.CurrentArtPath));
+            lowArtBi.StreamSource = new MemoryStream(File.ReadAllBytes(loadedTexture.CurrentLowArtPath));
+            cardArtBi.EndInit();
+            lowArtBi.EndInit();
+            CardArt.ImageSource = cardArtBi;
+            LowCardArt.ImageSource = lowArtBi;
         }
 
         private void ReplaceFile(string newFile, int res)
@@ -191,7 +206,7 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            string tempName = @$"temp\{loadedTexture.ID}{res}.temp";
+            string tempName = @$"temp\{loadedTexture.Id}{res}.temp";
             using MagickImage image = new(newFile);
 
             if (image.Format is not (MagickFormat.Png or MagickFormat.Dds))

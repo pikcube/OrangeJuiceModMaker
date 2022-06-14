@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
+using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 
@@ -13,49 +14,49 @@ namespace OrangeJuiceModMaker
 {
     class ModTexture : Texture
     {
-        public string ID;
+        public string Id;
         public string CurrentArtPath;
         public string CurrentLowArtPath;
 
         public ModTexture(string path) : base(path)
         {
-            ID = this.path.Substring(6);
+            Id = this.Path.Substring(6);
             CurrentArtPath = $@"{MainWindow.LoadedModPath}\{path}256.png";
             CurrentLowArtPath = $@"{MainWindow.LoadedModPath}\{path}128.png";
-            Texture? texture = MainWindow.LoadedModReplacements.textures.FirstOrDefault(z => z.path == path);
+            Texture? texture = MainWindow.LoadedModReplacements.Textures.FirstOrDefault(z => z.Path == path);
             if (texture is null)
             {
                 CurrentArtPath = $@"pakfiles\{path}256.png";
                 CurrentLowArtPath = $@"pakfiles\{path}128.png";
                 return;
             }
-            face_x = texture.face_x;
-            face_y = texture.face_y;
-            costume_id = texture.costume_id;
-            custom_name = texture.custom_name;
-            custom_flavor = texture.custom_flavor;
-            single_file = texture.single_file;
+            FaceX = texture.FaceX;
+            FaceY = texture.FaceY;
+            CostumeId = texture.CostumeId;
+            CustomName = texture.CustomName;
+            CustomFlavor = texture.CustomFlavor;
+            SingleFile = texture.SingleFile;
         }
 
         public void SaveToMod()
         {
-            MainWindow.LoadedModReplacements.textures.RemoveAll(z => z.path == path);
-            Texture t = new(path)
+            MainWindow.LoadedModReplacements.Textures.RemoveAll(z => z.Path == Path);
+            Texture t = new(Path)
             {
-                face_x = face_x,
-                face_y = face_y,
-                costume_id = costume_id,
-                custom_name = custom_name,
-                custom_flavor = custom_flavor,
-                single_file = single_file,
+                FaceX = FaceX,
+                FaceY = FaceY,
+                CostumeId = CostumeId,
+                CustomName = CustomName,
+                CustomFlavor = CustomFlavor,
+                SingleFile = SingleFile
             };
-            MainWindow.LoadedModReplacements.textures.Add(t);
-            if (CurrentArtPath == $@"{MainWindow.LoadedModPath}\{path}256.png")
+            MainWindow.LoadedModReplacements.Textures.Add(t);
+            if (CurrentArtPath == $@"{MainWindow.LoadedModPath}\{Path}256.png")
             {
                 return;
             }
-            File.Copy(CurrentArtPath, $@"{MainWindow.LoadedModPath}\{path}256.png");
-            File.Copy(CurrentLowArtPath, $@"{MainWindow.LoadedModPath}\{path}128.png");
+            File.Copy(CurrentArtPath, $@"{MainWindow.LoadedModPath}\{Path}256.png");
+            File.Copy(CurrentLowArtPath, $@"{MainWindow.LoadedModPath}\{Path}128.png");
             Root.WriteJson();
         }
     }
@@ -79,28 +80,28 @@ namespace OrangeJuiceModMaker
         public int[] FaceX { get; set; }
         public int[] FaceY { get; set; }
 
-        public ModifiedUnit(Unit BaseUnit, bool IncludeModData = true)
+        public ModifiedUnit(Unit baseUnit, bool includeModData = true)
         {
-            baseUnit = BaseUnit;
-            UnitId = BaseUnit.UnitId;
-            UnitName = BaseUnit.UnitName;
-            HyperIds = BaseUnit.HyperIds.Select(z => z).ToArray();
-            HyperNames = BaseUnit.HyperNames.Select(z => z).ToArray();
-            HyperFlavor = BaseUnit.HyperFlavor.Select(z => z).ToArray();
-            HyperCardPaths = BaseUnit.HyperCardPaths.Select(z => z).ToArray();
-            HyperCardPathsLow = BaseUnit.HyperCardPathsLow.Select(z => z).ToArray();
-            CharacterCards = BaseUnit.CharacterCards.Select(z => z).ToArray();
-            CharacterCardNames = BaseUnit.CharacterCardNames.Select(z => z).ToArray();
-            CharacterCardPaths = BaseUnit.CharacterCardPaths.Select(z => z).ToArray();
-            CharacterCardPathsLow = BaseUnit.CharacterCardPathsLow.Select(z => z).ToArray();
-            CharacterArt = BaseUnit.CharacterArt.Select(z => z).ToArray();
+            this.baseUnit = baseUnit;
+            UnitId = baseUnit.UnitId;
+            UnitName = baseUnit.UnitName;
+            HyperIds = baseUnit.HyperIds.Select(z => z).ToArray();
+            HyperNames = baseUnit.HyperNames.Select(z => z).ToArray();
+            HyperFlavor = baseUnit.HyperFlavor.Select(z => z).ToArray();
+            HyperCardPaths = baseUnit.HyperCardPaths.Select(z => z).ToArray();
+            HyperCardPathsLow = baseUnit.HyperCardPathsLow.Select(z => z).ToArray();
+            CharacterCards = baseUnit.CharacterCards.Select(z => z).ToArray();
+            CharacterCardNames = baseUnit.CharacterCardNames.Select(z => z).ToArray();
+            CharacterCardPaths = baseUnit.CharacterCardPaths.Select(z => z).ToArray();
+            CharacterCardPathsLow = baseUnit.CharacterCardPathsLow.Select(z => z).ToArray();
+            CharacterArt = baseUnit.CharacterArt.Select(z => z).ToArray();
             Music = null;
             FaceX = new int[CharacterArt.Length];
             FaceY = new int[CharacterArt.Length];
 
-            string BaseResourcePath = $@"{MainWindow.LoadedModPath}";
+            string baseResourcePath = $@"{MainWindow.LoadedModPath}";
 
-            if (!IncludeModData)
+            if (!includeModData)
             {
                 return;
             }
@@ -112,73 +113,71 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
-            foreach (Music m in replacements.music.Where(z => z.unit_id is not null && z.unit_id == UnitId))
+            foreach (Music m in replacements.Music.Where(z => z.UnitId is not null && z.UnitId == UnitId))
             {
-                Music = new Music(m.file)
+                Music = new Music(m.File)
                 {
-                    loop_point = m.loop_point,
-                    volume = m.volume,
-                    unit_id = m.unit_id,
-                    file = $@"{BaseResourcePath}\{m.file}.ogg"
+                    LoopPoint = m.LoopPoint,
+                    Volume = m.Volume,
+                    UnitId = m.UnitId,
+                    File = $@"{baseResourcePath}\{m.File}.ogg"
                 };
             }
 
             for (int n = 0; n < HyperCardPaths.Length; ++n)
             {
-                Texture? r = replacements.textures.FirstOrDefault(z => $@"pakFiles\{z.path}256.png" == HyperCardPaths[n]);
+                Texture? r = replacements.Textures.FirstOrDefault(z => $@"pakFiles\{z.Path}256.png" == HyperCardPaths[n]);
 
                 if (r is null)
                 {
                     continue;
                 }
-                File.Copy($@"{BaseResourcePath}\{r.path}256.png", $@"temp\{HyperIds[n]}256.png", true);
-                File.Copy($@"{BaseResourcePath}\{r.path}128.png", $@"temp\{HyperIds[n]}128.png", true);
-                HyperCardPaths[n] = $@"temp\{HyperIds[n]}256.png";
-                HyperCardPathsLow[n] = $@"temp\{HyperIds[n]}128.png";
-                HyperFlavor[n] = r.custom_flavor ?? HyperFlavor[n];
-                HyperNames[n] = r.custom_name ?? HyperNames[n];
+                HyperCardPaths[n] = $@"{baseResourcePath}\{r.Path}256.png";
+                HyperCardPathsLow[n] = $@"{baseResourcePath}\{r.Path}128.png";
+                HyperFlavor[n] = r.CustomFlavor ?? HyperFlavor[n];
+                HyperNames[n] = r.CustomName ?? HyperNames[n];
             }
 
             for (int n = 0; n < CharacterCardPaths.Length; ++n)
             {
-                Texture? r = replacements.textures.FirstOrDefault(z => $@"pakFiles\{z.path}256.png" == CharacterCardPaths[n]);
+                Texture? r = replacements.Textures.FirstOrDefault(z => $@"pakFiles\{z.Path}256.png" == CharacterCardPaths[n]);
                 if (r is null)
                 {
                     continue;
                 }
-                CharacterCardPaths[n] = $@"{BaseResourcePath}\{r.path}256.png";
-                CharacterCardPathsLow[n] = $@"{BaseResourcePath}\{r.path}128.png";
-                CharacterCardNames[n] = r.custom_name ?? CharacterCardNames[n];
+                CharacterCardPaths[n] = $@"{baseResourcePath}\{r.Path}256.png";
+                CharacterCardPathsLow[n] = $@"{baseResourcePath}\{r.Path}128.png";
+                CharacterCardNames[n] = r.CustomName ?? CharacterCardNames[n];
             }
 
             for (int n = 0; n < CharacterArt.Length; ++n)
             {
-                Texture? r = replacements.textures.FirstOrDefault(z => $@"pakFiles\{z.path}.png" == CharacterArt[n]);
+                Texture? r = replacements.Textures.FirstOrDefault(z => $@"pakFiles\{z.Path}.png" == CharacterArt[n]);
                 if (r is null) continue;
-                CharacterArt[n] = $@"{BaseResourcePath}\{r.path}.png";
-                FaceX[n] = r.face_x ?? 0;
-                FaceY[n] = r.face_y ?? 0;
+                CharacterArt[n] = $@"{baseResourcePath}\{r.Path}.png";
+                FaceX[n] = r.FaceX ?? 0;
+                FaceY[n] = r.FaceY ?? 0;
             }
         }
 
         public void SaveToMod()
         {
-            string BaseResourcePath = $@"{MainWindow.LoadedModPath}";
+            string baseResourcePath = $@"{MainWindow.LoadedModPath}";
             ModReplacements replacements = MainWindow.LoadedModReplacements;
 
-            replacements.music.RemoveAll(z => z.unit_id is not null && z.unit_id == UnitId);
+            replacements.Music.RemoveAll(z => z.UnitId is not null && z.UnitId == UnitId);
 
             if (Music is not null)
             {
-                int stripNumber = BaseResourcePath.Length + 1; //+1 to avoid the accumulation of slashes
-                Music m = new(Music.file)
+                int stripNumber = baseResourcePath.Length + 1; //+1 to avoid the accumulation of slashes
+                Music m = new(Music.File)
                 {
-                    loop_point = Music.loop_point,
-                    unit_id = Music.unit_id,
-                    volume = Music.volume,
-                    file = Music.file[stripNumber..^4]
+                    LoopPoint = Music.LoopPoint,
+                    UnitId = Music.UnitId,
+                    Volume = Music.Volume,
+                    File = Music.File[stripNumber..^4]
                 };
-                replacements.music.Add(m);
+                replacements.Music.Add(m);
             }
 
             for (int n = 0; n < HyperCardPaths.Length; ++n)
@@ -188,26 +187,26 @@ namespace OrangeJuiceModMaker
                     continue;
                 }
 
-                replacements.textures.RemoveAll(z => z.path == $@"cards\{HyperIds[n]}");
+                replacements.Textures.RemoveAll(z => z.Path == $@"cards\{HyperIds[n]}");
 
                 Texture t = new($@"cards\{HyperIds[n]}")
                 {
-                    custom_flavor = HyperFlavor[n],
-                    custom_name = HyperNames[n],
+                    CustomFlavor = HyperFlavor[n],
+                    CustomName = HyperNames[n]
                 };
-                replacements.textures.Add(t);
+                replacements.Textures.Add(t);
 
-                if (File.Exists($@"{BaseResourcePath}\cards\{HyperIds[n]}256.png"))
+                if (File.Exists($@"{baseResourcePath}\cards\{HyperIds[n]}256.png"))
                 {
-                    File.Delete($@"{BaseResourcePath}\cards\{HyperIds[n]}256.png");
+                    File.Delete($@"{baseResourcePath}\cards\{HyperIds[n]}256.png");
                 }
-                File.Copy(HyperCardPaths[n], $@"{BaseResourcePath}\cards\{HyperIds[n]}256.png");
+                File.Copy(HyperCardPaths[n], $@"{baseResourcePath}\cards\{HyperIds[n]}256.png");
                 
-                if (File.Exists($@"{BaseResourcePath}\cards\{HyperIds[n]}128.png"))
+                if (File.Exists($@"{baseResourcePath}\cards\{HyperIds[n]}128.png"))
                 {
-                    File.Delete($@"{BaseResourcePath}\cards\{HyperIds[n]}128.png");
+                    File.Delete($@"{baseResourcePath}\cards\{HyperIds[n]}128.png");
                 }
-                File.Copy(HyperCardPathsLow[n], $@"{BaseResourcePath}\cards\{HyperIds[n]}128.png");
+                File.Copy(HyperCardPathsLow[n], $@"{baseResourcePath}\cards\{HyperIds[n]}128.png");
             }
 
             for (int n = 0; n < CharacterCardPaths.Length; ++n)
@@ -217,24 +216,24 @@ namespace OrangeJuiceModMaker
                     continue;
                 }
 
-                replacements.textures.RemoveAll(z => z.path == $@"cards\{CharacterCards[n]}");
+                replacements.Textures.RemoveAll(z => z.Path == $@"cards\{CharacterCards[n]}");
                 Texture t = new($@"cards\{CharacterCards[n]}")
                 {
-                    custom_name = CharacterCardNames[n],
+                    CustomName = CharacterCardNames[n]
                 };
-                replacements.textures.Add(t);
+                replacements.Textures.Add(t);
 
-                if (File.Exists($@"{BaseResourcePath}\cards\{CharacterCards[n]}256.png"))
+                if (File.Exists($@"{baseResourcePath}\cards\{CharacterCards[n]}256.png"))
                 {
-                    File.Delete($@"{BaseResourcePath}\cards\{CharacterCards[n]}256.png");
+                    File.Delete($@"{baseResourcePath}\cards\{CharacterCards[n]}256.png");
                 }
-                File.Copy(CharacterCardPaths[n], $@"{BaseResourcePath}\cards\{CharacterCards[n]}256.png");
+                File.Copy(CharacterCardPaths[n], $@"{baseResourcePath}\cards\{CharacterCards[n]}256.png");
 
-                if (File.Exists($@"{BaseResourcePath}\cards\{CharacterCards[n]}128.png"))
+                if (File.Exists($@"{baseResourcePath}\cards\{CharacterCards[n]}128.png"))
                 {
-                    File.Delete($@"{BaseResourcePath}\cards\{CharacterCards[n]}128.png");
+                    File.Delete($@"{baseResourcePath}\cards\{CharacterCards[n]}128.png");
                 }
-                File.Copy(CharacterCardPathsLow[n], $@"{BaseResourcePath}\cards\{CharacterCards[n]}128.png");
+                File.Copy(CharacterCardPathsLow[n], $@"{baseResourcePath}\cards\{CharacterCards[n]}128.png");
 
             }
 
@@ -245,29 +244,30 @@ namespace OrangeJuiceModMaker
                     continue;
                 }
 
-                string ShortPath = $@"units\{Path.GetFileNameWithoutExtension(baseUnit.CharacterArt[n])}";
+                string shortPath = $@"units\{Path.GetFileNameWithoutExtension(baseUnit.CharacterArt[n])}";
 
-                replacements.textures.RemoveAll(z => z.path == ShortPath);
-                Texture t = new(ShortPath)
+                replacements.Textures.RemoveAll(z => z.Path == shortPath);
+                Texture t = new(shortPath)
                 {
-                    face_x = FaceX[n],
-                    face_y = FaceY[n],
+                    FaceX = FaceX[n],
+                    FaceY = FaceY[n]
                 };
-                replacements.textures.Add(t);
-                if (CharacterArt[n] == $@"{BaseResourcePath}\{ShortPath}")
+                replacements.Textures.Add(t);
+                if (CharacterArt[n] == $@"{baseResourcePath}\{shortPath}")
                 {
                     continue;
                 }
 
-                if (File.Exists($@"{BaseResourcePath}\{ShortPath}"))
+                if (File.Exists($@"{baseResourcePath}\{shortPath}.png"))
                 {
-                    File.Delete($@"{BaseResourcePath}\{ShortPath}");
+                    File.Delete($@"{baseResourcePath}\{shortPath}.png");
                 }
 
-                File.Copy(CharacterArt[n], $@"{BaseResourcePath}\{ShortPath}");
+                File.Copy(CharacterArt[n], $@"{baseResourcePath}\{shortPath}.png");
 
-                Root.WriteJson();
             }
+
+            Root.WriteJson();
         }
     }
 
@@ -284,9 +284,9 @@ namespace OrangeJuiceModMaker
         public string[] CharacterCardNames { get; }
         public string[] CharacterCardPaths { get; }
         public string[] CharacterCardPathsLow { get; }
-        public string[] CharacterArt => _getCharacterArt.Result;
+        public string[] CharacterArt => getCharacterArt.Result;
 
-        private readonly Task<string[]> _getCharacterArt;
+        private readonly Task<string[]> getCharacterArt;
 
         public Unit(string[] row, CsvHolder characterCards)
         {
@@ -298,7 +298,7 @@ namespace OrangeJuiceModMaker
             UnitId = row[1];
             UnitName = row[0];
 
-            _getCharacterArt = Task.Run(() =>
+            getCharacterArt = Task.Run(() =>
             {
                 try
                 {
@@ -321,9 +321,9 @@ namespace OrangeJuiceModMaker
                 }
                 catch (Exception exception)
                 {
-                    string[] Error =
+                    string[] error =
                         { DateTime.Now.ToString(CultureInfo.InvariantCulture), exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
-                    File.WriteAllLines("unit_class_error.txt", Error);
+                    File.WriteAllLines("unit_class_error.txt", error);
                     MainWindow.ExitTime = true;
                     throw;
                 }
@@ -351,7 +351,7 @@ namespace OrangeJuiceModMaker
                     break;
                 case "-1":
                     //Way Too Many Hypers. Probably a boss
-                    CsvHolder file = MainWindow.CSVFiles.First(z => z.Name == row[3]);
+                    CsvHolder file = MainWindow.CsvFiles.First(z => z.Name == row[3]);
                     HyperIds = file.Rows.Select(z => z[1]).ToArray();
                     HyperNames = file.Rows.Select(z => z[0]).ToArray();
                     CharacterCards = new[] { UnitId };
@@ -387,6 +387,10 @@ namespace OrangeJuiceModMaker
                 .Select(z => MainWindow.Cards.First(x => Path.GetFileNameWithoutExtension(x) == $"{z}128")).ToArray();
 
             HyperFlavor = new string[HyperIds.Length];
+            if (MainWindow.FlavorLookUp is null)
+            {
+                return;
+            }
             for (int n = 0; n < HyperIds.Length; ++n)
             {
                 HyperFlavor[n] = MainWindow.FlavorLookUp.Rows.FirstOrDefault(z => z[1] == HyperIds[n])?[3] ?? "";
@@ -395,7 +399,7 @@ namespace OrangeJuiceModMaker
 
         private static string FindUnitHyperNameById(string cardId)
         {
-            return MainWindow.CSVFiles.First(z => z.Name == "HyperCards").Rows.First(z => z[1] == cardId)[0];
+            return MainWindow.CsvFiles.First(z => z.Name == "HyperCards").Rows.First(z => z[1] == cardId)[0];
         }
     }
 
@@ -425,7 +429,7 @@ namespace OrangeJuiceModMaker
         {
             "unit",
             "card",
-            "lookup",
+            "lookup"
         };
 
         public int TypeId;
@@ -452,25 +456,49 @@ namespace OrangeJuiceModMaker
 
     public class ModDefinition
     {
-        public string? name { get; set; }
-        public string? description { get; set; }
-        public string? author { get; set; }
-        public int system_version { get; set; }
-        public bool contest { get; set; } = false;
-        public string? changelog { get; set; }
-        public string? color { get; set; }
+        public ModDefinition(string name, string desc, string auth, int sysVer)
+        {
+            Name = name;
+            Description = desc;
+            Author = auth;
+            SystemVersion = sysVer;
+        }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("author")]
+        public string Author { get; set; }
+
+        [JsonProperty("system_version")]
+        public int SystemVersion { get; set; }
+
+        [JsonProperty("changelog")]
+        public string? Changelog { get; set; }
+
+        [JsonProperty("contest")]
+        public bool? Contest { get; set; }
+
+        [JsonProperty("color")]
+        public string? Color { get; set; }
 
     }
 
     public class ModReplacements
     {
-        public List<Texture> textures { get; set; }
-        public List<Music> music { get; set; }
+        [JsonProperty("textures")]
+        public List<Texture> Textures { get; set; }
+
+        [JsonProperty("music")]
+        public List<Music> Music { get; set; }
 
         public ModReplacements()
         {
-            textures = new List<Texture>();
-            music = new List<Music>();
+            Textures = new List<Texture>();
+            Music = new List<Music>();
         }
     }
 
@@ -478,14 +506,20 @@ namespace OrangeJuiceModMaker
     {
         public Music(string file)
         {
-            this.file = file;
+            File = file;
         }
 
-        public string? unit_id { get; set; }
-        public string file { get; set; }
+        [JsonProperty("unit_id")]
+        public string? UnitId { get; set; }
 
-        public int? loop_point { get; set; }
-        public int? volume { get; set; }
+        [JsonProperty("file")]
+        public string File { get; set; }
+
+        [JsonProperty("loop_point")]
+        public int? LoopPoint { get; set; }
+
+        [JsonProperty("volume")]
+        public int? Volume { get; set; }
     }
 
     public class Root
@@ -495,22 +529,52 @@ namespace OrangeJuiceModMaker
             ModDefinition = modDefinition;
         }
 
+        [JsonProperty("ModDefinition")]
         public ModDefinition ModDefinition { get; set; }
+
+        [JsonProperty("ModReplacements")]
         public ModReplacements? ModReplacements { get; set; }
 
         public static void WriteJson()
         {
+            WriteJson(new Root(MainWindow.LoadedModDefinition!)
+            {
+                ModReplacements = MainWindow.LoadedModReplacements
+            }, $@"{MainWindow.LoadedModPath}\mod.json");
+        }
+
+        public static void WriteJson(Root root, string path)
+        {
             string s = JsonConvert.SerializeObject(
-                new Root(MainWindow.LoadedModDefinition!)
-                {
-                    ModReplacements = MainWindow.LoadedModReplacements
-                },
+                root,
                 Formatting.Indented,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
-                }).Replace(@"\\", "/").Replace(Environment.NewLine, @"\n");
-            File.WriteAllText($@"{MainWindow.LoadedModPath}\mod.json", s);
+                }).Replace(@"\\", "/");
+            File.WriteAllText(path, s);
+        }
+
+        public static Root? ReadJson(string path)
+        {
+            return JsonConvert.DeserializeObject<Root>(File.ReadAllText(path).Replace("/", @"\\"));
+        }
+
+        public static bool IsValidMod(ModReplacements replacements, out List<string> missing)
+        {
+            missing = new List<string>();
+
+            missing.AddRange(replacements.Textures.Where(z => !File.Exists($@"{MainWindow.LoadedModPath}\{z.Path}.png")).Select(z => $"{z.Path}.png"));
+
+            missing.AddRange(replacements.Music.Where(z => !File.Exists($@"{MainWindow.LoadedModPath}\{z.File}.ogg")).Select(z => $"{z.File}.ogg"));
+
+            return missing.Count == 0;
+        }
+
+        public static void RepairMod(ref ModReplacements replacements)
+        {
+            replacements.Music.RemoveAll(z => !File.Exists($@"{MainWindow.LoadedModPath}\{z.File}.ogg"));
+            replacements.Textures.RemoveAll(z => !File.Exists($@"{MainWindow.LoadedModPath}\{z.Path}.png"));
         }
     }
 
@@ -518,15 +582,28 @@ namespace OrangeJuiceModMaker
     {
         public Texture(string path)
         {
-            this.path = path;
+            this.Path = path;
         }
-        public string path { get; set; }
-        public int? face_x { get; set; }
-        public int? face_y { get; set; }
-        public int? costume_id { get; set; }
-        public string? custom_name { get; set; }
-        public string? custom_flavor { get; set; }
-        public bool? single_file { get; set; }
+        [JsonProperty("path")]
+        public string Path { get; set; }
+
+        [JsonProperty("face_x")]
+        public int? FaceX { get; set; }
+
+        [JsonProperty("face_y")]
+        public int? FaceY { get; set; }
+
+        [JsonProperty("costume_id")]
+        public int? CostumeId { get; set; }
+
+        [JsonProperty("custom_name")]
+        public string? CustomName { get; set; }
+
+        [JsonProperty("custom_flavor")]
+        public string? CustomFlavor { get; set; }
+
+        [JsonProperty("single_file")]
+        public bool? SingleFile { get; set; }
     }
 
 }

@@ -10,21 +10,25 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="*" x:Name="starHeight"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0" x:Name="ch1"/>
+            <RowDefinition Height="0" x:Name="ch2"/>
+            <RowDefinition Height="0" x:Name="ch3"/>
+            <RowDefinition Height="0" x:Name="ch4"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -34,37 +38,76 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
-        <Viewbox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3">
-            <TextBlock Text="Please Define the Mod"/>
-        </Viewbox>
-        <Viewbox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left">
-            <TextBlock Text="Name:"/>
-        </Viewbox>
-        <Viewbox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left">
-            <TextBlock Text="Author:"/>
-        </Viewbox>
-        <Viewbox Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left">
-            <TextBlock Text="Contest:"/>
-        </Viewbox>
-        <Viewbox Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left">
-            <TextBlock Text="Color (Optional):"/>
-        </Viewbox>
-        <Viewbox Grid.Row="11" Grid.Column="1" HorizontalAlignment="Left">
-            <TextBlock Text="Description:"/>
-        </Viewbox>
-        <TextBox Grid.Row="3" Grid.Column="3" x:Name="nameBox"/>
-        <TextBox Grid.Row="5" Grid.Column="3" x:Name="authorBox"/>
+        <TextBlock Text="Please Define the Mod" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" FontSize="30" HorizontalAlignment="Center"/>
+        <TextBlock Text="Name:" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" FontSize="20"/>
+        <TextBlock Text="Author:" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" FontSize="20"/>
+        <TextBlock Text="Contest:" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" FontSize="20"/>
+        <TextBlock Text="Color (Optional):" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left" FontSize="20"/>
+        <TextBlock Text="Description:" Grid.Row="11" Grid.Column="1" HorizontalAlignment="Left" FontSize="20"/>
+        <TextBlock Text="Change Log:" Grid.Row="15" Grid.Column="1" HorizontalAlignment="Left" FontSize="20" x:Name="ChangeText"/>
+
+        <TextBox Grid.Row="3" Grid.Column="3" x:Name="NameBox"/>
+        <TextBox Grid.Row="5" Grid.Column="3" x:Name="AuthorBox"/>
+        <ComboBox x:Name="IsContest" Grid.Row="7" Grid.Column="3"/>
+        <Grid Grid.Row="9" Grid.Column="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="R:" FontSize="20"/>
+            <TextBlock Grid.Column="4" Text="G:" FontSize="20"/>
+            <TextBlock Grid.Column="8" Text="B:" FontSize="20"/>
+            <TextBlock Grid.Column="12" Text="Hex:" FontSize="20"/>
+            <TextBox Grid.Column="2" FontSize="20" Text="" x:Name="RBox" TextChanged="ColorTextChangedRgb" PreviewTextInput="CheckForNumber"/>
+            <TextBox Grid.Column="6" FontSize="20" Text="" x:Name="GBox" TextChanged="ColorTextChangedRgb" PreviewTextInput="CheckForNumber"/>
+            <TextBox Grid.Column="10" FontSize="20" Text="" x:Name="BBox" TextChanged="ColorTextChangedRgb" PreviewTextInput="CheckForNumber"/>
+            <TextBox Grid.Column="14" FontSize="20" Text="#" x:Name ="HBox" TextChanged="ColorTextChangedHex" CharacterCasing="Upper"/>
+            <Rectangle Grid.Column="16">
+                <Rectangle.Fill>
+                    <SolidColorBrush x:Name="ColorBrush"/>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Grid>
         <TextBox Grid.Row="11" Grid.Column="3" Grid.RowSpan="3"
-                 x:Name="descriptionBox"
+                 x:Name="DescriptionBox"
                  FontSize="16"
-                 TextWrapping="Wrap"/>
-        <ComboBox x:Name="isContest" Grid.Row="7" Grid.Column="3"/>
-        <Grid Grid.Row="15" Grid.Column="3">
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"/>
+        <TextBox Grid.Row="15" Grid.Column="3" Grid.RowSpan="3"
+                 x:Name="ChangeBox"
+                 FontSize="16"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 Visibility="Collapsed"
+                 IsEnabled="False"/>
+        <Grid Grid.Row="19" Grid.Column="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="1"
+                    Content="View Changelog"
+                    x:Name="ViewLogButton" Click="ViewLogButton_OnClick"/>
+            <Button Grid.Column="3"
                     Content=" Create Mod "
                     x:Name="CreateButton" Click="CreateButton_Click"/>
         </Grid>

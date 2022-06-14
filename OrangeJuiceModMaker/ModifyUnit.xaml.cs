@@ -24,41 +24,42 @@ namespace OrangeJuiceModMaker
     {
         //Variable Declaration
         private Unit selectedUnit = MainWindow.UnitHyperTable.First();
-        private readonly List<ModifiedUnit> ModifiedUnitHyperTable = new();
+        private readonly List<ModifiedUnit> modifiedUnitHyperTable = new();
         private ModifiedUnit modifiedUnit;
-        private int _selectedHyper;
-        private int _selectedCharacter;
-        private int _selectedCharacterCard;
+        private int selectedHyper;
+        private int selectedCharacter;
+        private int selectedCharacterCard;
         private MediaPlayer musicPlayer;
         private DispatcherTimer musicTimer;
-        private TimeSpan loopPoint => TickFromSamples(modifiedUnit.Music?.loop_point ?? 0);
-        private bool isPlaying => PlayPauseButton.Content.ToString() == "▐▐";
+        private TimeSpan LoopPoint => TickFromSamples(modifiedUnit.Music?.LoopPoint ?? 0);
+        private bool IsPlaying => PlayPauseButton.Content.ToString() == "▐▐";
         public int RefreshRetries = 30;
 
         private int SelectedHyper
         {
-            get => _selectedHyper;
-            set => _selectedHyper = selectedUnit.HyperIds.Length == 0 ? 0 : (value + selectedUnit.HyperIds.Length) % selectedUnit.HyperIds.Length;
+            get => selectedHyper;
+            set => selectedHyper = selectedUnit.HyperIds.Length == 0 ? 0 : (value + selectedUnit.HyperIds.Length) % selectedUnit.HyperIds.Length;
         }
         private int SelectedCharacter
-        { 
-            get => _selectedCharacter;
-            set => _selectedCharacter = selectedUnit.CharacterArt.Length == 0
-                ? 0
-                : (value + selectedUnit.CharacterArt.Length) % selectedUnit.CharacterArt.Length;
+        {
+            get => selectedCharacter;
+            set =>
+                selectedCharacter = selectedUnit.CharacterArt.Length == 0
+                    ? 0
+                    : (value + selectedUnit.CharacterArt.Length) % selectedUnit.CharacterArt.Length;
         }
 
         private int SelectedCharacterCard
         {
-            get => _selectedCharacterCard;
-            set => _selectedCharacterCard = selectedUnit.CharacterCards.Length == 0 ? 0 : (value + selectedUnit.CharacterCards.Length) % selectedUnit.CharacterCards.Length;
+            get => selectedCharacterCard;
+            set => selectedCharacterCard = selectedUnit.CharacterCards.Length == 0 ? 0 : (value + selectedUnit.CharacterCards.Length) % selectedUnit.CharacterCards.Length;
         }
 
         //On Load
         public ModifyUnit()
         {
             modifiedUnit = new ModifiedUnit(selectedUnit);
-            ModifiedUnitHyperTable.Add(modifiedUnit);
+            modifiedUnitHyperTable.Add(modifiedUnit);
             musicPlayer = new MediaPlayer();
             musicPlayer.MediaEnded += MusicPlayer_MediaEnded;
             musicTimer = new DispatcherTimer();
@@ -101,12 +102,12 @@ namespace OrangeJuiceModMaker
 
             //Get Unit
             selectedUnit = MainWindow.UnitHyperTable.First(z => z.UnitName == unitName);
-            if (ModifiedUnitHyperTable.All(z => z.UnitName != unitName))
+            if (modifiedUnitHyperTable.All(z => z.UnitName != unitName))
             {
-                ModifiedUnitHyperTable.Add(new ModifiedUnit(selectedUnit));
+                modifiedUnitHyperTable.Add(new ModifiedUnit(selectedUnit));
             }
 
-            modifiedUnit = ModifiedUnitHyperTable.First(z => z.UnitName == unitName);
+            modifiedUnit = modifiedUnitHyperTable.First(z => z.UnitName == unitName);
             await RefreshGrid();
         }
 
@@ -142,8 +143,8 @@ namespace OrangeJuiceModMaker
 
         private void ProgressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            long Progress = (long)(musicPlayer.NaturalDuration.TimeSpan.Ticks * ProgressSlider.Value / 10);
-            musicPlayer.Position = TimeSpan.FromTicks(Progress);
+            long progress = (long)(musicPlayer.NaturalDuration.TimeSpan.Ticks * ProgressSlider.Value / 10);
+            musicPlayer.Position = TimeSpan.FromTicks(progress);
         }
 
         private void MusicPlayer_BufferingEnded(object? sender, EventArgs e)
@@ -153,13 +154,13 @@ namespace OrangeJuiceModMaker
 
         private void MusicPlayer_MediaEnded(object? sender, EventArgs e)
         {
-            if (PreviewLoopCheckBox.IsChecked is not true || modifiedUnit.Music?.loop_point is null)
+            if (PreviewLoopCheckBox.IsChecked is not true || modifiedUnit.Music?.LoopPoint is null)
             {
                 musicPlayer.Position = TimeSpan.Zero;
                 PlayPause();
                 return;
             }
-            musicPlayer.Position = loopPoint;
+            musicPlayer.Position = LoopPoint;
             musicPlayer.Play();
         }
 
@@ -173,8 +174,8 @@ namespace OrangeJuiceModMaker
             var t = musicPlayer.Position.Ticks;
             var s = SamplesFromTicks(t);
             CurrentPositionBox.Text = s.ToString();
-            double Progress = (double)musicPlayer.Position.Ticks * 10 / musicPlayer.NaturalDuration.TimeSpan.Ticks;
-            ProgressSlider.Value = Progress;
+            double progress = (double)musicPlayer.Position.Ticks * 10 / musicPlayer.NaturalDuration.TimeSpan.Ticks;
+            ProgressSlider.Value = progress;
         }
 
         //Refresh data
@@ -208,14 +209,14 @@ namespace OrangeJuiceModMaker
                 HyperFlavorUpdateBox.Text = "";
             }
 
-            bool HyperButtonsEnabled = selectedUnit.HyperIds.Length >= 2;
-            bool CardButtonsEnabled = selectedUnit.CharacterCards.Length >= 2;
+            bool hyperButtonsEnabled = selectedUnit.HyperIds.Length >= 2;
+            bool cardButtonsEnabled = selectedUnit.CharacterCards.Length >= 2;
 
-            HyperLeftButton.IsEnabled = HyperButtonsEnabled;
-            HyperRightButton.IsEnabled = HyperButtonsEnabled;
+            HyperLeftButton.IsEnabled = hyperButtonsEnabled;
+            HyperRightButton.IsEnabled = hyperButtonsEnabled;
 
-            CharacterCardLeftButton.IsEnabled = CardButtonsEnabled;
-            CharacterCardRightButton.IsEnabled = CardButtonsEnabled;
+            CharacterCardLeftButton.IsEnabled = cardButtonsEnabled;
+            CharacterCardRightButton.IsEnabled = cardButtonsEnabled;
 
             CharacterNameTextBox.Text = selectedUnit.UnitId;
 
@@ -246,13 +247,13 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
-            if (Path.GetExtension(modifiedUnit.Music.file) != ".ogg")
+            if (Path.GetExtension(modifiedUnit.Music.File) != ".ogg")
             {
                 modifiedUnit.Music = null;
                 return;
             }
 
-            string mp3Path = Path.ChangeExtension(modifiedUnit.Music.file, "mp3");
+            string mp3Path = Path.ChangeExtension(modifiedUnit.Music.File, "mp3");
 
             if (!File.Exists(mp3Path))
             {
@@ -263,10 +264,10 @@ namespace OrangeJuiceModMaker
                     ProcessStartInfo psi = new()
                     {
                         FileName = "ffmpeg.exe",
-                        Arguments = $"-i \"{modifiedUnit.Music.file}\" -ar 44100 \"{mp3Path}\"",
+                        Arguments = $"-i \"{modifiedUnit.Music.File}\" -ar 44100 \"{mp3Path}\"",
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
+                        WindowStyle = ProcessWindowStyle.Hidden
                     };
                     Process? p = Process.Start(psi);
                     p?.WaitForExit();
@@ -280,7 +281,7 @@ namespace OrangeJuiceModMaker
                 {
                     MessageBox.Show("Media failed to load. To retry, close and reopen window.");
                     modifiedUnit.Music = null;
-                    await KillFFMPEG();
+                    await KillFfmpeg();
                     await RefreshGrid();
                     return;
                 }
@@ -288,12 +289,12 @@ namespace OrangeJuiceModMaker
 
             musicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
 
-            LoopPointBox.Text = (modifiedUnit.Music.loop_point ?? 0).ToString();
+            LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
 
             EnableMusicControls(true);
         }
 
-        private async Task KillFFMPEG()
+        private async Task KillFfmpeg()
         {
             await File.WriteAllTextAsync("killffmpeg.bat", "taskkill /f /im ffmpeg.exe");
             await Process.Start("killffmpeg.bat").WaitForExitAsync();
@@ -307,20 +308,22 @@ namespace OrangeJuiceModMaker
             VolumeBox.IsEnabled = musicEnabled;
             LoopPointBox.IsEnabled = musicEnabled;
             CurrentPositionBox.IsEnabled = musicEnabled;
-            FFButton.IsEnabled = musicEnabled;
+            FfButton.IsEnabled = musicEnabled;
             PlayPauseButton.IsEnabled = musicEnabled;
-            RWButton.IsEnabled = musicEnabled;
+            RwButton.IsEnabled = musicEnabled;
             ProgressSlider.IsEnabled = musicEnabled;
         }
 
         private void ReplacePicture(string modifiedUnitCharacterCard, string[] paths256, string[]? paths128, Func<int> getIndex, Action incIndex)
         {
-            string tempName = $@"temp\temp{modifiedUnitCharacterCard}256.temp";
+            int res = 256;
+            string TempName() => $@"{MainWindow.Temp}\temp{modifiedUnitCharacterCard}{getIndex()}{res}.temp";
             OpenFileDialog a = new()
             {
                 Filter =
                     "Portable Network Graphics (*.png)|*.png|Microsoft Direct Draw Surface (*.dds)|*.dds|All files (*.*)|*.*",
-                Title = "Please select your image. Select a 256x256 png for best results."
+                Title = "Please select your image. Select a 256x256 png for best results.",
+                Multiselect = true
             };
             if (a.ShowDialog() is not true)
             {
@@ -329,46 +332,89 @@ namespace OrangeJuiceModMaker
 
             UnloadImages();
 
-            if (File.Exists(tempName))
+            MagickImage[] pictures = a.FileNames.Select(z => new MagickImage(z)).ToArray();
+
+            if (pictures.Length % 2 == 1 || paths128 == null)
             {
-                File.Delete(tempName);
+                GeneralCase();
+                return;
             }
 
-            foreach (string f in a.FileNames)
+            bool allSquares = pictures.All(z => z.Width == z.Height);
+            if (!allSquares)
             {
-                using MagickImage m = new(f);
-                bool type = m.Format == MagickFormat.Png;
-                bool dim = m.Width == 256 && m.Height == 256;
-                m.Format = MagickFormat.Png;
-                if (type && dim)
-                {
-                    File.Copy(f, tempName);
-                }
-                else if (!dim)
-                {
-                    m.FilterType = FilterType.Point;
-                    m.Resize(256, 256);
-                    m.Write(tempName);
-                }
-                else
-                {
-                    m.Write(tempName);
-                }
-                paths256[getIndex()] = tempName;
-                if (paths128 is not null)
-                {
-                    m.FilterType = FilterType.Point;
-                    m.Resize(128, 128);
-                    m.Write($@"temp\temp{modifiedUnitCharacterCard}128.temp");
-                    paths128[getIndex()] = $@"temp\temp{modifiedUnitCharacterCard}128.temp";
-                }
-                if (f != a.FileNames.Last())
-                {
-                    incIndex();
-                }
+                GeneralCase();
+                return;
             }
 
-            ReloadImages();
+            bool all256 = pictures.All(z => z.Width == 256);
+            if (all256)
+            {
+                GeneralCase();
+                return;
+            }
+
+            MagickImage[] pictures128 = pictures.Where(z => z.Width == 128).ToArray();
+            MagickImage[] pictures256 = pictures.Where(z => z.Width == 256).ToArray();
+
+            if (pictures128.Length != pictures256.Length)
+            {
+                //General case
+                GeneralCase();
+                return;
+            }
+
+            for (int n = 0; n < pictures128.Length; ++n, incIndex())
+            {
+                res = 256;
+                pictures256[n].Write(TempName());
+                paths256[getIndex()] = TempName();
+                pictures256[n].Dispose();
+
+                res = 128;
+                pictures128[n].Write(TempName());
+                paths128[getIndex()] = TempName();
+                pictures128[n].Dispose();
+            }
+
+            void GeneralCase()
+            {
+                foreach (MagickImage m in pictures)
+                {
+                    bool type = m.Format == MagickFormat.Png;
+                    bool dim = m.Width == 256 && m.Height == 256;
+                    m.Format = MagickFormat.Png;
+                    if (type && dim)
+                    {
+                        m.Write(TempName());
+                    }
+                    else if (!dim)
+                    {
+                        m.FilterType = FilterType.Point;
+                        m.Resize(256, 256);
+                        m.Write(TempName());
+                    }
+                    else
+                    {
+                        m.Write(TempName());
+                    }
+
+                    paths256[getIndex()] = TempName();
+                    if (paths128 is not null)
+                    {
+                        m.FilterType = FilterType.Point;
+                        m.Resize(128, 128);
+                        m.Write($@"{MainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp");
+                        paths128[getIndex()] = $@"{MainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp";
+                    }
+
+                    if (m != pictures.Last())
+                    {
+                        incIndex();
+                    }
+                    m.Dispose();
+                }
+            }
         }
 
         private void UnloadImages()
@@ -376,17 +422,22 @@ namespace OrangeJuiceModMaker
             CharacterArt.ImageSource = null;
             HyperArt.ImageSource = null;
             CardArt.ImageSource = null;
+            SmallHyperArt.ImageSource = null;
+            SmallCardArt.ImageSource = null;
         }
 
         private void ReloadImages()
         {
+            UnloadImages();
             if (modifiedUnit.CharacterArt.Any())
             {
                 CharacterArt.ImageSource = GetUnitArt(modifiedUnit.CharacterArt[SelectedCharacter]);
+                CharacterNameTextBox.Text = $"{modifiedUnit.UnitId}_{selectedCharacter:00}";
             }
             else
             {
                 CharacterArt.ImageSource = null;
+                CharacterNameTextBox.Text = "";
             }
 
             if (modifiedUnit.CharacterCards.Any())
@@ -416,7 +467,7 @@ namespace OrangeJuiceModMaker
         private void ReplaceFile(string newFile, int res, string id, out string? path)
         {
             path = null;
-            string tempName = @$"temp\{id}{res}.temp";
+            string tempName = @$"{MainWindow.Temp}\{id}{res}.temp";
             using MagickImage image = new(newFile);
 
             if (image.Format is not (MagickFormat.Png or MagickFormat.Dds))
@@ -440,8 +491,8 @@ namespace OrangeJuiceModMaker
             path = tempName;
         }
 
-        long SamplesFromTicks(long Ticks) => 43 * Ticks / 10000;
-        TimeSpan TickFromSamples(long Samples) => TimeSpan.FromTicks(Samples * 10000 / 43);
+        long SamplesFromTicks(long ticks) => 43 * ticks / 10000;
+        TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
 
         private BitmapImage GetUnitArt(string x)
         {
@@ -453,7 +504,12 @@ namespace OrangeJuiceModMaker
                 m.Write(x);
             }
 
-            return new BitmapImage(new Uri(x, UriKind.RelativeOrAbsolute));
+            BitmapImage bi = new();
+            bi.BeginInit();
+            bi.StreamSource = new MemoryStream(File.ReadAllBytes(x));
+            bi.EndInit();
+
+            return bi;
         }
 
         private BitmapImage GetCardImageFromPath(string path)
@@ -466,7 +522,12 @@ namespace OrangeJuiceModMaker
                 m.Write(path);
             }
 
-            return new BitmapImage(new Uri(path, UriKind.RelativeOrAbsolute));
+            BitmapImage bi = new();
+            bi.BeginInit();
+            bi.StreamSource = new MemoryStream(File.ReadAllBytes(path));
+            bi.EndInit();
+
+            return bi;
         }
 
         private void CheckForNumber(object sender, TextCompositionEventArgs e)
