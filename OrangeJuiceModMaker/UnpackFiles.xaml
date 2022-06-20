@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
-        Title="UnpackFiles" Height="370" Width="600" Loaded="Window_Loaded">
+        Title="UnpackFiles" Height="370" Width="600" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
@@ -14,6 +14,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
+                        <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -27,10 +29,11 @@
         <TextBlock Grid.Row="3" Grid.Column="1" Text="This will take some time, go grab a glass of Orange Juice"
                    TextAlignment="Center"
                    FontSize="20"/>
-        <TextBlock Grid.Row="5"  Grid.Column="1" Text="Unpacking {name} {x}/5"
+        <TextBlock Grid.Row="5"  Grid.Column="1" Text=""
                    TextAlignment="Left"
                    FontSize="20"
                    x:Name="Status"/>
+        <Button Content="Click to See Status (Will Slow Down Unpacking)" Grid.Row="7" Grid.Column="1" Click="ButtonBase_OnClick"/>
     </Grid>
     
 </Window>

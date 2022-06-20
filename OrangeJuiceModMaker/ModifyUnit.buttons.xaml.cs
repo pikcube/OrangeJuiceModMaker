@@ -1,17 +1,17 @@
+﻿using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
+using FFmpeg.NET;
+using FFmpeg.NET.Enums;
 using Path = System.IO.Path;
 
 namespace OrangeJuiceModMaker
 {
-    public partial class ModifyUnit : Window
+    public partial class ModifyUnit
     {
         //Buttons
         private void SmallCardButton_OnClick(object sender, RoutedEventArgs e)
@@ -209,86 +209,35 @@ namespace OrangeJuiceModMaker
 
             File.Copy(Path.GetFullPath(o.FileName), tempPath, true);
 
-            bool leave = false;
-
-            while (!leave)
+            Task t = Task.Run(() =>
             {
-                Task t = Task.Run(() =>
+                Task m = Task.Run(() =>
                 {
-                    var m = Task.Run(() =>
+                    InputFile inFile = new(tempPath);
+                    OutputFile outFile = new(mp3Path);
+                    Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    ConversionOptions options = new()
                     {
-                        ProcessStartInfo psi = new()
-                        {
-                            FileName = "ffmpeg.exe",
-                            Arguments = $"-i \"{tempPath}\" -ar 44100 \"{mp3Path}\"",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden
-                        };
-                        Process? p = Process.Start(psi);
-                        p?.WaitForExit();
-                    });
-
-                    var t = Task.Run(() =>
-                    {
-                        ProcessStartInfo psi = new()
-                        {
-                            FileName = "ffmpeg.exe",
-                            Arguments = $"-i \"{tempPath}\" -ar 44100 \"{oggPath}\"",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            WindowStyle = ProcessWindowStyle.Hidden
-                        };
-                        Process? p = Process.Start(psi);
-                        p?.WaitForExit();
-                    });
-                    m.Wait();
-                    t.Wait();
+                        AudioSampleRate = AudioSampleRate.Hz44100
+                    };
+                    ffmpeg.ConvertAsync(inFile, outFile, options, CancellationToken.None).GetAwaiter().GetResult();
                 });
 
-                int kickingMachine = 30;
-                while (kickingMachine > 0)
+                Task t = Task.Run(() =>
                 {
-                    if (t.IsCompleted)
+                    InputFile inFile = new(tempPath);
+                    OutputFile outFile = new(oggPath);
+                    Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    ConversionOptions options = new()
                     {
-                        break;
-                    }
-                    kickingMachine--;
-                    await Task.Run(() => Thread.Sleep(1000));
-                }
-                if (t.IsCompleted)
-                {
-                    break;
-                }
-
-                MessageBoxResult a = MessageBox.Show(this,
-                    "Media has failed to load. If you're file is really big, it may just not be done. " +
-                    Environment.NewLine +
-                    "Select Yes to keep waiting on your media." + Environment.NewLine +
-                    "Select No to restart the process." + Environment.NewLine +
-                    "Select cancel to stop replacing media", "ffmpeg hasn't returned", MessageBoxButton.YesNo);
-                switch (a)
-                {
-                    case MessageBoxResult.Yes:
-                        await t;
-                        leave = true;
-                        break;
-                    case MessageBoxResult.No:
-                        await KillFfmpeg();
-                        break;
-                    case MessageBoxResult.None:
-                    case MessageBoxResult.OK:
-                    case MessageBoxResult.Cancel:
-                    default:
-                        leave = true;
-                        await KillFfmpeg();
-                        modifiedUnit.Music = null;
-                        await RefreshGrid();
-                        return;
-                }
-
-            }
-
+                        AudioSampleRate = AudioSampleRate.Hz44100
+                    };
+                    ffmpeg.ConvertAsync(inFile, outFile, options, CancellationToken.None).GetAwaiter().GetResult();
+                });
+                m.Wait();
+                t.Wait();
+            });
+            await t;
             File.Delete(tempPath);
             modifiedUnit.Music = new Music(oggPath)
             {
@@ -296,7 +245,7 @@ namespace OrangeJuiceModMaker
                 UnitId = modifiedUnit.UnitId,
                 Volume = 0
             };
-            musicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
+            await musicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
             LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
             MusicReplaceButton.IsEnabled = true;
@@ -315,7 +264,7 @@ namespace OrangeJuiceModMaker
         }
         private void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            PlayPause();
+            MediaPlayerState = PlayPauseButton.Content.ToString() == "▶" ? PlayState.Play : PlayState.Pause;
         }
 
         private void SetLoopButtonClick(object sender, RoutedEventArgs e)

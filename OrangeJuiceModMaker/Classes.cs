@@ -1,17 +1,163 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ImageMagick;
-using Microsoft.VisualBasic.CompilerServices;
-using Microsoft.VisualBasic.FileIO;
-using Newtonsoft.Json;
+using System.Windows.Media;
+using Accessibility;
 
 namespace OrangeJuiceModMaker
 {
+    public enum PlayState
+    {
+        Stop = 0,
+        Play = 1,
+        Pause = 2,
+    }
+
+    public class BackgroundMediaElement
+    {
+        public BackgroundMediaElement()
+        {
+
+        }
+    }
+
+    public static class MyExtensions
+    {
+        public static bool IsNumber(this string text) => new Regex("[^0-9]+").IsMatch(text);
+
+        public static bool IsInteger(this string text) => int.TryParse(text, out _);
+        public static int ToInt(this string text) => int.Parse(text);
+        public static int? ToIntOrNull(this string text) => int.TryParse(text, out int value) ? value : null;
+        public static int ToIntOrDefault(this string text) => int.TryParse(text, out int value) ? value : 0;
+
+        public static bool IsLong(this string text) => long.TryParse(text, out _);
+        public static long ToLong(this string text) => long.Parse(text);
+        public static long? ToLongOrNull(this string text) => long.TryParse(text, out long value) ? value : null;
+        public static long ToLongOrDefault(this string text) => long.TryParse(text, out long value) ? value : 0;
+
+        public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
+        {
+            foreach (T item in list)
+            {
+                action(item);
+            }
+        }
+
+        public static async void ForEachAsync<T>(this IAsyncEnumerable<T> list, Action<T> action)
+        {
+            await foreach (T item in list)
+            {
+                action(item);
+            }
+        }
+    }
+
+    class MusicList
+    {
+        public string Name;
+        public string[] ID;
+        public string[] Description;
+
+        public MusicList(CsvHolder csv)
+        {
+            if (csv.Type != CsvHolder.TypeList.Music)
+            {
+                throw new ArgumentException("CSV wasn't a music list");
+            }
+
+            Name = csv.Name;
+            ID = csv.Rows.Select(z => z[0]).ToArray();
+            Description = csv.Rows.Select(z => z[1]).ToArray();
+        }
+    }
+
+    class ModMusic : Music
+    {
+        public enum SongType
+        {
+            UnitTheme = 1,
+            EventTheme = 2,
+        }
+
+        public SongType Song;
+        public new string? File;
+        public string Id
+        {
+            get
+            {
+                return Song switch
+                {
+                    SongType.EventTheme => Event,
+                    SongType.UnitTheme => UnitId,
+                    _ => throw new Exception("SongTypeNotSet"),
+                } ?? string.Empty;
+            }
+            init
+            {
+                switch (Song)
+                {
+                    case SongType.UnitTheme:
+                        UnitId = value;
+                        break;
+                    case SongType.EventTheme:
+                        Event = value;
+                        break;
+                    default:
+                        throw new ArgumentException("SongType not specified");
+                }
+            }
+        }
+
+        public ModMusic(string? file, SongType song) : base(file ?? string.Empty)
+        {
+            Song = song;
+            File = file;
+        }
+
+        public ModMusic(Music music) : base(music.File)
+        {
+            File = music.File;
+            Song = music.UnitId is not null ? SongType.UnitTheme : SongType.EventTheme;
+            UnitId = music.UnitId;
+            Event = music.Event;
+            LoopPoint = music.LoopPoint;
+            Volume = music.Volume;
+        }
+
+        public void SaveToMod()
+        {
+            if (File is null)
+            {
+                return;
+            }
+
+            Music newMusic = new($"music/{Path.GetFileNameWithoutExtension(File)}")
+            {
+                Event = Song == SongType.EventTheme ? Id : null,
+                UnitId = Song == SongType.UnitTheme ? Id : null,
+                LoopPoint = LoopPoint,
+                Volume = Volume
+            };
+            switch (Song)
+            {
+                case SongType.EventTheme:
+                    MainWindow.LoadedModReplacements.Music.RemoveAll(z => z.Event is not null && z.Event == newMusic.Event);
+                    break;
+                case SongType.UnitTheme:
+                    MainWindow.LoadedModReplacements.Music.RemoveAll(z => z.UnitId is not null && z.UnitId == newMusic.UnitId);
+                    break;
+            }
+
+            MainWindow.LoadedModReplacements.Music.Add(newMusic);
+            Root.WriteJson();
+        }
+    }
     class ModTexture : Texture
     {
         public string Id;
@@ -20,7 +166,7 @@ namespace OrangeJuiceModMaker
 
         public ModTexture(string path) : base(path)
         {
-            Id = this.Path.Substring(6);
+            Id = Path[6..];
             CurrentArtPath = $@"{MainWindow.LoadedModPath}\{path}256.png";
             CurrentLowArtPath = $@"{MainWindow.LoadedModPath}\{path}128.png";
             Texture? texture = MainWindow.LoadedModReplacements.Textures.FirstOrDefault(z => z.Path == path);
@@ -201,7 +347,7 @@ namespace OrangeJuiceModMaker
                     File.Delete($@"{baseResourcePath}\cards\{HyperIds[n]}256.png");
                 }
                 File.Copy(HyperCardPaths[n], $@"{baseResourcePath}\cards\{HyperIds[n]}256.png");
-                
+
                 if (File.Exists($@"{baseResourcePath}\cards\{HyperIds[n]}128.png"))
                 {
                     File.Delete($@"{baseResourcePath}\cards\{HyperIds[n]}128.png");
@@ -413,7 +559,13 @@ namespace OrangeJuiceModMaker
             parser.HasFieldsEnclosedInQuotes = true;
             List<string[]> rawRows = new();
 
-            TypeId = Array.IndexOf(TypeList, parser.ReadLine());
+            string typeName = parser.ReadLine()!;
+            if (!Enum.TryParse(typeName, true, out Type))
+            {
+                Type = TypeList.Undefined;
+            }
+
+
             Headers = parser.ReadFields() ?? throw new InvalidOperationException();
 
             while (!parser.EndOfData)
@@ -425,16 +577,17 @@ namespace OrangeJuiceModMaker
 
         }
 
-        private static readonly string[] TypeList =
+        public enum TypeList
         {
-            "unit",
-            "card",
-            "lookup"
+            Unit = 0,
+            Card = 1,
+            Lookup = 2,
+            Music = 3,
+            Voice = 4,
+            Undefined = -1
         };
 
-        public int TypeId;
-
-        public string Type => TypeId == -1 ? "undefined" : TypeList[TypeId];
+        public TypeList Type;
 
         public string Name;
 
@@ -511,6 +664,8 @@ namespace OrangeJuiceModMaker
 
         [JsonProperty("unit_id")]
         public string? UnitId { get; set; }
+        [JsonProperty("event")] 
+        public string? Event { get; set; }
 
         [JsonProperty("file")]
         public string File { get; set; }
@@ -582,7 +737,7 @@ namespace OrangeJuiceModMaker
     {
         public Texture(string path)
         {
-            this.Path = path;
+            Path = path;
         }
         [JsonProperty("path")]
         public string Path { get; set; }

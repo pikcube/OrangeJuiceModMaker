@@ -6,6 +6,9 @@
 #define MyAppPublisher "Pikcube"
 #define MyAppURL "https://github.com/pikcube/OrangeJuiceModMaker"
 #define MyAppExeName "OrangeJuiceModMaker.exe"
+#define MyBasePath = "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\Release\net6.0-windows"
+; #define MyCompression "lzma2/max"
+; Uncomment to compile in Inno
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -26,7 +29,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=C:\Users\Michael\Desktop\OJModMaker
 OutputBaseFilename=OJSetup
 ;Compression=none
-Compression=lzma2/max
+Compression={#MyCompression}
 SolidCompression=yes
 WizardStyle=modern
 
@@ -37,21 +40,26 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\FlavorLookUp.csv"; DestDir: "{userappdata}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\7za.dll"; DestDir: "{userappdata}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\7za.exe"; DestDir: "{userappdata}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\HyperLookupTable.csv"; DestDir: "{userappdata}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\ffmpeg.zip"; DestDir: "{userappdata}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\Magick.NET.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\Magick.NET-Q16-AnyCPU.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\OrangeJuiceModMaker.deps.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\OrangeJuiceModMaker.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\OrangeJuiceModMaker.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\OrangeJuiceModMaker.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\csvFiles\*"; DestDir: "{userappdata}\OrangeJuiceModMaker\csvFiles"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\Release\net6.0-windows\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MyBasePath}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\Magick.NET.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\Magick.NET-Q16-AnyCPU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\OrangeJuiceModMaker.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\OrangeJuiceModMaker.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\OrangeJuiceModMaker.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\OrangeJuiceModMaker.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\FFMpeg.AutoGen.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\FFmpeg.NET.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#MyBasePath}\oj.version"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\7za.dll"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\7za.exe"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\HyperLookupTable.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\FlavorLookUp.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\ffmpeg.7z"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\csvFiles.7z"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

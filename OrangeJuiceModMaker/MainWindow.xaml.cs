@@ -1,19 +1,22 @@
-﻿using System;
+﻿using ImageMagick;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ImageMagick;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using TextFieldParser = Microsoft.VisualBasic.FileIO.TextFieldParser;
-using SearchOption = System.IO.SearchOption;
+using Unosquare.FFME.Common;
+using MediaElement = Unosquare.FFME.MediaElement;
 using Path = System.IO.Path;
+using SearchOption = System.IO.SearchOption;
+using TextFieldParser = Microsoft.VisualBasic.FileIO.TextFieldParser;
 
 
 namespace OrangeJuiceModMaker
@@ -24,6 +27,7 @@ namespace OrangeJuiceModMaker
     public partial class MainWindow : Window
     {
         public static string? GameDirectory;
+        public static readonly MediaElement MusicPlayer = new();
         public static bool SteamVersion = false;
         public static bool UnpackComplete = true;
         public static ModReplacements LoadedModReplacements = new();
@@ -41,6 +45,8 @@ namespace OrangeJuiceModMaker
         public static string AppData = "";
         private string ModPath = "";
         private string ExePath = "";
+        private string ExeDirectory = "";
+
         public static bool ExitTime
         {
             set
@@ -63,8 +69,8 @@ namespace OrangeJuiceModMaker
                 DateTime.Now.ToString(CultureInfo.InvariantCulture), exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "",
                 exception.StackTrace ?? ""
             };
-            File.AppendAllLines("main_error.txt", error);
-            MessageBox.Show("Error in load, see error.txt for more information");
+            File.AppendAllLines("main_error.error", error);
+            MessageBox.Show("Error in load, see main_error.error for more information");
             Close();
         }
 
@@ -73,40 +79,66 @@ namespace OrangeJuiceModMaker
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             Temp = @$"{appdata}\OrangeJuiceModMaker\temp";
             AppData = $@"{appdata}\OrangeJuiceModMaker";
-            FlavorLookUp = new CsvHolder($@"{AppData}\FlavorLookUp.csv");
             InitializeComponent();
             config = File.Exists($@"{Temp}\oj.config")
                 ? File.ReadAllLines($@"{Temp}\oj.config")
                 : new[] { "0", "0" };
+            MusicPlayer.LoadedBehavior = MediaPlaybackState.Pause;
+            MusicPlayer.UnloadedBehavior = MediaPlaybackState.Manual;
 
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             try
             {
                 ExePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
+                ExeDirectory = Directory.GetCurrentDirectory();
+                Directory.CreateDirectory(AppData);
                 Directory.SetCurrentDirectory(AppData);
                 Directory.CreateDirectory(Temp);
+
+                //First Time App Data Setup
+                string[] files =
+                {
+                    "7za.dll",
+                    "7za.exe",
+                    "HyperLookupTable.csv",
+                    "FlavorLookUp.csv",
+                    "ffmpeg.7z",
+                    "csvFiles.7z",
+                    "oj.version"
+                };
+                if (!File.Exists($@"{AppData}\oj.version") || File.ReadAllBytes($@"{AppData}\oj.version") != File.ReadAllBytes($@"{ExeDirectory}\OrangeJuiceModMaker\oj.version"))
+                {
+                    foreach (string file in Directory.GetFiles(AppData).Where(z => Path.GetExtension(z) == ".error"))
+                    {
+                        File.Delete(file);
+                    }
+                    foreach (string file in files)
+                    {
+                        File.Copy(@$"{ExeDirectory}\OrangeJuiceModMaker\{file}", @$"{AppData}\{file}", true);
+                    }
+                }
+
+                FlavorLookUp = new CsvHolder($@"{AppData}\FlavorLookUp.csv");
+
                 Task dumpTempFiles = Task.Run(() =>
                 {
-                    if (!File.Exists("ffmpeg.exe"))
+                    if (File.Exists("ffmpeg.7z"))
                     {
-                        if (File.Exists("ffmpeg.zip"))
+                        ProcessStartInfo unpackinfo = new()
                         {
-                            ProcessStartInfo unpackinfo = new()
-                            {
-                                Arguments = $@"e ffmpeg.zip -y",
-                                FileName = "7za.exe",
-                                UseShellExecute = false,
-                                WindowStyle = ProcessWindowStyle.Hidden,
-                                CreateNoWindow = true
-                            };
-                            Process.Start(unpackinfo)?.WaitForExit();
-                            File.Delete("ffmpeg.zip");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Please download ffmpeg executable");
-                            Environment.Exit(0);
-                        }
+                            Arguments = $@"e ffmpeg.7z -offmpeg -y",
+                            FileName = "7za.exe",
+                            UseShellExecute = false,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true
+                        };
+                        Process.Start(unpackinfo)?.WaitForExit();
+                        File.Delete("ffmpeg.7z");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please download ffmpeg executable");
+                        Environment.Exit(0);
                     }
 
                     foreach (string? f in Directory.GetFiles(Temp).Where(z => Path.GetExtension(z) != ".config"))
@@ -116,10 +148,26 @@ namespace OrangeJuiceModMaker
                 });
                 Task loadOjData = Task.Run(() =>
                 {
-                    string[] files = Directory.GetFiles("csvFiles");
-                    if (files.Length != 20)
+                    if (File.Exists("csvFiles.7z"))
                     {
-                        throw new Exception("Didn't find all files");
+                        ProcessStartInfo unpackinfo = new()
+                        {
+                            Arguments = @"e csvFiles.7z -y -ocsvFiles",
+                            FileName = "7za.exe",
+                            UseShellExecute = false,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true
+                        };
+                        Process.Start(unpackinfo)?.WaitForExit();
+                        File.Delete("csvFiles.7z");
+                    }
+                    string[] files = Directory.GetFiles("csvFiles");
+                    const int count = 22;
+                    if (files.Length != count)
+                    {
+                        throw files.Length > count
+                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 158 again?")
+                            : new Exception("Didn't find all files");
                     }
                     foreach (string file in files)
                     {
@@ -166,17 +214,18 @@ namespace OrangeJuiceModMaker
                 }
 
                 //Unpack Base Files
-                if (!Directory.Exists("pakFiles") ||
-                    File.Exists(@"pakFiles\filesUnpacked.status"))
+                if (!Directory.Exists(@$"{AppData}\pakFiles") ||
+                    File.Exists($@"{AppData}\pakFiles\filesUnpacked.status"))
                 {
-                    Directory.CreateDirectory("pakFiles");
-                    File.WriteAllText(@"pakFiles\filesUnpacked.status", "false");
+                    Directory.CreateDirectory(@$"{AppData}\pakFiles");
+                    File.WriteAllText(@$"{AppData}\pakFiles\filesUnpacked.status", "false");
                     UnpackComplete = false;
                     new UnpackFiles(GameDirectory).ShowDialog();
                     if (!UnpackComplete)
                     {
                         MessageBox.Show("Unpack Failed");
                         Close();
+                        return;
                     }
                     File.Delete(@"pakFiles\filesUnpacked.status");
                 }
@@ -197,7 +246,7 @@ namespace OrangeJuiceModMaker
                         UnitHyperTable.Add(new Unit(parser.ReadFields() ?? throw new InvalidOperationException(), charCards));
                     }
                 });
-                
+
                 ModPath = $@"{GameDirectory}\mods";
 
                 if (!UpdateModsLoaded())
@@ -218,6 +267,9 @@ namespace OrangeJuiceModMaker
                 }
 
                 dumpTempFiles.Wait();
+                Unosquare.FFME.Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
+                MusicPlayer.ScrubbingEnabled = true;
+                MusicPlayer.LoopingBehavior = MediaPlaybackState.Manual;
 
                 foreach (string[] t in FlavorLookUp.Rows)
                 {
@@ -233,8 +285,8 @@ namespace OrangeJuiceModMaker
             {
                 string[] error =
                     { DateTime.Now.ToString(CultureInfo.InvariantCulture), exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
-                File.AppendAllLines("main_error.txt", error);
-                MessageBox.Show("Error in load, see error.txt for more information");
+                File.AppendAllLines("main_error.error", error);
+                MessageBox.Show("Error in load, see main_error.error for more information");
                 Close();
             }
         }
@@ -242,7 +294,8 @@ namespace OrangeJuiceModMaker
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SelectedModComboBox.SelectedIndex = config[0].ToInt();
-            SelectedModeComboBox.ItemsSource = new[] { "Modify Unit", "Modify Card", "Modify Mod Definition"};
+            SelectedModeComboBox.ItemsSource = new[]
+                { "Modify Unit", "Modify Card", "Modify Music", "Modify Mod Definition" };
             SelectedModeComboBox.SelectedIndex = config[1].ToInt();
             if (SelectedModeComboBox.SelectedIndex is >= 3 or -1)
             {
@@ -357,7 +410,7 @@ namespace OrangeJuiceModMaker
 
         private void NewModButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var newMod = new NewMod(){Owner = this};
+            var newMod = new NewMod() { Owner = this };
             newMod.ShowDialog();
             if (!UpdateModsLoaded())
             {
@@ -374,25 +427,29 @@ namespace OrangeJuiceModMaker
 
         private void EditButton_OnClick(object sender, RoutedEventArgs e)
         {
+            NewMod? newMod = null;
             switch (SelectedModeComboBox.SelectedItem as string)
             {
                 case null:
-                    break;
+                    return;
                 case "Modify Unit":
                     new ModifyUnit { Owner = this }.ShowDialog();
-                    break;
+                    return;
                 case "Modify Card":
                     new ModifyCard { Owner = this }.ShowDialog();
-                    break;
+                    return;
+                case "Modify Music":
+                    new ModifyMusic { Owner = this }.ShowDialog();
+                    return;
                 case "Modify Mod Definition":
-                    NewMod newMod = new(LoadedModDefinition) {Owner = this};
+                    newMod = new(LoadedModDefinition) { Owner = this };
                     newMod.ShowDialog();
                     UpdateModsLoaded();
-                    SelectedModComboBox.SelectedItem = newMod.NewModName ?? SelectedModComboBox.SelectedItem;
-                    break;
+            SelectedModComboBox.SelectedItem = newMod.NewModName ?? SelectedModComboBox.SelectedItem;
+                    return;
                 default:
                     MessageBox.Show("Error");
-                    break;
+                    return;
             }
         }
 
@@ -448,7 +505,7 @@ namespace OrangeJuiceModMaker
         {
             if (DisableModButton.Content is "Disable Mod")
             {
-                if(File.Exists(@$"{LoadedModPath}\mod.json"))
+                if (File.Exists(@$"{LoadedModPath}\mod.json"))
                 {
                     File.Move(@$"{LoadedModPath}\mod.json", @$"{LoadedModPath}\disabled_mod.json");
                     DisableModButton.Content = "Enable Mod";

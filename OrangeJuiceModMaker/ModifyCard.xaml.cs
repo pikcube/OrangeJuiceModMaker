@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ImageMagick;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using ImageMagick;
-using Microsoft.Win32;
 
 namespace OrangeJuiceModMaker
 {
@@ -15,7 +15,7 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class ModifyCard
     {
-        private readonly CsvHolder[] files = MainWindow.CsvFiles.Where(z => z.Type == "card").Where(z => z.Rows.Any()).ToArray();
+        private readonly CsvHolder[] files = MainWindow.CsvFiles.Where(z => z.Type == CsvHolder.TypeList.Card).Where(z => z.Rows.Any()).ToArray();
         private string[][] loadedRows;
         private ModTexture? loadedTexture;
         private readonly List<ModTexture> modifiedTextures = new();
@@ -61,7 +61,7 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            
+
             OpenFileDialog o = new()
             {
                 Title = "Select image. For best results select 256x256 png",
@@ -93,7 +93,7 @@ namespace OrangeJuiceModMaker
             }
             image.Write(tempName);
             image.FilterType = FilterType.Point;
-            image.Resize(128,128);
+            image.Resize(128, 128);
             if (File.Exists(tempSmall))
             {
                 File.Delete(tempSmall);

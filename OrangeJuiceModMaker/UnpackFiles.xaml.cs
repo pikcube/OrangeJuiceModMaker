@@ -1,10 +1,17 @@
-﻿using System;
+﻿using ImageMagick;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using ImageMagick;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Threading;
 using Path = System.IO.Path;
 
 namespace OrangeJuiceModMaker
@@ -15,28 +22,57 @@ namespace OrangeJuiceModMaker
     public partial class UnpackFiles : Window
     {
         private string gameDirectory;
-        public UnpackFiles(string gameDirectory)
-        {
-            InitializeComponent();
-            this.gameDirectory = gameDirectory;
-        }
-
         private int zi = 9521;
         private int z = 0;
+        private static int y = 0;
+        string[] paks = "cards,units".Split(',');
+        int x = 1;
+        int finished = 0;
+        private Thread timer;
+        private static UnpackFiles? f;
+        private bool ShowStatus;
+        private static bool Exit = false;
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        public UnpackFiles(string gameDirectory)
+        {
+            f = this;
+            InitializeComponent();
+            this.gameDirectory = gameDirectory;
+            timer = new Thread(() =>
+            {
+                while (finished != 2)
+                {
+                    if (ShowStatus)
+                    {
+                        f!.Dispatcher.Invoke(() =>
+                        {
+                            f.Status.Text =
+                                $"Unpacking {(f.x > 2 ? "Complete" : $"{f.x}/2")}{Environment.NewLine}Converting {y}/{(f.x == 3 ? f.z : f.zi)}";
+                        });
+                    }
+                    if (Exit)
+                    {
+                        return;
+                    }
+                }
+
+                f!.Dispatcher.Invoke(() =>
+                {
+                    f.Status.Text = $"Unpacking {(f.x > 2 ? "Complete" : $"{f.x}/2")}{Environment.NewLine}Converting {y}/{(f.x == 3 ? f.z : f.zi)}";
+                    MainWindow.UnpackComplete = true;
+                    f.Close();
+                });
+            });
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                string[] paks = "cards,units".Split(',');
-                int x = 1;
-                int y = 0;
-
-                int finished = 0;
                 foreach (string pakName in paks)
                 {
                     bool @continue = false;
-                    Task t = Task.Run(() =>
+                    _ = Task.Run(() =>
                     {
                         string pak = pakName;
                         @continue = true;
@@ -53,36 +89,19 @@ namespace OrangeJuiceModMaker
                         p.WaitForExit();
 
                         ++x;
+                        if (Exit)
+                        {
+                            return;
+                        }
 
-                        ConvertImages(pak, ref y);
+                        ConvertImages(pak);
                         ++finished;
                     });
                     while (!@continue)
                     {
-                        await Task.Run(() => Thread.Sleep(1));
+                        Thread.Sleep(1);
                     }
                 }
-
-                while (finished != 2)
-                {
-                    Status.Text = $"Unpacking {(x > 2 ? "Complete" : $"{x}/2")}{Environment.NewLine}Converting {y}/{(x == 3 ? z : zi)}";
-                    await Task.Run(() => Thread.Sleep(10));
-                }
-
-                Status.Text += Environment.NewLine + "Cleaning Up";
-                _ = Task.Run(() =>
-                {
-                    foreach (string file in Directory.GetFiles(@"pakFiles", "*.dat", SearchOption.AllDirectories))
-                    {
-                        File.Delete(file);
-                    }
-                });
-
-                Status.Text += Environment.NewLine + "All Files Unpacked!";
-                MainWindow.UnpackComplete = true;
-
-                await Task.Run(() => Thread.Sleep(1000));
-                Close();
             }
             catch (Exception exception)
             {
@@ -91,25 +110,30 @@ namespace OrangeJuiceModMaker
                 File.WriteAllLines("unpack_error.txt", error);
                 throw;
             }
+
+            y = 0;
+            timer.Start();
         }
 
-        private void ConvertImages(string pak, ref int y)
+        private void ConvertImages(string pak)
         {
             string[] unpackedFiles = Directory.GetFiles($@"pakFiles\{pak}", "*.dat", SearchOption.AllDirectories);
 
             z += unpackedFiles.Length;
 
-            string[][] sets = new string[unpackedFiles.Length / 1000 + 1][];
+            const int length = 200;
+
+            string[][] sets = new string[unpackedFiles.Length / length + 1][];
             for (int i = 0; i < sets.Length - 1; ++i)
             {
-                sets[i] = new string[1000];
+                sets[i] = new string[length];
             }
 
-            sets[^1] = new string[unpackedFiles.Length % 1000];
+            sets[^1] = new string[unpackedFiles.Length % length];
             for (int i = 0; i < unpackedFiles.Length; ++i)
             {
-                int set = i / 1000;
-                int index = i % 1000;
+                int set = i / length;
+                int index = i % length;
                 sets[set][index] = unpackedFiles[i];
             }
 
@@ -117,22 +141,72 @@ namespace OrangeJuiceModMaker
 
             for (int index = 0; index < sets.Length; index++)
             {
-                tasks[index] = CovertImageLoop(ref y, sets[index]);
+                tasks[index] = CovertImageLoop(sets[index]);
             }
 
             Task.WaitAll(tasks);
         }
 
-        private static Task CovertImageLoop(ref int y, string[] unpackedFiles)
+        private static Task CovertImageLoop(string[] unpackedFiles)
         {
-            foreach (string file in unpackedFiles)
+            bool taskRunning = true;
+            Thread t = new(() =>
             {
-                using MagickImage m = new(file);
-                m.Format = MagickFormat.Png;
-                m.Write(Path.ChangeExtension(file, "png"));
-                ++y;
+                foreach (string file in unpackedFiles)
+                {
+                    
+                    using MagickImage m = new(file);
+                    m.Format = MagickFormat.Png;
+                    m.Write(Path.ChangeExtension(file, "png"));
+                    ++y;
+                    if (Exit)
+                    {
+                        return;
+                    }
+                }
+
+                foreach (string file in unpackedFiles)
+                {
+                    File.Delete(file);
+                    if (Exit)
+                    {
+                        return;
+                    }
+                }
+                taskRunning = false;
+            })
+            {
+                IsBackground = true,
+                Priority = p
+            };
+            t.Start();
+            threads.Add(t);
+            return Task.Run(() =>
+            {
+                while (taskRunning)
+                {
+                    Thread.Sleep(1);
+                }
+            });
+        }
+
+        private static ThreadPriority p = ThreadPriority.Highest;
+        private static List<Thread> threads = new();
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            ShowStatus = true;
+            p = ThreadPriority.Lowest;
+            threads.Where(z => z.IsAlive).ForEach(z => z.Priority = p);
+            if (sender is Button b)
+            {
+                b.IsEnabled = false;
             }
-            return Task.CompletedTask;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Exit = true;
         }
     }
 }

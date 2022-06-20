@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Newtonsoft.Json;
 
 namespace OrangeJuiceModMaker
 {
@@ -220,7 +220,7 @@ namespace OrangeJuiceModMaker
                 HBox.SelectionStart = selection;
                 return;
             }
-            
+
             if (ColorBrush is null)
             {
                 return;
@@ -261,10 +261,10 @@ namespace OrangeJuiceModMaker
 
             textLock = true;
 
-            int[] rgb = 
-            { 
-                16 * values[0] + values[1], 
-                16 * values[2] + values[4], 
+            int[] rgb =
+            {
+                16 * values[0] + values[1],
+                16 * values[2] + values[4],
                 16 * values[3] + values[5]
             };
 
