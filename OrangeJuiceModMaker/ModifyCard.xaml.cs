@@ -15,14 +15,24 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class ModifyCard
     {
-        private readonly CsvHolder[] files = MainWindow.CsvFiles.Where(z => z.Type == CsvHolder.TypeList.Card).Where(z => z.Rows.Any()).ToArray();
+        private readonly CsvHolder[] files;
         private string[][] loadedRows;
         private ModTexture? loadedTexture;
         private readonly List<ModTexture> modifiedTextures = new();
-        public ModifyCard()
+        private ModReplacements replacements;
+        private readonly CsvHolder flavorLookUp;
+        private readonly string modPath;
+        private readonly ModDefinition definition;
+        public ModifyCard(List<CsvHolder> csvFiles, MainWindow window)
         {
+            modPath = window.LoadedModPath;
+            files = csvFiles.Where(z => z.Type == CsvHolder.TypeList.Card).Where(z => z.Rows.Any()).ToArray();
             InitializeComponent();
             loadedRows = files.First().Rows;
+            replacements = window.LoadedModReplacements;
+            flavorLookUp = window.FlavorLookUp ?? throw new Exception("Missing flavor lookup");
+            definition = window.LoadedModDefinition ?? throw new Exception("Mod Definition not loaded");
+
         }
 
         private void ModifyCard_OnLoaded(object sender, RoutedEventArgs e)
@@ -39,11 +49,11 @@ namespace OrangeJuiceModMaker
             }
             if (modifiedTextures.All(z => z.Id != loadedRows[CardSelectionBox.SelectedIndex][1]))
             {
-                modifiedTextures.Add(new ModTexture($@"cards\{loadedRows[CardSelectionBox.SelectedIndex][1]}"));
+                modifiedTextures.Add(new ModTexture($@"cards\{loadedRows[CardSelectionBox.SelectedIndex][1]}", replacements, modPath));
             }
             loadedTexture = modifiedTextures.First(z => z.Id == loadedRows[CardSelectionBox.SelectedIndex][1]);
             CardName.Text = loadedTexture.CustomName ?? loadedRows[CardSelectionBox.SelectedIndex][0];
-            FlavorUpdateBox.Text = loadedTexture.CustomFlavor ?? MainWindow.FlavorLookUp?.Rows.FirstOrDefault(z => z[1] == loadedRows[CardSelectionBox.SelectedIndex][1])?[3] ?? "";
+            FlavorUpdateBox.Text = loadedTexture.CustomFlavor ?? flavorLookUp.Rows.FirstOrDefault(z => z[1] == loadedRows[CardSelectionBox.SelectedIndex][1])?[3] ?? "";
             ReloadArt();
             FlavorUpdateBox.IsEnabled = FlavorUpdateBox.Text != "";
 
@@ -52,7 +62,7 @@ namespace OrangeJuiceModMaker
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            loadedTexture?.SaveToMod();
+            loadedTexture?.SaveToMod(modPath, definition, ref replacements);
         }
 
         private void ReplacementCharacterCardButton_OnClick(object sender, RoutedEventArgs e)

@@ -1,68 +1,69 @@
-﻿using ImageMagick;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Threading;
-using Path = System.IO.Path;
+using ImageMagick;
 
 namespace OrangeJuiceModMaker
 {
     /// <summary>
     /// Interaction logic for UnpackFiles.xaml
     /// </summary>
-    public partial class UnpackFiles : Window
+    public partial class UnpackFiles
     {
-        private string gameDirectory;
-        private int zi = 9521;
-        private int z = 0;
-        private static int y = 0;
-        string[] paks = "cards,units".Split(',');
-        int x = 1;
-        int finished = 0;
+        private readonly string gameDirectory;
+        private const int TotalFilesInitial = 9521;
+        private int totalFiles;
+        private static int cardsConverted;
+        readonly string[] paks = "cards,units".Split(',');
+        private int paksUnzipped = 1;
+        int finished;
         private Thread timer;
-        private static UnpackFiles? f;
-        private bool ShowStatus;
-        private static bool Exit = false;
+        private bool showStatus;
+        private static bool exit;
+        private string appData;
+        private bool debug;
 
-        public UnpackFiles(string gameDirectory)
+        public UnpackFiles(string gameDirectory, string appData, bool debug)
         {
-            f = this;
+            UnpackFiles f = this;
+            this.debug = debug;
             InitializeComponent();
             this.gameDirectory = gameDirectory;
             timer = new Thread(() =>
             {
                 while (finished != 2)
                 {
-                    if (ShowStatus)
+                    if (showStatus)
                     {
-                        f!.Dispatcher.Invoke(() =>
+                        f.Dispatcher.Invoke(() =>
                         {
                             f.Status.Text =
-                                $"Unpacking {(f.x > 2 ? "Complete" : $"{f.x}/2")}{Environment.NewLine}Converting {y}/{(f.x == 3 ? f.z : f.zi)}";
+                                $"Unpacking {(f.paksUnzipped > 2 ? "Complete" : $"{f.paksUnzipped}/2")}{Environment.NewLine}" +
+                                $"Converting {cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
                         });
                     }
-                    if (Exit)
+                    if (exit)
                     {
                         return;
                     }
                 }
 
-                f!.Dispatcher.Invoke(() =>
+                f.Dispatcher.Invoke(() =>
                 {
-                    f.Status.Text = $"Unpacking {(f.x > 2 ? "Complete" : $"{f.x}/2")}{Environment.NewLine}Converting {y}/{(f.x == 3 ? f.z : f.zi)}";
+                    f.Status.Text = $"Unpacking {(f.paksUnzipped > 2 ? "Complete" : $"{f.paksUnzipped}/2")}{Environment.NewLine}" +
+                                    $"Converting {cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
                     MainWindow.UnpackComplete = true;
                     f.Close();
                 });
             });
+            this.appData = appData;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -78,33 +79,33 @@ namespace OrangeJuiceModMaker
                         @continue = true;
                         ProcessStartInfo unpackInfo = new()
                         {
-                            Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -y",
-                            FileName = $@"{MainWindow.AppData}\7za.exe",
+                            Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -cardsConverted",
+                            FileName = $@"{appData}\7za.exe",
                             //UseShellExecute = true,
                             //WindowStyle = ProcessWindowStyle.Normal,
                             //CreateNoWindow = false
-                            UseShellExecute = false,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true,
+                            UseShellExecute = debug,
+                            WindowStyle = debug ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden,
+                            CreateNoWindow = !debug,
                             RedirectStandardOutput = true,
                             RedirectStandardError = true,
                         };
-                        Process p = Process.Start(unpackInfo) ?? throw new Exception("Unpack Failed");
+                        Process process = Process.Start(unpackInfo) ?? throw new Exception("Unpack Failed");
 
-                        string output = p.StandardOutput.ReadToEnd();
-                        string error = p.StandardError.ReadToEnd();
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
 
-                        p.WaitForExit();
+                        process.WaitForExit();
 
-                        ++x;
+                        ++paksUnzipped;
 
-                        if (p.ExitCode != 0)
+                        if (process.ExitCode != 0)
                         {
                             File.WriteAllText("7zip_error.error", $"{output}{Environment.NewLine}{error}");
                             MainWindow.ExitTime = true;
                         }
 
-                        if (Exit)
+                        if (exit)
                         {
                             return;
                         }
@@ -126,7 +127,7 @@ namespace OrangeJuiceModMaker
                 throw;
             }
 
-            y = 0;
+            cardsConverted = 0;
             timer.Start();
         }
 
@@ -134,7 +135,7 @@ namespace OrangeJuiceModMaker
         {
             string[] unpackedFiles = Directory.GetFiles($@"pakFiles\{pak}", "*.dat", SearchOption.AllDirectories);
 
-            z += unpackedFiles.Length;
+            totalFiles += unpackedFiles.Length;
 
             const int length = 200;
 
@@ -173,8 +174,8 @@ namespace OrangeJuiceModMaker
                     using MagickImage m = new(file);
                     m.Format = MagickFormat.Png;
                     m.Write(Path.ChangeExtension(file, "png"));
-                    ++y;
-                    if (Exit)
+                    ++cardsConverted;
+                    if (exit)
                     {
                         return;
                     }
@@ -183,7 +184,7 @@ namespace OrangeJuiceModMaker
                 foreach (string file in unpackedFiles)
                 {
                     File.Delete(file);
-                    if (Exit)
+                    if (exit)
                     {
                         return;
                     }
@@ -210,7 +211,7 @@ namespace OrangeJuiceModMaker
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            ShowStatus = true;
+            showStatus = true;
             p = ThreadPriority.Lowest;
             threads.Where(z => z.IsAlive).ForEach(z => z.Priority = p);
             if (sender is Button b)
@@ -219,9 +220,9 @@ namespace OrangeJuiceModMaker
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
-            Exit = true;
+            exit = true;
         }
     }
 }

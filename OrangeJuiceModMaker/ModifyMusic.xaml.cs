@@ -29,6 +29,7 @@ namespace OrangeJuiceModMaker
         private ModMusic modifiedMusic;
         private TimeSpan LoopPoint => TickFromSamples(modifiedMusic.LoopPoint ?? 0);
         TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
+        private MainWindow mainWindow;
         private PlayState MediaPlayerState
         {
             get => mediaPlayerState;
@@ -63,12 +64,13 @@ namespace OrangeJuiceModMaker
             }
         }
 
-        public ModifyMusic()
+        public ModifyMusic(MainWindow window)
         {
+            mainWindow = window;
             modifiedMusic = new ModMusic(null, ModMusic.SongType.UnitTheme);
             //musicPlayer.BufferingEnded += MusicPlayer_BufferingEnded;
 
-            sets = MainWindow.CsvFiles.Where(z => z.Type == CsvHolder.TypeList.Music).Select(z => new MusicList(z)).ToArray();
+            sets = mainWindow.CsvFiles.Where(z => z.Type == CsvHolder.TypeList.Music).Select(z => new MusicList(z)).ToArray();
             if (!sets.Any())
             {
                 throw new Exception("No Music");
@@ -79,29 +81,32 @@ namespace OrangeJuiceModMaker
             musicPlayer.MediaEnded += MusicPlayer_MediaEnded;
             musicPlayer.PositionChanged += MusicPlayer_PositionChanged;
             musicPlayer.MediaOpened += MusicPlayer_MediaOpened;
-            //musicPlayer.MessageLogged += MusicPlayer_MessageLogged;
-            //musicPlayer.MediaFailed += MusicPlayer_MediaFailed;
-
-            foreach (Music m in MainWindow.LoadedModReplacements.Music)
+            if (mainWindow.Debug)
             {
-                musicMods.Add(new ModMusic(m) { File = $@"{MainWindow.LoadedModPath}\{m.File}.ogg" });
+                musicPlayer.MessageLogged += MusicPlayer_MessageLogged;
+                musicPlayer.MediaFailed += MusicPlayer_MediaFailed;
+            }
+
+            foreach (Music m in mainWindow.LoadedModReplacements.Music)
+            {
+                musicMods.Add(new ModMusic(m) { File = $@"{mainWindow.LoadedModPath}\{m.File}.ogg" });
             }
 
             SetComboBox.ItemsSource = sets.Select(z => z.Name);
-            SelectedSongComboBox.ItemsSource = songs.ID;
+            SelectedSongComboBox.ItemsSource = songs.Id;
             DescriptionComboBox.ItemsSource = songs.Description;
             SetComboBox.SelectedIndex = 0;
             SelectedSongComboBox.SelectedIndex = 0;
         }
 
-        private void MusicPlayer_MediaFailed(object? sender, MediaFailedEventArgs e)
+        private static void MusicPlayer_MediaFailed(object? sender, MediaFailedEventArgs e)
         {
-            MessageBox.Show(e.ErrorException.Message);
+            Console.WriteLine(e.ErrorException);
         }
 
-        private void MusicPlayer_MessageLogged(object? sender, MediaLogMessageEventArgs e)
+        private static void MusicPlayer_MessageLogged(object? sender, MediaLogMessageEventArgs e)
         {
-            MessageBox.Show(e.Message);
+            Console.WriteLine(e.Message);
         }
 
         private void MusicPlayer_MediaOpened(object? sender, MediaOpenedEventArgs e)
@@ -200,7 +205,7 @@ namespace OrangeJuiceModMaker
                 MusicReplaceButton.Content = "Loading Music";
                 InputFile inFile = new(modifiedMusic.File);
                 OutputFile outFile = new(mp3Path);
-                Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
                 ConversionOptions options = new()
                 {
                     AudioSampleRate = AudioSampleRate.Hz44100
@@ -321,9 +326,9 @@ namespace OrangeJuiceModMaker
             MusicReplaceButton.Content = "Loading Music";
             EnableMusicControls(false);
 
-            string tempPath = $@"{MainWindow.LoadedModPath}\music\{modifiedMusic.Id}{Path.GetFileNameWithoutExtension(o.FileName)}.temp";
-            string mp3Path = $@"{MainWindow.LoadedModPath}\music\{modifiedMusic.Id}{Path.GetFileNameWithoutExtension(o.FileName)}.mp3";
-            string oggPath = $@"{MainWindow.LoadedModPath}\music\{modifiedMusic.Id}{Path.GetFileNameWithoutExtension(o.FileName)}.ogg";
+            string tempPath = $@"{mainWindow.LoadedModPath}\music\{modifiedMusic.Id}{Path.GetFileNameWithoutExtension(o.FileName)}.temp";
+            string mp3Path = $@"{mainWindow.LoadedModPath}\music\{modifiedMusic.Id}{Path.GetFileNameWithoutExtension(o.FileName)}.mp3";
+            string oggPath = $@"{mainWindow.LoadedModPath}\music\{modifiedMusic.Id}{Path.GetFileNameWithoutExtension(o.FileName)}.ogg";
 
             File.Copy(Path.GetFullPath(o.FileName), tempPath, true);
 
@@ -333,7 +338,7 @@ namespace OrangeJuiceModMaker
                 {
                     InputFile inFile = new(tempPath);
                     OutputFile outFile = new(mp3Path);
-                    Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
                     ConversionOptions options = new()
                     {
                         AudioSampleRate = AudioSampleRate.Hz44100
@@ -345,7 +350,7 @@ namespace OrangeJuiceModMaker
                 {
                     InputFile inFile = new(tempPath);
                     OutputFile outFile = new(oggPath);
-                    Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
                     ConversionOptions options = new()
                     {
                         AudioSampleRate = AudioSampleRate.Hz44100
@@ -382,7 +387,7 @@ namespace OrangeJuiceModMaker
         {
             songs = sets[SetComboBox.SelectedIndex];
 
-            SelectedSongComboBox.ItemsSource = songs.ID;
+            SelectedSongComboBox.ItemsSource = songs.Id;
             SelectedSongComboBox.SelectedIndex = 0;
 
             DescriptionComboBox.ItemsSource = songs.Description;
@@ -401,7 +406,7 @@ namespace OrangeJuiceModMaker
             }
 
             ModMusic.SongType t = songs.Name == "Events" ? ModMusic.SongType.EventTheme : ModMusic.SongType.UnitTheme;
-            string id = songs.ID[SelectedSongComboBox.SelectedIndex];
+            string id = songs.Id[SelectedSongComboBox.SelectedIndex];
             if (musicMods.Any(z => z.Id == id && z.Song == t))
             {
             }
@@ -439,7 +444,7 @@ namespace OrangeJuiceModMaker
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            modifiedMusic.SaveToMod();
+            modifiedMusic.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, ref mainWindow.LoadedModReplacements);
         }
     }
 }

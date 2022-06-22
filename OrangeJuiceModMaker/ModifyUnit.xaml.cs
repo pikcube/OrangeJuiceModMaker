@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
+using Unosquare.FFME.Common;
 using MediaElement = Unosquare.FFME.MediaElement;
 using Path = System.IO.Path;
 
@@ -23,7 +24,8 @@ namespace OrangeJuiceModMaker
     public partial class ModifyUnit
     {
         //Variable Declaration
-        private Unit selectedUnit = MainWindow.UnitHyperTable.First();
+        private Unit selectedUnit;
+        MainWindow mainWindow;
         private MediaElement musicPlayer => MainWindow.MusicPlayer;
         private long songLength = 1;
         private readonly List<ModifiedUnit> modifiedUnitHyperTable = new();
@@ -90,14 +92,31 @@ namespace OrangeJuiceModMaker
         }
 
         //On Load
-        public ModifyUnit()
+        public ModifyUnit(MainWindow mainWindow)
         {
-            modifiedUnit = new ModifiedUnit(selectedUnit);
+            this.mainWindow = mainWindow;
+            selectedUnit = mainWindow.UnitHyperTable.First();
+            modifiedUnit = new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements);
             modifiedUnitHyperTable.Add(modifiedUnit);
             musicPlayer.MediaEnded += MusicPlayer_MediaEnded;
             musicPlayer.PositionChanged += MusicPlayer_PositionChanged;
             musicPlayer.MediaOpened += MusicPlayer_MediaOpened;
+            if (mainWindow.Debug)
+            {
+                musicPlayer.MessageLogged += MusicPlayer_MessageLogged;
+                musicPlayer.MediaFailed += MusicPlayer_MediaFailed;
+            }
             InitializeComponent();
+        }
+
+        private static void MusicPlayer_MediaFailed(object? sender, MediaFailedEventArgs e)
+        {
+            Console.WriteLine(e.ErrorException);
+        }
+
+        private static void MusicPlayer_MessageLogged(object? sender, MediaLogMessageEventArgs e)
+        {
+            Console.WriteLine(e.Message);
         }
 
         private void MusicPlayer_MediaOpened(object? sender, Unosquare.FFME.Common.MediaOpenedEventArgs e)
@@ -118,7 +137,7 @@ namespace OrangeJuiceModMaker
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            UnitSelectionBox.ItemsSource = MainWindow.UnitHyperTable.Select(z => z.UnitName).OrderBy(z => z);
+            UnitSelectionBox.ItemsSource = mainWindow.UnitHyperTable.Select(z => z.UnitName).OrderBy(z => z);
             UnitSelectionBox.SelectedIndex = 0;
         }
 
@@ -151,10 +170,10 @@ namespace OrangeJuiceModMaker
             MediaPlayerState = PlayState.Stop;
 
             //Get Unit
-            selectedUnit = MainWindow.UnitHyperTable.First(z => z.UnitName == unitName);
+            selectedUnit = mainWindow.UnitHyperTable.First(z => z.UnitName == unitName);
             if (modifiedUnitHyperTable.All(z => z.UnitName != unitName))
             {
-                modifiedUnitHyperTable.Add(new ModifiedUnit(selectedUnit));
+                modifiedUnitHyperTable.Add(new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements));
             }
 
             modifiedUnit = modifiedUnitHyperTable.First(z => z.UnitName == unitName);
@@ -309,7 +328,7 @@ namespace OrangeJuiceModMaker
                 MusicReplaceButton.Content = "Loading Music";
                 InputFile inFile = new(modifiedUnit.Music.File);
                 OutputFile outFile = new(mp3Path);
-                Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
                 ConversionOptions options = new()
                 {
                     AudioSampleRate = AudioSampleRate.Hz44100
@@ -378,7 +397,7 @@ namespace OrangeJuiceModMaker
         private void ReplacePicture(string modifiedUnitCharacterCard, string[] paths256, string[]? paths128, Func<int> getIndex, Action incIndex)
         {
             int res = 256;
-            string TempName() => $@"{MainWindow.Temp}\temp{modifiedUnitCharacterCard}{getIndex()}{res}.temp";
+            string TempName() => $@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}{getIndex()}{res}.temp";
             OpenFileDialog a = new()
             {
                 Filter =
@@ -465,8 +484,8 @@ namespace OrangeJuiceModMaker
                     {
                         m.FilterType = FilterType.Point;
                         m.Resize(128, 128);
-                        m.Write($@"{MainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp");
-                        paths128[getIndex()] = $@"{MainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp";
+                        m.Write($@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp");
+                        paths128[getIndex()] = $@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp";
                     }
 
                     if (m != pictures.Last())
@@ -528,7 +547,7 @@ namespace OrangeJuiceModMaker
         private void ReplaceFile(string newFile, int res, string id, out string? path)
         {
             path = null;
-            string tempName = @$"{MainWindow.Temp}\{id}{res}.temp";
+            string tempName = @$"{mainWindow.Temp}\{id}{res}.temp";
             using MagickImage image = new(newFile);
 
             if (image.Format is not (MagickFormat.Png or MagickFormat.Dds))

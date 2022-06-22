@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>false</UseWindowsForms>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <Platforms>AnyCPU;x64</Platforms>
+    <StartupObject>OrangeJuiceModMaker.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

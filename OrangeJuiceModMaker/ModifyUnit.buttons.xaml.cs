@@ -147,7 +147,7 @@ namespace OrangeJuiceModMaker
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
             UnloadImages();
-            modifiedUnit.SaveToMod();
+            modifiedUnit.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, ref mainWindow.LoadedModReplacements);
             ReloadImages();
         }
 
@@ -203,9 +203,9 @@ namespace OrangeJuiceModMaker
             MusicReplaceButton.Content = "Loading Music";
             EnableMusicControls(false);
 
-            string tempPath = $@"{MainWindow.LoadedModPath}\music\{modifiedUnit.UnitId}{Path.GetFileNameWithoutExtension(o.FileName)}.temp";
-            string mp3Path = $@"{MainWindow.LoadedModPath}\music\{modifiedUnit.UnitId}{Path.GetFileNameWithoutExtension(o.FileName)}.mp3";
-            string oggPath = $@"{MainWindow.LoadedModPath}\music\{modifiedUnit.UnitId}{Path.GetFileNameWithoutExtension(o.FileName)}.ogg";
+            string tempPath = $@"{mainWindow.LoadedModPath}\music\{modifiedUnit.UnitId}{Path.GetFileNameWithoutExtension(o.FileName)}.temp";
+            string mp3Path = $@"{mainWindow.LoadedModPath}\music\{modifiedUnit.UnitId}{Path.GetFileNameWithoutExtension(o.FileName)}.mp3";
+            string oggPath = $@"{mainWindow.LoadedModPath}\music\{modifiedUnit.UnitId}{Path.GetFileNameWithoutExtension(o.FileName)}.ogg";
 
             File.Copy(Path.GetFullPath(o.FileName), tempPath, true);
 
@@ -215,7 +215,7 @@ namespace OrangeJuiceModMaker
                 {
                     InputFile inFile = new(tempPath);
                     OutputFile outFile = new(mp3Path);
-                    Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
                     ConversionOptions options = new()
                     {
                         AudioSampleRate = AudioSampleRate.Hz44100
@@ -227,7 +227,7 @@ namespace OrangeJuiceModMaker
                 {
                     InputFile inFile = new(tempPath);
                     OutputFile outFile = new(oggPath);
-                    Engine ffmpeg = new($@"{MainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
                     ConversionOptions options = new()
                     {
                         AudioSampleRate = AudioSampleRate.Hz44100
@@ -317,7 +317,8 @@ namespace OrangeJuiceModMaker
 
         private async void ResetAll_OnClick(object sender, RoutedEventArgs e)
         {
-            modifiedUnit = new ModifiedUnit(selectedUnit, false);
+            modifiedUnit = new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements,
+                false);
             await RefreshGrid();
         }
 

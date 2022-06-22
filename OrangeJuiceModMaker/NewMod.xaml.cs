@@ -13,16 +13,19 @@ namespace OrangeJuiceModMaker
     /// <summary>
     /// Interaction logic for NewMod.xaml
     /// </summary>
-    public partial class NewMod : Window
+    public partial class NewMod
     {
-        private List<TextBox> singleLineBoxes = new();
+        private readonly List<TextBox> singleLineBoxes = new();
 
-        private bool EditMode = false;
+        private readonly bool editMode;
 
-        public string? NewModName = null;
+        public string? NewModName;
 
-        public NewMod(ModDefinition? d = null)
+        private readonly MainWindow window;
+
+        public NewMod(MainWindow window, ModDefinition? d = null)
         {
+            this.window = window;
             InitializeComponent();
             singleLineBoxes.Add(NameBox);
             singleLineBoxes.Add(AuthorBox);
@@ -35,12 +38,12 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
-            EditMode = true;
+            editMode = true;
 
             CreateButton.Content = "Save Mod";
 
-            NameBox.Text = d.Name ?? "";
-            AuthorBox.Text = d.Author ?? "";
+            NameBox.Text = d.Name;
+            AuthorBox.Text = d.Author;
             IsContest.SelectedIndex = d.Contest is true ? 0 : 1;
             if (d.Color is not null)
             {
@@ -66,23 +69,20 @@ namespace OrangeJuiceModMaker
             ViewLogButton.Content = enabled ? "Hide Changelog" : "View Changelog";
         }
 
-        private void NewMod_Loaded(object sender, RoutedEventArgs e)
+        private static void NewMod_Loaded(object sender, RoutedEventArgs e)
         {
 
         }
 
-        public double PixelToPoint(double pixels)
+        private static double PixelToPoint(double pixels)
         {
             double result = pixels * 2 / 3;
-            switch (result)
+            return result switch
             {
-                case double.NaN:
-                    return 5;
-                case <= 0:
-                    return 1;
-                default:
-                    return result;
-            }
+                double.NaN => 5,
+                <= 0 => 1,
+                _ => result
+            };
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -108,10 +108,10 @@ namespace OrangeJuiceModMaker
 
             NewModName = mod.Name;
 
-            if (EditMode)
+            if (editMode)
             {
-                MainWindow.LoadedModDefinition = mod;
-                Root.WriteJson();
+                window.LoadedModDefinition = mod;
+                Root.WriteJson(window.LoadedModPath, window.LoadedModDefinition, window.LoadedModReplacements);
                 Close();
                 return;
             }
@@ -140,7 +140,7 @@ namespace OrangeJuiceModMaker
             Close();
         }
 
-        private bool textLock = false;
+        private bool textLock;
         private bool colorDefault = true;
 
         private void ColorTextChangedRgb(object sender, TextChangedEventArgs e)
