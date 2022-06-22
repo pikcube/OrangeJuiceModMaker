@@ -76,19 +76,34 @@ namespace OrangeJuiceModMaker
                     {
                         string pak = pakName;
                         @continue = true;
-                        ProcessStartInfo unpackinfo = new()
+                        ProcessStartInfo unpackInfo = new()
                         {
                             Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -y",
-                            FileName = "7za.exe",
+                            FileName = $@"{MainWindow.AppData}\7za.exe",
+                            //UseShellExecute = true,
+                            //WindowStyle = ProcessWindowStyle.Normal,
+                            //CreateNoWindow = false
                             UseShellExecute = false,
                             WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
                         };
-                        Process p = Process.Start(unpackinfo) ?? throw new Exception("Unpack Failed");
+                        Process p = Process.Start(unpackInfo) ?? throw new Exception("Unpack Failed");
+
+                        string output = p.StandardOutput.ReadToEnd();
+                        string error = p.StandardError.ReadToEnd();
 
                         p.WaitForExit();
 
                         ++x;
+
+                        if (p.ExitCode != 0)
+                        {
+                            File.WriteAllText("7zip_error.error", $"{output}{Environment.NewLine}{error}");
+                            MainWindow.ExitTime = true;
+                        }
+
                         if (Exit)
                         {
                             return;

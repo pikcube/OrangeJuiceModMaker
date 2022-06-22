@@ -109,6 +109,10 @@ namespace OrangeJuiceModMaker
 
         private void MusicPlayer_PositionChanged(object? sender, Unosquare.FFME.Common.PositionChangedEventArgs e)
         {
+            if (songLength == 0)
+            {
+                return;
+            }
             UpdateCurrentPosition();
         }
 
@@ -136,9 +140,11 @@ namespace OrangeJuiceModMaker
         //On Unit Select
         private async void UnitSelectionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            UnitSelectionBox.IsEnabled = false;
             //Guard Clause
             if (UnitSelectionBox.SelectedItem is not string unitName)
             {
+                UnitSelectionBox.IsEnabled = true;
                 return;
             }
 
@@ -153,6 +159,7 @@ namespace OrangeJuiceModMaker
 
             modifiedUnit = modifiedUnitHyperTable.First(z => z.UnitName == unitName);
             await RefreshGrid();
+            UnitSelectionBox.IsEnabled = true;
         }
 
         //Click Picture Get X Y Offset
@@ -197,6 +204,10 @@ namespace OrangeJuiceModMaker
         private void UpdateCurrentPosition() => UpdateCurrentPositionUi(musicPlayer.Position.Ticks);
         private void UpdateCurrentPosition(long ticks)
         {
+            if (songLength == 0)
+            {
+                return;
+            }
             musicPlayer.Position = TimeSpan.FromTicks(ticks);
             UpdateCurrentPositionUi(ticks);
         }
@@ -206,7 +217,7 @@ namespace OrangeJuiceModMaker
             string s = $"{43 * ticks / 10000}";
             double p = (double)ticks * 10 / songLength;
             ProgressSlider.ValueChanged -= ProgressSlider_ValueChanged;
-            ProgressSlider.Value = p;
+            ProgressSlider.Value = p is double.NaN ? 0 : p;
             ProgressSlider.ValueChanged += ProgressSlider_ValueChanged;
             CurrentPositionBox.TextChanged -= CurrentPositionBox_OnTextChanged;
             CurrentPositionBox.Text = s;
@@ -221,7 +232,7 @@ namespace OrangeJuiceModMaker
             SelectedCharacter = 0;
             UnloadImages();
             EnableMusicControls(false);
-            await musicPlayer.Stop();
+            musicPlayer.Stop().GetAwaiter().GetResult();
 
             FaceXBox.Text = modifiedUnit.FaceX.First().ToString();
             FaceYBox.Text = modifiedUnit.FaceY.First().ToString();
@@ -336,7 +347,13 @@ namespace OrangeJuiceModMaker
                 }
             }
 
-            await musicPlayer.Pause();
+            musicPlayer.Pause().GetAwaiter().GetResult();
+
+            if (modifiedUnit.Music is null)
+            {
+                await RefreshGrid();
+                return;
+            }
 
             LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
 

@@ -198,18 +198,35 @@ namespace OrangeJuiceModMaker
                             open.InitialDirectory = @"C:\Program Files (x86)";
                         }
 
-                        open.Title = "Please locate your 100% Orange Juice executable";
+                        open.Title = "Please locate your 100% Orange Juice game executable";
 
-                        if (open.ShowDialog() == true)
+                        bool keepSearching = true;
+
+                        do
                         {
-                            GameDirectory = Path.GetDirectoryName(open.FileName) ?? throw new FileNotFoundException();
-                            File.WriteAllText("gamedirectory.path", GameDirectory);
-                        }
-                        else
-                        {
-                            Close();
-                            return;
-                        }
+                            if (open.ShowDialog() == true)
+                            {
+                                GameDirectory = Path.GetDirectoryName(open.FileName) ??
+                                                throw new FileNotFoundException();
+                                if (!Directory.Exists($@"{GameDirectory}\data"))
+                                {
+                                    if (!HelpFindSteamDirectory())
+                                    {
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    File.WriteAllText("gamedirectory.path", GameDirectory);
+                                    keepSearching = false;
+                                }
+                            }
+                            else
+                            {
+                                Close();
+                                return;
+                            }
+                        } while (keepSearching);
                     }
                 }
 
@@ -288,6 +305,76 @@ namespace OrangeJuiceModMaker
                 File.AppendAllLines("main_error.error", error);
                 MessageBox.Show("Error in load, see main_error.error for more information");
                 Close();
+            }
+
+            bool HelpFindSteamDirectory()
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    "Could not find game data. Do you need help locating your game directory?",
+                    "Make sure you select the game executable, not the mod installer.", MessageBoxButton.YesNoCancel);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        switch (MessageBox.Show("Did you install the game through steam?",
+                                    "How did you install the game", MessageBoxButton.YesNoCancel))
+                        {
+                            case MessageBoxResult.Yes:
+                                MessageBox.Show(
+                                    "Open steam and select library (press OK to continue)");
+                                MessageBox.Show("Click on 100% Orange Juice in the side bar");
+                                MessageBox.Show(
+                                    "Right click the game in the side bar, select Manage -> Browse Local Files");
+                                MessageBox.Show(
+                                    "You should see a few folders and files, one of them being 100orange.exe");
+                                MessageBox.Show(
+                                    "Select the path by clicking in the address bar at the top of the window (some text should appear blue). " +
+                                    "Then right click and press copy.");
+                                MessageBox.Show(
+                                    "When the file picker appears again in a second, you can paste the path by clicking the " +
+                                    "address bar, deleting the text, right clicking, and clicking paste. Then press enter.");
+                                break;
+                            case MessageBoxResult.No:
+                                switch (MessageBox.Show("Did you install the game to an external drive?",
+                                            "Where did you install the game?",
+                                            MessageBoxButton.YesNoCancel))
+                                {
+                                    case MessageBoxResult.Yes:
+                                        MessageBox.Show(
+                                            "Look on the external drive for the executable");
+                                        break;
+                                    case MessageBoxResult.No:
+                                        MessageBox.Show(
+                                            "You likely installed the game in either program files or program files x86");
+                                        break;
+                                    case MessageBoxResult.None:
+                                    case MessageBoxResult.OK:
+                                    case MessageBoxResult.Cancel:
+                                    default:
+                                        Close();
+                                        return false;
+                                }
+
+                                break;
+                            case MessageBoxResult.None:
+                            case MessageBoxResult.OK:
+                            case MessageBoxResult.Cancel:
+                            default:
+                                Close();
+                                return false;
+                        }
+
+                        break;
+                    case MessageBoxResult.No:
+                        break;
+                    case MessageBoxResult.Cancel:
+                    case MessageBoxResult.None:
+                    case MessageBoxResult.OK:
+                    default:
+                        Close();
+                        return false;
+                }
+
+                return true;
             }
         }
 

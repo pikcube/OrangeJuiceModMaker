@@ -90,8 +90,8 @@ namespace OrangeJuiceModMaker
             SetComboBox.ItemsSource = sets.Select(z => z.Name);
             SelectedSongComboBox.ItemsSource = songs.ID;
             DescriptionComboBox.ItemsSource = songs.Description;
-            SetComboBox.SelectedIndex = 1;
-            SelectedSongComboBox.SelectedIndex = 32;
+            SetComboBox.SelectedIndex = 0;
+            SelectedSongComboBox.SelectedIndex = 0;
         }
 
         private void MusicPlayer_MediaFailed(object? sender, MediaFailedEventArgs e)
