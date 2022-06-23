@@ -7,14 +7,13 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using Octokit;
-using Application = System.Windows.Application;
 
 namespace OrangeJuiceModMaker
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool AllocConsole();
@@ -25,8 +24,8 @@ namespace OrangeJuiceModMaker
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
+        const int SwHide = 0;
+        const int SwShow = 5;
         private Task<string> postAction = Task.Run(() => "");
 
         private void App_OnStartup(object sender, StartupEventArgs e)
@@ -39,7 +38,7 @@ namespace OrangeJuiceModMaker
             
             async Task<string> DownloadExeAsync(HttpClient client, Release release, bool isBeta)
             {
-                string path = downloadPath; ;
+                string path = downloadPath;
                 Directory.CreateDirectory(path);
                 path += @"\OJSetup.exe";
                 HttpResponseMessage response = client.GetAsync(release.Assets[isBeta ? 0 : 1].BrowserDownloadUrl).Result;
@@ -74,13 +73,13 @@ namespace OrangeJuiceModMaker
                     }
                     else
                     {
-                        ShowWindow(handle, SW_SHOW);
+                        ShowWindow(handle, SwShow);
                     }
                 }
                 else
                 {
                     IntPtr handle = GetConsoleWindow();
-                    ShowWindow(handle, SW_HIDE);
+                    ShowWindow(handle, SwHide);
                 }
 
                 e.Args.ForEach(Console.WriteLine);
