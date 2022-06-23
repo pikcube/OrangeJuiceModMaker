@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OrangeJuiceModMaker": {
+      "commandName": "Project",
+      "commandLineArgs": "/d"
+    }
+  }
+}

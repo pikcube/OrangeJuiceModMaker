@@ -47,8 +47,10 @@ namespace OrangeJuiceModMaker
             }
         }
 
-        public static string StripStart(this string s, int length) => s.Length > length ? s[(length - 1)..] : "";
+        public static string StripStart(this string s, int length) => s.Length > length ? s[length..] : "";
         public static string StripEnd(this string s, int length) => s.Length > length ? s[..^length] : "";
+
+        public static string AsString(this IEnumerable<string> list) => string.Join(Environment.NewLine, list);
     }
 
     class MusicList
@@ -463,6 +465,7 @@ namespace OrangeJuiceModMaker
                 {
                     string[] error =
                         { DateTime.Now.ToString(CultureInfo.InvariantCulture), exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
+                    Console.WriteLine(error.AsString());
                     File.WriteAllLines("unit_class_error.txt", error);
                     MainWindow.ExitTime = true;
                     throw;
@@ -814,5 +817,4 @@ namespace OrangeJuiceModMaker
         [JsonProperty("single_file")]
         public bool? SingleFile { get; set; }
     }
-
 }

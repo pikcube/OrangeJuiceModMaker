@@ -124,6 +124,7 @@ namespace OrangeJuiceModMaker
                 string[] error =
                     { exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
                 File.WriteAllLines("unpack_error.txt", error);
+                Console.WriteLine(error.AsString());
                 throw;
             }
 

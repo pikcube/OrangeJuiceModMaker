@@ -300,7 +300,14 @@ namespace OrangeJuiceModMaker
                 string[] error =
                     { DateTime.Now.ToString(CultureInfo.InvariantCulture), exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
                 File.AppendAllLines("main_error.error", error);
-                MessageBox.Show("Error in load, see main_error.error for more information");
+                if (debug)
+                {
+                    Console.WriteLine(error.AsString());
+                }
+                else
+                {
+                    MessageBox.Show("Error in load, see main_error.error for more information");
+                }
                 Close();
             }
 
