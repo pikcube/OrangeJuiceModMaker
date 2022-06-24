@@ -24,7 +24,7 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class MainWindow
     {
-        public bool Debug = false;
+        public readonly bool Debug;
         public static string? GameDirectory;
         public static readonly MediaElement MusicPlayer = new();
         private static bool steamVersion;
@@ -32,7 +32,7 @@ namespace OrangeJuiceModMaker
         public readonly string Temp;
         public readonly string AppData;
         public ModReplacements LoadedModReplacements = new();
-        public ModDefinition LoadedModDefinition = new ModDefinition("temp", "desc", "auth", 2);
+        public ModDefinition LoadedModDefinition = new("temp", "desc", "auth", 2);
         public string LoadedModPath = "";
         public readonly List<CsvHolder> CsvFiles = new();
         public readonly List<Unit> UnitHyperTable = new();
@@ -43,6 +43,7 @@ namespace OrangeJuiceModMaker
         private readonly string[] config;
         private readonly string modPath = "";
         private readonly string exePath = "";
+        private Task<bool> ready;
 
         public static bool ExitTime
         {
@@ -71,7 +72,7 @@ namespace OrangeJuiceModMaker
             Close();
         }
 
-        public MainWindow(bool debug)
+        public MainWindow(bool debug, App app, string downloadPath)
         {
             Debug = debug;
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -83,12 +84,14 @@ namespace OrangeJuiceModMaker
                 : new[] { "0", "0" };
             MusicPlayer.LoadedBehavior = MediaPlaybackState.Pause;
             MusicPlayer.UnloadedBehavior = MediaPlaybackState.Manual;
+            ready = Task.Run(() => true);
 
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             try
             {
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
+                ready = new UpdateApp(app).CheckForUpdate(downloadPath, debug, exeDirectory);
                 Directory.CreateDirectory(AppData);
                 Directory.SetCurrentDirectory(AppData);
                 Directory.CreateDirectory(Temp);
@@ -160,11 +163,11 @@ namespace OrangeJuiceModMaker
                         File.Delete("csvFiles.7z");
                     }
                     string[] csvFileList = Directory.GetFiles("csvFiles");
-                    const int count = 22;
+                    const int count = 23;
                     if (csvFileList.Length != count)
                     {
                         throw csvFileList.Length > count
-                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 158 again?")
+                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 166 again?")
                             : new Exception("Didn't find all files");
                     }
                     foreach (string file in csvFileList)
@@ -272,7 +275,6 @@ namespace OrangeJuiceModMaker
 
                 loadOjData.Wait();
                 loadHyperData.Wait();
-
                 AggregateException? ex = loadOjData.Exception ?? loadHyperData.Exception ?? null;
 
                 if (ex is not null)
@@ -382,16 +384,28 @@ namespace OrangeJuiceModMaker
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SelectedModComboBox.SelectedIndex = config[0].ToInt();
             SelectedModeComboBox.ItemsSource = new[]
-                { "Modify Unit", "Modify Card", "Modify Music", "Modify Mod Definition" };
+            {
+                "Modify Unit", 
+                "Modify Card", 
+                "Modify Music", 
+                "Modify Sound Effect", 
+                "Modify Mod Definition"
+            };
             SelectedModeComboBox.SelectedIndex = config[1].ToInt();
             if (SelectedModeComboBox.SelectedIndex is >= 3 or -1)
             {
                 SelectedModeComboBox.SelectedIndex = 0;
             }
+
+            if (await ready)
+            {
+                return;
+            }
+            Close();
         }
 
         //Check the game directory for mod files
@@ -524,11 +538,14 @@ namespace OrangeJuiceModMaker
                 case "Modify Music":
                     new ModifyMusic(this) { Owner = this }.ShowDialog();
                     return;
+                case "Modify Sound Effect":
+                    new ModifySoundEffect() { Owner = this }.ShowDialog();
+                    return;
                 case "Modify Mod Definition":
                     NewMod newMod = new(this, LoadedModDefinition) { Owner = this };
                     newMod.ShowDialog();
-                    UpdateModsLoaded();
-            SelectedModComboBox.SelectedItem = newMod.NewModName ?? SelectedModComboBox.SelectedItem;
+                    UpdateModsLoaded(); 
+                    SelectedModComboBox.SelectedItem = newMod.NewModName ?? SelectedModComboBox.SelectedItem;
                     return;
                 default:
                     MessageBox.Show("Error");

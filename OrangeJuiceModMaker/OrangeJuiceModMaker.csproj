@@ -115,6 +115,9 @@
     <None Update="csvFiles\RoPoChiCards.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="csvFiles\SoundEffects.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="csvFiles\StarDevourerCards.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

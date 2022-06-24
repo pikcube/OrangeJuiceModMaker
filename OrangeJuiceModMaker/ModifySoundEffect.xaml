@@ -1,0 +1,38 @@
+﻿<Window x:Class="OrangeJuiceModMaker.ModifySoundEffect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OrangeJuiceModMaker"
+        mc:Ignorable="d"
+        Title="ModifySoundEffect" Height="350" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Selected Sound Effect" TextAlignment="Center" FontSize="20"/>
+        <ComboBox Grid.Row="3" Grid.Column="1" x:Name="SelectedSongComboBox" SelectionChanged="SelectedSongComboBox_OnSelectionChanged"/>
+        <TextBox Grid.Row="5" Grid.Column="1" x:Name="DescriptionComboBox" Text="A Description" FontSize="20"/>
+        <Button Grid.Row="7" Grid.Column="1" Content="▶" FontSize="20" x:Name="PlayPauseButton" Click="PlayPauseButton_OnClick"/>
+        <Button Grid.Row="9" Grid.Column="1" Content="Replace with..." FontSize="20" 
+                x:Name="MusicReplaceButton" Click="MusicReplaceButton_OnClick"/>
+        <Button Grid.Row="11" Grid.Column="1" Content="Save to Mod" FontSize="20" Click="ButtonBase_OnClick"/>
+    </Grid>
+</Window>

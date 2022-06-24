@@ -571,7 +571,6 @@ namespace OrangeJuiceModMaker
             path = tempName;
         }
 
-        long SamplesFromTicks(long ticks) => 43 * ticks / 10000;
         TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
 
         private BitmapImage GetUnitArt(string x)

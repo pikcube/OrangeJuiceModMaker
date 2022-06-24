@@ -2,11 +2,14 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Octokit;
 
 namespace OrangeJuiceModMaker
 {
@@ -51,6 +54,102 @@ namespace OrangeJuiceModMaker
         public static string StripEnd(this string s, int length) => s.Length > length ? s[..^length] : "";
 
         public static string AsString(this IEnumerable<string> list) => string.Join(Environment.NewLine, list);
+    }
+    public class UpdateApp
+    {
+        private readonly App app;
+
+        public UpdateApp(App app)
+        {
+            this.app = app;
+        }
+
+        private static bool SkipVersion(string newVersion)
+        {
+            string skipFile =
+                $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\release.version";
+
+            return File.Exists(skipFile) && File.ReadAllText(skipFile) != newVersion;
+        }
+
+        private static async Task<string> DownloadExeAsync(HttpClient client, Release release, bool isBeta, string downloadPath)
+        {
+            string path = downloadPath;
+            Directory.CreateDirectory(path);
+            path += @"\OJSetup.exe";
+            HttpResponseMessage response = client.GetAsync(release.Assets[isBeta ? 0 : 1].BrowserDownloadUrl).Result;
+            byte[] byteArray = await response.Content.ReadAsByteArrayAsync();
+            await File.WriteAllBytesAsync(path, byteArray);
+            return path;
+        }
+
+        public async Task<bool> CheckForUpdate(string downloadPath, bool debug, string exeLocation)
+        {
+            using HttpClient client = new();
+            Task<string> a = client.GetStringAsync(@"https://raw.githubusercontent.com/pikcube/OrangeJuiceModMaker/main/release.version");
+            string[] version = (await File.ReadAllTextAsync($@"{exeLocation}\release.version")).Split(":");
+            string[] checkedVersion = (await a).Split(":");
+            bool isBeta = version[0] == "Beta";
+            string checkedVersionString = isBeta ? checkedVersion[1] : checkedVersion[3];
+            bool upToDate = version[1] == checkedVersionString;
+
+            if (SkipVersion(checkedVersionString))
+            {
+                return true;
+            }
+
+            if (upToDate)
+            {
+                return true;
+            }
+
+            IReadOnlyList<Release>? releases = await new GitHubClient(new ProductHeaderValue("OrangeJuiceModUpdateChecker"))
+                .Repository.Release.GetAll("pikcube", "OrangeJuiceModMaker");
+            Release? release = releases.Where(z => !z.Prerelease || isBeta).MaxBy(z => z.CreatedAt) ?? null;
+            if (release is null)
+            {
+                return true;
+            }
+
+            int? option = GetOption(debug);
+
+            switch (option)
+            {
+                case 1:
+                    string path = await DownloadExeAsync(client, release, isBeta, downloadPath);
+                    Process.Start(path);
+                    Environment.Exit(0);
+                    return false;
+                case 2:
+                    app.PostAction = DownloadExeAsync(client, release, isBeta, downloadPath);
+                    return true;
+                case 3:
+                    return true;
+                case 4:
+                    await File.WriteAllTextAsync(
+                        $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\release.version",
+                        checkedVersionString);
+                    return true;
+                default:
+                    Console.WriteLine("Invalid option");
+                    return false;
+            }
+        }
+
+        private static int? GetOption(bool debug)
+        {
+            if (!debug)
+            {
+                return new UpdateWindow().GetOption();
+            }
+
+            Console.WriteLine("New version of application released:");
+            Console.WriteLine("1. Update now");
+            Console.WriteLine("2. Update on exit");
+            Console.WriteLine("3. Remind me later");
+            Console.WriteLine("4. Skip this version");
+            return Console.ReadLine()?.ToIntOrNull();
+        }
     }
 
     class MusicList
@@ -584,9 +683,9 @@ namespace OrangeJuiceModMaker
             Undefined = -1
         };
 
-        public TypeList Type;
+        public readonly TypeList Type;
 
-        public string Name;
+        public readonly string Name;
 
         public string[][] Rows { get; set; }
 
