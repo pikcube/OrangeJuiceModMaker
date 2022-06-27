@@ -151,6 +151,10 @@ namespace OrangeJuiceModMaker
         private void UpdateCurrentPosition() => UpdateCurrentPositionUi(musicPlayer.Position.Ticks);
         private void UpdateCurrentPosition(long ticks)
         {
+            if (songLength == 0)
+            {
+                return;
+            }
             musicPlayer.Position = TimeSpan.FromTicks(ticks);
             UpdateCurrentPositionUi(ticks);
         }
