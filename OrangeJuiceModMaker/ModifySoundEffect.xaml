@@ -33,6 +33,6 @@
         <Button Grid.Row="7" Grid.Column="1" Content="▶" FontSize="20" x:Name="PlayPauseButton" Click="PlayPauseButton_OnClick"/>
         <Button Grid.Row="9" Grid.Column="1" Content="Replace with..." FontSize="20" 
                 x:Name="MusicReplaceButton" Click="MusicReplaceButton_OnClick"/>
-        <Button Grid.Row="11" Grid.Column="1" Content="Save to Mod" FontSize="20" Click="ButtonBase_OnClick"/>
+        <Button Grid.Row="11" Grid.Column="1" Content="Save to Mod" FontSize="20" Click="SaveToMod_OnClick"/>
     </Grid>
 </Window>

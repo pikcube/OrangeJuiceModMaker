@@ -9,7 +9,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using ImageMagick;
 using Octokit;
+using File = System.IO.File;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace OrangeJuiceModMaker
 {
@@ -54,7 +58,23 @@ namespace OrangeJuiceModMaker
         public static string StripEnd(this string s, int length) => s.Length > length ? s[..^length] : "";
 
         public static string AsString(this IEnumerable<string> list) => string.Join(Environment.NewLine, list);
+
+        public static bool CompareFiles(string path1, string path2)
+        {
+            if (!File.Exists(path1) || !File.Exists(path2))
+            {
+                return false;
+            }
+
+            byte[] f1 = File.ReadAllBytes(path1);
+            byte[] f2 = File.ReadAllBytes(path2);
+
+            return f1.SequenceEqual(f2);
+        }
+
+        public static bool CompareFiles(FileInfo info1, FileInfo info2) => CompareFiles(info1.FullName, info2.FullName);
     }
+
     public class UpdateApp
     {
         private readonly App app;
@@ -263,15 +283,19 @@ namespace OrangeJuiceModMaker
         public ModTexture(string path, ModReplacements replacements, string modPath) : base(path)
         {
             Id = Path[6..];
+            Texture? texture = replacements.Textures.FirstOrDefault(z => z.Path == path);
             CurrentArtPath = $@"{modPath}\{path}256.png";
             CurrentLowArtPath = $@"{modPath}\{path}128.png";
-            Texture? texture = replacements.Textures.FirstOrDefault(z => z.Path == path);
+            string defaultArtPath = $@"pakfiles\{path}256.png";
+            string defaultLowPath = $@"pakfiles\{path}128.png";
             if (texture is null)
             {
-                CurrentArtPath = $@"pakfiles\{path}256.png";
-                CurrentLowArtPath = $@"pakfiles\{path}128.png";
+                CurrentArtPath = defaultArtPath;
+                CurrentLowArtPath = defaultLowPath;
                 return;
             }
+            EnsureCardExists(path, CurrentArtPath, CurrentLowArtPath);
+
             FaceX = texture.FaceX;
             FaceY = texture.FaceY;
             CostumeId = texture.CostumeId;
@@ -324,6 +348,7 @@ namespace OrangeJuiceModMaker
 
         public ModifiedUnit(Unit baseUnit, string baseResourcePath, ModReplacements? replacements, bool includeModData = true)
         {
+            //Initialize Default Values for the no replacement case
             this.baseUnit = baseUnit;
             UnitId = baseUnit.UnitId;
             UnitName = baseUnit.UnitName;
@@ -351,6 +376,7 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
+            //Load in Music Replacements
             foreach (Music m in replacements.Music.Where(z => z.UnitId is not null && z.UnitId == UnitId))
             {
                 Music = new Music(m.File)
@@ -362,6 +388,7 @@ namespace OrangeJuiceModMaker
                 };
             }
 
+            //Search for Hyper Replacements
             for (int n = 0; n < HyperCardPaths.Length; ++n)
             {
                 Texture? r = replacements.Textures.FirstOrDefault(z => $@"pakFiles\{z.Path}256.png" == HyperCardPaths[n]);
@@ -372,10 +399,12 @@ namespace OrangeJuiceModMaker
                 }
                 HyperCardPaths[n] = $@"{baseResourcePath}\{r.Path}256.png";
                 HyperCardPathsLow[n] = $@"{baseResourcePath}\{r.Path}128.png";
+                Texture.EnsureCardExists(r.Path, HyperCardPaths[n], HyperCardPathsLow[n]);
                 HyperFlavor[n] = r.CustomFlavor ?? HyperFlavor[n];
                 HyperNames[n] = r.CustomName ?? HyperNames[n];
             }
 
+            //Search for Character Card Replacements
             for (int n = 0; n < CharacterCardPaths.Length; ++n)
             {
                 Texture? r = replacements.Textures.FirstOrDefault(z => $@"pakFiles\{z.Path}256.png" == CharacterCardPaths[n]);
@@ -385,14 +414,21 @@ namespace OrangeJuiceModMaker
                 }
                 CharacterCardPaths[n] = $@"{baseResourcePath}\{r.Path}256.png";
                 CharacterCardPathsLow[n] = $@"{baseResourcePath}\{r.Path}128.png";
+                Texture.EnsureCardExists(r.Path, CharacterCardPaths[n], CharacterCardPathsLow[n]);
                 CharacterCardNames[n] = r.CustomName ?? CharacterCardNames[n];
             }
 
+            //Search for Unit Replacements
             for (int n = 0; n < CharacterArt.Length; ++n)
             {
                 Texture? r = replacements.Textures.FirstOrDefault(z => $@"pakFiles\{z.Path}.png" == CharacterArt[n]);
-                if (r is null) continue;
+                if (r is null)
+                {
+                    continue;
+                }
+
                 CharacterArt[n] = $@"{baseResourcePath}\{r.Path}.png";
+                Texture.EnsureUnitExists(r.Path, CharacterArt[n]);
                 FaceX[n] = r.FaceX ?? 0;
                 FaceY[n] = r.FaceY ?? 0;
             }
@@ -432,19 +468,12 @@ namespace OrangeJuiceModMaker
                 };
                 replacements.Textures.Add(t);
 
-                if (File.Exists($@"{baseResourcePath}\cards\{HyperIds[n]}256.png"))
-                {
-                    File.Delete($@"{baseResourcePath}\cards\{HyperIds[n]}256.png");
-                }
+                string highPath = $@"{baseResourcePath}\cards\{HyperIds[n]}256.png";
+                string lowPath = $@"{baseResourcePath}\cards\{HyperIds[n]}128.png";
 
-                File.Copy(HyperCardPaths[n], $@"{baseResourcePath}\cards\{HyperIds[n]}256.png");
+                CopyFile(HyperCardPaths[n], highPath);
 
-                if (File.Exists($@"{baseResourcePath}\cards\{HyperIds[n]}128.png"))
-                {
-                    File.Delete($@"{baseResourcePath}\cards\{HyperIds[n]}128.png");
-                }
-
-                File.Copy(HyperCardPathsLow[n], $@"{baseResourcePath}\cards\{HyperIds[n]}128.png");
+                CopyFile(HyperCardPathsLow[n], lowPath);
             }
 
             for (int n = 0; n < CharacterCardPaths.Length; ++n)
@@ -462,19 +491,11 @@ namespace OrangeJuiceModMaker
                 };
                 replacements.Textures.Add(t);
 
-                if (File.Exists($@"{baseResourcePath}\cards\{CharacterCards[n]}256.png"))
-                {
-                    File.Delete($@"{baseResourcePath}\cards\{CharacterCards[n]}256.png");
-                }
+                string highDestPath = $@"{baseResourcePath}\cards\{CharacterCards[n]}256.png";
+                CopyFile(CharacterCardPaths[n], highDestPath);
 
-                File.Copy(CharacterCardPaths[n], $@"{baseResourcePath}\cards\{CharacterCards[n]}256.png");
-
-                if (File.Exists($@"{baseResourcePath}\cards\{CharacterCards[n]}128.png"))
-                {
-                    File.Delete($@"{baseResourcePath}\cards\{CharacterCards[n]}128.png");
-                }
-
-                File.Copy(CharacterCardPathsLow[n], $@"{baseResourcePath}\cards\{CharacterCards[n]}128.png");
+                string lowDestPath = $@"{baseResourcePath}\cards\{CharacterCards[n]}128.png";
+                CopyFile(CharacterCardPathsLow[n], lowDestPath);
 
             }
 
@@ -494,21 +515,27 @@ namespace OrangeJuiceModMaker
                     FaceY = FaceY[n]
                 };
                 replacements.Textures.Add(t);
-                if (CharacterArt[n] == $@"{baseResourcePath}\{shortPath}")
-                {
-                    continue;
-                }
 
-                if (File.Exists($@"{baseResourcePath}\{shortPath}.png"))
-                {
-                    File.Delete($@"{baseResourcePath}\{shortPath}.png");
-                }
-
-                File.Copy(CharacterArt[n], $@"{baseResourcePath}\{shortPath}.png");
-
+                string destFileName = $@"{baseResourcePath}\{shortPath}.png";
+                CopyFile(CharacterArt[n], destFileName);
             }
 
             Root.WriteJson(baseResourcePath, definition, replacements);
+        }
+
+        private static void CopyFile(string imagePath, string destPath)
+        {
+            if (imagePath == destPath)
+            {
+                return;
+            }
+
+            if (File.Exists(destPath))
+            {
+                File.Delete(destPath);
+            }
+
+            File.Copy(imagePath, destPath);
         }
     }
 
@@ -893,6 +920,7 @@ namespace OrangeJuiceModMaker
     {
         public Texture(string path)
         {
+            
             Path = path;
         }
         [JsonProperty("path")]
@@ -915,5 +943,110 @@ namespace OrangeJuiceModMaker
 
         [JsonProperty("single_file")]
         public bool? SingleFile { get; set; }
+
+        public static void EnsureUnitExists(string path, string currentUnitPath)
+        {
+            bool unitExists = File.Exists(currentUnitPath);
+            string defaultUnitPath = $@"pakfiles\{path}.png";
+
+            if (unitExists)
+            {
+                return;
+            }
+            
+            File.Copy(defaultUnitPath, currentUnitPath);
+        }
+
+        public static void EnsureCardExists(string path, string currentArtPath, string currentLowArtPath)
+        {
+            bool lowExists = File.Exists(currentLowArtPath);
+            bool highExists = File.Exists(currentArtPath);
+            string defaultArtPath = $@"pakfiles\{path}256.png";
+            string defaultLowPath = $@"pakfiles\{path}128.png";
+
+            switch (highExists)
+            {
+                case false when !lowExists:
+                    //Well if they are both gone, let's just grab the originals. The mod creator would need to locate them anyways
+                    File.Copy(defaultArtPath, currentArtPath);
+                    File.Copy(defaultLowPath, currentLowArtPath);
+                    return;
+                case false when lowExists:
+                    //This is the bad case. First let's check if this was just a text mod
+                    if (MyExtensions.CompareFiles(defaultLowPath, currentLowArtPath))
+                    {
+                        File.Copy(defaultArtPath, currentArtPath);
+                        return;
+                    }
+
+                    //Oh shit this wasn't just a text mod, we actually lost an important file
+                    ReplaceMissingFile();
+                    return;
+                case true when !lowExists:
+                    //If only the low is missing, let's just make a low quality one.
+                    ResizeImage(currentArtPath, 128, currentLowArtPath);
+                    return;
+                default:
+                    return;
+            }
+
+            void ResizeImage(string initialPath, int newSize, string finalPath)
+            {
+                MagickImage highQualityArt = new(initialPath);
+                highQualityArt.Resize(newSize, newSize);
+                highQualityArt.Write(finalPath);
+            }
+
+            void ReplaceMissingFile()
+            {
+                MessageBoxManager.Yes = "Find Image";
+                MessageBoxManager.No = "Use Default";
+                MessageBoxManager.Cancel = "Upscale";
+                MessageBoxManager.Register();
+                DialogResult option = MessageBox.Show(
+                    "Card texture is missing. Would you like to find the file, " +
+                    "upscale the small file, or replace with the default?",
+                    "Missing 256.png file", MessageBoxButtons.YesNoCancel);
+                MessageBoxManager.Unregister();
+                switch (option)
+                {
+                    case DialogResult.No:
+                        File.Copy(defaultArtPath, currentArtPath);
+                        break;
+                    case DialogResult.Cancel:
+                        ResizeImage(currentLowArtPath, 256, currentArtPath);
+                        break;
+                    case DialogResult.Yes:
+                        OpenFileDialog o = new()
+                        {
+                            Title = "Select 256x256 png or dds",
+                            Filter =
+                                "Portable Network Graphics (*.png)|*.png|DirectDraw Surface (*.dds)|*.dds|All Files (*.*)|*.*"
+                        };
+                        if (o.ShowDialog() is not true)
+                        {
+                            goto default;
+                        }
+
+                        using (MagickImage image = new(o.FileName))
+                        {
+                            image.Format = MagickFormat.Png;
+                            image.Resize(256, 256);
+                            image.Write(currentArtPath);
+                        }
+
+                        break;
+                    case DialogResult.None:
+                    case DialogResult.OK:
+                    case DialogResult.Abort:
+                    case DialogResult.Retry:
+                    case DialogResult.Ignore:
+                    case DialogResult.TryAgain:
+                    case DialogResult.Continue:
+                    default:
+                        goto case DialogResult.No;
+                }
+            }
+        }
     }
 }

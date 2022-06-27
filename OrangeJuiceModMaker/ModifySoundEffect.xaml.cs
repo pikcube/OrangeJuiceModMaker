@@ -39,7 +39,7 @@ namespace OrangeJuiceModMaker
             throw new NotImplementedException();
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void SaveToMod_OnClick(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }

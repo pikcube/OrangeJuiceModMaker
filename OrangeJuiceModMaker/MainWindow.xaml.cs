@@ -1,6 +1,4 @@
-﻿using ImageMagick;
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -10,23 +8,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using ImageMagick;
+using Microsoft.Win32;
 using Unosquare.FFME.Common;
-using MediaElement = Unosquare.FFME.MediaElement;
-using Path = System.IO.Path;
-using SearchOption = System.IO.SearchOption;
-using TextFieldParser = Microsoft.VisualBasic.FileIO.TextFieldParser;
-
 
 namespace OrangeJuiceModMaker
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow
     {
         public readonly bool Debug;
         public static string? GameDirectory;
-        public static readonly MediaElement MusicPlayer = new();
+        public static readonly Unosquare.FFME.MediaElement MusicPlayer = new();
         private static bool steamVersion;
         public static bool UnpackComplete = true;
         public readonly string Temp;
@@ -252,7 +244,7 @@ namespace OrangeJuiceModMaker
 
                 Task loadHyperData = Task.Run(() =>
                 {
-                    using TextFieldParser parser = new("HyperLookupTable.csv");
+                    using Microsoft.VisualBasic.FileIO.TextFieldParser parser = new("HyperLookupTable.csv");
                     parser.Delimiters = new[] { "," };
                     parser.HasFieldsEnclosedInQuotes = true;
                     _ = parser.ReadFields();
@@ -539,7 +531,9 @@ namespace OrangeJuiceModMaker
                     new ModifyMusic(this) { Owner = this }.ShowDialog();
                     return;
                 case "Modify Sound Effect":
-                    new ModifySoundEffect() { Owner = this }.ShowDialog();
+                    //new ModifySoundEffect() { Owner = this }.ShowDialog();
+                    MessageBox.Show("This is super not done, I just didn't want " +
+                                    "to remove the menu item for the next beta");
                     return;
                 case "Modify Mod Definition":
                     NewMod newMod = new(this, LoadedModDefinition) { Owner = this };
