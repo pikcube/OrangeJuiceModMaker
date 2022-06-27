@@ -8,7 +8,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "OrangeJuiceModMaker"
-#define MyAppVersion "0.8.3"
+;#define MyAppVersion "0.8.3"
 #define MyAppPublisher "Pikcube"
 #define MyAppURL "https://github.com/pikcube/OrangeJuiceModMaker"
 #define MyAppExeName "OrangeJuiceModMaker.exe"
