@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Octokit;
@@ -27,16 +28,23 @@ namespace OrangeJuiceModMaker
         private const int SwHide = 0;
         private const int SwShow = 5;
         public Task<string> PostAction = Task.Run(() => "");
+        private static bool CreateStars;
 
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
-            string downloadPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\ojDownload";
+            Console.WriteLine("Loading");
+
             bool debug = e.Args.Any(z => z.ToLower().StripStart(1) is "debug" or "d" or "verbose" or "v");
-            IntPtr handle = GetConsoleWindow();
-            int swInt = debug ? SwShow : SwHide;
-            
-            //Handle Console
-            _ = debug && handle == IntPtr.Zero ? AllocConsole() : ShowWindow(handle, swInt);
+            CreateStars = !debug;
+            Task.Run(() =>
+            {
+                while (CreateStars)
+                {
+                    Console.Write("*");
+                    Thread.Sleep(100);
+                }
+            });
+            string downloadPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\ojDownload";
 
             //Clean up from prior updates
             if (Directory.Exists(downloadPath))
@@ -51,6 +59,16 @@ namespace OrangeJuiceModMaker
             {
                 Process.Start(PostAction.Result);
             }
+        }
+
+        public static void ShowHideConsole(bool debug)
+        {
+            CreateStars = false;
+            IntPtr handle = GetConsoleWindow();
+            int swInt = debug ? SwShow : SwHide;
+
+            //Handle Console
+            _ = debug && handle == IntPtr.Zero ? AllocConsole() : ShowWindow(handle, swInt);
         }
     }
 }

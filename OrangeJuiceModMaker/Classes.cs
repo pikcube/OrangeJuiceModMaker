@@ -24,6 +24,20 @@ namespace OrangeJuiceModMaker
         Pause = 2,
     }
 
+    public static class DebugLogger
+    {
+        public static void LogLine(string o) => log(o);
+
+        public static void LogLine(object o) => LogLine(o.ToString() ?? string.Empty);
+
+        private static Action<string> log = z => throw new Exception("DebugLogger not initialized");
+
+        public static void Initialize(bool debug)
+        {
+            log = debug ? Console.WriteLine : z => { };
+        }
+    }
+
     public static class MyExtensions
     {
         public static bool IsNumber(this string text) => new Regex("[^0-9]+").IsMatch(text);

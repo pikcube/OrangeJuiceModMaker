@@ -66,6 +66,8 @@ namespace OrangeJuiceModMaker
 
         public MainWindow(bool debug, App app, string downloadPath)
         {
+            DebugLogger.Initialize(debug);
+            DebugLogger.LogLine("Initializing Constants");
             Debug = debug;
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             Temp = @$"{appdata}\OrangeJuiceModMaker\temp";
@@ -81,6 +83,7 @@ namespace OrangeJuiceModMaker
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             try
             {
+                DebugLogger.LogLine("Setting up app data");
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
                 ready = new UpdateApp(app).CheckForUpdate(downloadPath, debug, exeDirectory);
@@ -105,18 +108,20 @@ namespace OrangeJuiceModMaker
                     {
                         File.Delete(file);
                     }
+                    DebugLogger.LogLine("Copying over data files");
                     foreach (string file in files)
                     {
                         File.Copy(@$"{exeDirectory}\OrangeJuiceModMaker\{file}", @$"{AppData}\{file}", true);
                     }
                 }
-
+                DebugLogger.LogLine("Reading FlavorLookUp");
                 FlavorLookUp = new CsvHolder($@"{AppData}\FlavorLookUp.csv");
 
                 Task dumpTempFiles = Task.Run(() =>
                 {
                     if (File.Exists("ffmpeg.7z"))
                     {
+                        DebugLogger.LogLine("Setting up ffmpeg");
                         ProcessStartInfo unpackinfo = new()
                         {
                             Arguments = $@"e ffmpeg.7z -offmpeg -y",
@@ -134,6 +139,7 @@ namespace OrangeJuiceModMaker
                         Environment.Exit(0);
                     }
 
+                    DebugLogger.LogLine("Cleaning up temp files");
                     foreach (string? f in Directory.GetFiles(Temp).Where(z => Path.GetExtension(z) != ".config"))
                     {
                         File.Delete(f);
@@ -141,8 +147,10 @@ namespace OrangeJuiceModMaker
                 });
                 Task loadOjData = Task.Run(() =>
                 {
+                    DebugLogger.LogLine("Fetching csvFiles");
                     if (File.Exists("csvFiles.7z"))
                     {
+                        DebugLogger.LogLine("Unpacking csv files");
                         ProcessStartInfo unpackinfo = new()
                         {
                             Arguments = @"e csvFiles.7z -y -ocsvFiles",
@@ -164,11 +172,13 @@ namespace OrangeJuiceModMaker
                     }
                     foreach (string file in csvFileList)
                     {
+                        DebugLogger.LogLine($"Reading {file}");
                         CsvFiles.Add(new CsvHolder(file));
                     }
                 });
                 steamVersion = File.Exists(@"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice\100orange.exe");
                 //First Time Setup Code
+                DebugLogger.LogLine("Setting up game directory");
                 if (steamVersion)
                 {
                     GameDirectory = @"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice";
@@ -227,6 +237,7 @@ namespace OrangeJuiceModMaker
                 if (!Directory.Exists(@$"{AppData}\pakFiles") ||
                     File.Exists($@"{AppData}\pakFiles\filesUnpacked.status"))
                 {
+                    DebugLogger.LogLine("Unpacking pakFiles");
                     Directory.CreateDirectory(@$"{AppData}\pakFiles");
                     File.WriteAllText(@$"{AppData}\pakFiles\filesUnpacked.status", "false");
                     UnpackComplete = false;
@@ -244,11 +255,13 @@ namespace OrangeJuiceModMaker
 
                 Task loadHyperData = Task.Run(() =>
                 {
+                    DebugLogger.LogLine("Preparing to load in HyperLookupTable");
                     using Microsoft.VisualBasic.FileIO.TextFieldParser parser = new("HyperLookupTable.csv");
                     parser.Delimiters = new[] { "," };
                     parser.HasFieldsEnclosedInQuotes = true;
                     _ = parser.ReadFields();
                     loadOjData.Wait();
+                    DebugLogger.LogLine("Loading HyperLookupTable");
                     CsvHolder charCards = CsvFiles.First(z => z.Name == "CharacterCards");
                     while (!parser.EndOfData)
                     {
@@ -256,6 +269,7 @@ namespace OrangeJuiceModMaker
                     }
                 });
 
+                DebugLogger.LogLine("Loading mods");
                 modPath = $@"{GameDirectory}\mods";
 
                 if (!UpdateModsLoaded())
@@ -287,6 +301,9 @@ namespace OrangeJuiceModMaker
                     }
                 }
 
+                App.ShowHideConsole(debug);
+
+                DebugLogger.LogLine("Main window initialized");
                 //CreateLookUp();
             }
             catch (Exception exception)
