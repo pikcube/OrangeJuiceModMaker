@@ -79,7 +79,7 @@ namespace OrangeJuiceModMaker
                         @continue = true;
                         ProcessStartInfo unpackInfo = new()
                         {
-                            Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -cardsConverted",
+                            Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -y",
                             FileName = $@"{appData}\7za.exe",
                             //UseShellExecute = true,
                             //WindowStyle = ProcessWindowStyle.Normal,
