@@ -34,7 +34,7 @@ namespace OrangeJuiceModMaker
 
         public static void Initialize(bool debug)
         {
-            log = debug ? Console.WriteLine : z => { };
+            log = debug ? Console.WriteLine : _ => { };
         }
     }
 
