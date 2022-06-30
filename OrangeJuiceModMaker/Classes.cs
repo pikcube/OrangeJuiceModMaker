@@ -30,7 +30,7 @@ namespace OrangeJuiceModMaker
 
         public static void LogLine(object o) => LogLine(o.ToString() ?? string.Empty);
 
-        private static Action<string> log = z => throw new Exception("DebugLogger not initialized");
+        private static Action<string> log = _ => throw new Exception("DebugLogger not initialized");
 
         public static void Initialize(bool debug)
         {
