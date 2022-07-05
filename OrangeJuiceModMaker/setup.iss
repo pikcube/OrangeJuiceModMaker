@@ -60,7 +60,7 @@ Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\n
 
 Source: "{#MyBasePath}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\Magick.NET.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\Magick.NET-Q16-AnyCPU.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyBasePath}\Magick.NET-Q16-OpenMP-x64.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\OrangeJuiceModMaker.deps.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\OrangeJuiceModMaker.dll"; DestDir: "{app}"; Flags: ignoreversion
