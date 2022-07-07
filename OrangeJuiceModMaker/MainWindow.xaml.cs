@@ -16,6 +16,7 @@ namespace OrangeJuiceModMaker
 {
     public partial class MainWindow
     {
+        public static MainWindow? Instance { get; private set; }
         public readonly bool Debug;
         public static string? GameDirectory;
         public static readonly Unosquare.FFME.MediaElement MusicPlayer = new();
@@ -66,6 +67,7 @@ namespace OrangeJuiceModMaker
 
         public MainWindow(bool debug, App app, string downloadPath)
         {
+            Instance = this;
             DebugLogger.Initialize(debug);
             DebugLogger.LogLine("Initializing Constants");
             Debug = debug;
@@ -548,9 +550,7 @@ namespace OrangeJuiceModMaker
                     new ModifyMusic(this) { Owner = this }.ShowDialog();
                     return;
                 case "Modify Sound Effect":
-                    //new ModifySoundEffect() { Owner = this }.ShowDialog();
-                    MessageBox.Show("This is super not done, I just didn't want " +
-                                    "to remove the menu item for the next beta");
+                    new ModifySoundEffect(this) { Owner = this }.ShowDialog();
                     return;
                 case "Modify Mod Definition":
                     NewMod newMod = new(this, LoadedModDefinition) { Owner = this };

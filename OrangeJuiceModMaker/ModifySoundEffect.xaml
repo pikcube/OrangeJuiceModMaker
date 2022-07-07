@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
-        Title="ModifySoundEffect" Height="350" Width="400">
+        Loaded="ModifySoundEffect_OnLoaded"
+        Title="ModifySoundEffect" Height="350" Width="400"
+        Closing="ModifySoundEffect_OnClosing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
@@ -29,7 +31,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="1" Grid.Column="1" Text="Selected Sound Effect" TextAlignment="Center" FontSize="20"/>
         <ComboBox Grid.Row="3" Grid.Column="1" x:Name="SelectedSongComboBox" SelectionChanged="SelectedSongComboBox_OnSelectionChanged"/>
-        <TextBox Grid.Row="5" Grid.Column="1" x:Name="DescriptionComboBox" Text="A Description" FontSize="20"/>
+        <TextBox Grid.Row="5" Grid.Column="1" x:Name="DescriptionTextBox" Text="A Description" FontSize="20"/>
         <Button Grid.Row="7" Grid.Column="1" Content="▶" FontSize="20" x:Name="PlayPauseButton" Click="PlayPauseButton_OnClick"/>
         <Button Grid.Row="9" Grid.Column="1" Content="Replace with..." FontSize="20" 
                 x:Name="MusicReplaceButton" Click="MusicReplaceButton_OnClick"/>

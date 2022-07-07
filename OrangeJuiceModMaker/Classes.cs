@@ -331,12 +331,12 @@ namespace OrangeJuiceModMaker
                 SingleFile = SingleFile
             };
             replacements.Textures.Add(t);
-            if (CurrentArtPath == $@"{modPath}\{Path}256.png")
+            if (CurrentArtPath != $@"{modPath}\{Path}256.png")
             {
-                return;
+                File.Copy(CurrentArtPath, $@"{modPath}\{Path}256.png");
+                File.Copy(CurrentLowArtPath, $@"{modPath}\{Path}128.png");
             }
-            File.Copy(CurrentArtPath, $@"{modPath}\{Path}256.png");
-            File.Copy(CurrentLowArtPath, $@"{modPath}\{Path}128.png");
+
             Root.WriteJson(modPath, definition, replacements);
         }
     }
@@ -721,6 +721,7 @@ namespace OrangeJuiceModMaker
             Lookup = 2,
             Music = 3,
             Voice = 4,
+            Sound = 5,
             Undefined = -1
         };
 
@@ -776,19 +777,162 @@ namespace OrangeJuiceModMaker
         public string? Color { get; set; }
 
     }
+    public class Pet
+    {
+        [JsonProperty("id")]
+        public string Id;
+
+        [JsonProperty("floating")]
+        public bool Floating;
+
+        [JsonProperty("face_x")]
+        public int FaceX;
+
+        [JsonProperty("face_y")]
+        public int FaceY;
+
+        [JsonProperty("textures")]
+        public List<PetTexture> Textures;
+
+        [JsonProperty("layers")]
+        public List<Layer> Layers;
+
+        [JsonProperty("draw_offset_x")]
+        public int DrawOffsetX;
+
+        [JsonProperty("draw_offset_y")]
+        public int DrawOffsetY;
+
+        public Pet(string id, List<PetTexture> textures, List<Layer> layers, bool floating = false, int faceX = 128, int faceY = 128, int drawOffsetX = 0, int drawOffsetY = 0)
+        {
+            Id = id;
+            Textures = textures;
+            Layers = layers;
+            FaceX = faceX;
+            FaceY = faceY;
+            Floating = floating;
+            DrawOffsetX = drawOffsetX;
+            DrawOffsetY = drawOffsetY;
+        }
+    }
+
+    public class PetTexture
+    {
+        [JsonProperty("layer")]
+        public string Layer;
+        [JsonProperty("path")]
+        public string Path;
+
+        public PetTexture(string layer, string path)
+        {
+            Layer = layer;
+            Path = path;
+        }
+    }
 
     public class ModReplacements
     {
         [JsonProperty("textures")]
+        public List<object> AllTextures { get; set; }
+
+        [JsonIgnore]
+        public List<string> BasicTextures { get; set; }
+        
+        [JsonIgnore]
         public List<Texture> Textures { get; set; }
 
         [JsonProperty("music")]
         public List<Music> Music { get; set; }
+        [JsonProperty("sound_effects")]
+        public List<string> SoundEffects { get; set; }
+        [JsonProperty("pets")]
+        public List<Pet> Pets;
+        [JsonProperty("voices")]
+        public Voices Voices { get; set; }
 
         public ModReplacements()
         {
-            Textures = new List<Texture>();
+            AllTextures = new List<object>();
             Music = new List<Music>();
+            SoundEffects = new List<string>();
+            Pets = new List<Pet>();
+            Voices = new Voices();
+            Textures = new List<Texture>();
+            BasicTextures = new List<string>();
+        }
+    }
+
+    public class Voices
+    {
+        [JsonProperty("character")]
+        public List<string> Character { get; set; }
+
+        [JsonProperty("system")]
+        public List<string> System { get; set; }
+
+        public Voices()
+        {
+            Character = new List<string>();
+            System = new List<string>();
+        }
+    }
+
+    public class Layer
+    {
+        public static readonly int[] VariantLayers = { 0, 1, 2, 3, 4, 5 };
+        
+        private int variant;
+
+        [JsonProperty("variant")] 
+        public int Variant
+        {
+            get => variant;
+            set
+            {
+                if(VariantLayers.Contains(value))
+                {
+                    variant = value;
+                }
+                else
+                {
+                    throw new InvalidDataException("Variant must be between 0 and 5");
+                }
+            }
+        }
+
+        public enum Type
+        {
+            Base = 0,
+            Shadow = 1,
+            Lineart = 2,
+        }
+
+        private Type layerType;
+        [JsonProperty("layer")]
+        public string LayerType
+        {
+            get => layerType.ToString();
+            set
+            {
+                if (!Enum.TryParse(value, true, out layerType))
+                {
+                    throw new InvalidDataException("Not valid layer");
+                }
+            }
+        }
+
+        [JsonProperty("color")]
+        public string Color;
+
+        [JsonProperty("multiply")]
+        public bool? Multiply;
+
+        public Layer(int variant, string layerType, string color, bool multiply = false)
+        {
+            Variant = variant;
+            LayerType = layerType;
+            Color = color;
+            Multiply = multiply;
         }
     }
 
@@ -837,6 +981,9 @@ namespace OrangeJuiceModMaker
 
         public static void WriteJson(Root root, string path)
         {
+            root.ModReplacements?.AllTextures.Clear();
+            root.ModReplacements?.AllTextures.AddRange(root.ModReplacements.Textures);
+            root.ModReplacements?.AllTextures.AddRange(root.ModReplacements.BasicTextures);
             string s = JsonConvert.SerializeObject(
                 root,
                 Formatting.Indented,
@@ -849,7 +996,99 @@ namespace OrangeJuiceModMaker
 
         public static Root? ReadJson(string path)
         {
-            return JsonConvert.DeserializeObject<Root>(File.ReadAllText(path).Replace("/", @"\\"));
+            Root? r = JsonConvert.DeserializeObject<Root>(File.ReadAllText(path).Replace("/", @"\\"));
+            if (r?.ModReplacements is null)
+            {
+                return r;
+            }
+
+            ModReplacements rModReplacements = r.ModReplacements;
+            foreach (string o in rModReplacements.AllTextures.Select(z => z.ToString() ?? ""))
+            {
+                try
+                {
+                    Texture? t = JsonConvert.DeserializeObject<Texture>(o);
+                    if (t is null)
+                    {
+                        continue;
+                    }
+                    rModReplacements.Textures.Add(t);
+                }
+                catch
+                {
+                    ConvertToModFormat(o);
+                }
+            }
+
+            bool validateAndRepair = rModReplacements.BasicTextures.Any();
+            rModReplacements.Textures = rModReplacements.Textures.DistinctBy(z => z.Path).ToList();
+            rModReplacements.BasicTextures = rModReplacements.BasicTextures.Distinct().ToList();
+            rModReplacements.BasicTextures.RemoveAll(z => rModReplacements.Textures.Any(x => x.Path == z));
+
+            if (validateAndRepair)
+            {
+                RepairMod(ref rModReplacements, Path.GetDirectoryName(path) ?? throw new ArgumentNullException(nameof(path), "Can't get directory"));
+            }
+
+            r.ModReplacements = rModReplacements;
+            return r;
+
+            void ConvertToModFormat(string o)
+            {
+                if (MainWindow.Instance is null)
+                {
+                    return;
+                }
+                string type = o.Split(@"\").First();
+                switch (type)
+                {
+                    case "units":
+                        if (File.Exists($@"{MainWindow.Instance.AppData}\pakFiles\{o}.png"))
+                        {
+                            rModReplacements.Textures.Add(new Texture(o));
+                            return;
+                        }
+
+                        if (File.Exists($@"{MainWindow.Instance.AppData}\pakFiles\{o}_00.png"))
+                        {
+                            for (int n = 0;
+                                 File.Exists(
+                                     $@"{MainWindow.Instance.AppData}\pakFiles\{o}_{n:00}.png");
+                                 ++n)
+                            {
+                                rModReplacements.Textures.Add(new Texture($"{o}_{n:00}"));
+                            }
+
+                            return;
+                        }
+
+                        rModReplacements.BasicTextures.Add(o);
+                        return;
+                    case "cards":
+                        if (File.Exists($@"{MainWindow.Instance.AppData}\pakFiles\{o}.png"))
+                        {
+                            rModReplacements.Textures.Add(new Texture(o));
+                            return;
+                        }
+
+                        if (File.Exists($@"{MainWindow.Instance.AppData}\pakFiles\{o}256.png"))
+                        {
+                            rModReplacements.Textures.Add(new Texture($"{o}"));
+                            return;
+                        }
+
+                        rModReplacements.BasicTextures.Add(o);
+                        return;
+                    case "alphamasks":
+                    case "hats":
+                    case "hairs":
+                    case "field":
+                        rModReplacements.BasicTextures.Add(o);
+                        return;
+                    default:
+                        return;
+                }
+            }
         }
 
         public static bool IsValidMod(ModReplacements replacements, string modPath, out List<string> missing)
@@ -930,11 +1169,48 @@ namespace OrangeJuiceModMaker
         }
     }
 
+    public class RootRepair
+    {
+        public RootRepair(ModDefinition modDefinition)
+        {
+            ModDefinition = modDefinition;
+        }
+
+        [JsonProperty("ModDefinition")]
+        public ModDefinition ModDefinition { get; set; }
+
+        [JsonProperty("ModReplacements")]
+        public ModReplacementsRepair? ModReplacements { get; set; }
+
+        public class ModReplacementsRepair
+        {
+            [JsonProperty("textures")]
+            public List<string> Textures { get; set; }
+
+            [JsonProperty("music")]
+            public List<Music> Music { get; set; }
+            [JsonProperty("sound_effects")]
+            public List<string> SoundEffects { get; set; }
+            [JsonProperty("pets")]
+            public List<Pet> Pets;
+            [JsonProperty("voices")]
+            public Voices Voices { get; set; }
+
+            public ModReplacementsRepair()
+            {
+                Textures = new List<string>();
+                Music = new List<Music>();
+                SoundEffects = new List<string>();
+                Pets = new List<Pet>();
+                Voices = new Voices();
+            }
+        }
+    }
+
     public class Texture
     {
         public Texture(string path)
         {
-            
             Path = path;
         }
         [JsonProperty("path")]

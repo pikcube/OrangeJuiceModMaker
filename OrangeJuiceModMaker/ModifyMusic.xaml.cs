@@ -318,7 +318,7 @@ namespace OrangeJuiceModMaker
         {
             OpenFileDialog o = new()
             {
-                Filter = "Audio Files (*.mp3;*.ogg)|*.mp3;*.ogg|MP3 (*.mp3)|*.mp3|OGG (*.ogg)|*.ogg|All Files (*.*)|*.*",
+                Filter = "Audio Files (*.mp3;*.ogg;*.wav)|*.mp3;*.ogg;*.wav|MP3 (*.mp3)|*.mp3|OGG (*.ogg)|*.ogg||WAV (*.wav)|*.wav|All Files (*.*)|*.*",
                 Title = "Select music file"
             };
             if (o.ShowDialog() is not true)
@@ -438,7 +438,25 @@ namespace OrangeJuiceModMaker
 
         private void ModifyMusic_OnLoaded(object sender, RoutedEventArgs e)
         {
-            
+            if (!musicMods.Any(z => z.File is not null))
+            {
+                return;
+            }
+
+            ModMusic fileToSelect = musicMods.First(z => z.File is not null);
+            switch (fileToSelect.Song)
+            {
+                case ModMusic.SongType.EventTheme:
+                    SetComboBox.SelectedItem = "Events";
+                    break;
+                case ModMusic.SongType.UnitTheme:
+                    SetComboBox.SelectedItem = "UnitThemes";
+                    break;
+                default:
+                    return;
+            }
+
+            SelectedSongComboBox.SelectedItem = fileToSelect.Id;
         }
 
         private void DescriptionComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
