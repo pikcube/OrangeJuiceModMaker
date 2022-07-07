@@ -103,7 +103,18 @@ namespace OrangeJuiceModMaker
             string skipFile =
                 $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\release.version";
 
-            return File.Exists(skipFile) && File.ReadAllText(skipFile) != newVersion;
+            if (!File.Exists(skipFile))
+            {
+                return false;
+            }
+
+            if (File.ReadAllText(skipFile) == newVersion)
+            {
+                return true;
+            }
+
+            File.Delete(skipFile);
+            return false;
         }
 
         private static async Task<string> DownloadExeAsync(HttpClient client, Release release, bool isBeta, string downloadPath)
