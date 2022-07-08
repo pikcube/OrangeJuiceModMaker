@@ -1,12 +1,12 @@
-﻿using ImageMagick;
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using ImageMagick;
+using Microsoft.Win32;
 
 namespace OrangeJuiceModMaker
 {
@@ -40,7 +40,7 @@ namespace OrangeJuiceModMaker
             if (modifiedTextures.Any())
             {
                 ModTexture itemToSelect = modifiedTextures.First();
-
+                //todo
 
             }
             else

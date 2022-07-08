@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,8 +9,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ImageMagick;
+using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
 using Octokit;
-using File = System.IO.File;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace OrangeJuiceModMaker
@@ -197,7 +196,7 @@ namespace OrangeJuiceModMaker
         }
     }
 
-    class MusicList
+    internal class MusicList
     {
         public readonly string Name;
         public readonly string[] Id;
@@ -216,7 +215,7 @@ namespace OrangeJuiceModMaker
         }
     }
 
-    class ModMusic : Music
+    internal class ModMusic : Music
     {
         public enum SongType
         {
@@ -292,14 +291,15 @@ namespace OrangeJuiceModMaker
                     replacements.Music.RemoveAll(z => z.UnitId is not null && z.UnitId == newMusic.UnitId);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new Exception("Invalid Song Type");
             }
 
             replacements.Music.Add(newMusic);
             Root.WriteJson(modPath, definition, replacements);
         }
     }
-    class ModTexture : Texture
+
+    internal class ModTexture : Texture
     {
         public readonly string Id;
         public string CurrentArtPath;
@@ -356,20 +356,20 @@ namespace OrangeJuiceModMaker
     {
         private readonly Unit baseUnit;
         public string UnitId { get; }
-        public string UnitName { get; set; }
+        public string UnitName { get; }
         public string[] HyperIds { get; }
-        public string[] HyperNames { get; set; }
-        public string[] HyperFlavor { get; set; }
-        public string[] HyperCardPaths { get; set; }
-        public string[] HyperCardPathsLow { get; set; }
+        public string[] HyperNames { get; }
+        public string[] HyperFlavor { get; }
+        public string[] HyperCardPaths { get; }
+        public string[] HyperCardPathsLow { get; }
         public string[] CharacterCards { get; }
-        public string[] CharacterCardNames { get; set; }
-        public string[] CharacterCardPaths { get; set; }
-        public string[] CharacterCardPathsLow { get; set; }
+        public string[] CharacterCardNames { get; }
+        public string[] CharacterCardPaths { get; }
+        public string[] CharacterCardPathsLow { get; }
         public Music? Music { get; set; }
-        public string[] CharacterArt { get; set; }
-        public int[] FaceX { get; set; }
-        public int[] FaceY { get; set; }
+        public string[] CharacterArt { get; }
+        public int[] FaceX { get; }
+        public int[] FaceY { get; }
 
         public ModifiedUnit(Unit baseUnit, string baseResourcePath, ModReplacements? replacements, bool includeModData = true)
         {
@@ -630,8 +630,8 @@ namespace OrangeJuiceModMaker
             {
                 case "0":
                     //No Hypers?
-                    HyperIds = new string[] { };
-                    HyperNames = new string[] { };
+                    HyperIds = Array.Empty<string>();
+                    HyperNames = Array.Empty<string>();
                     break;
                 case "1":
                     //Normal People
@@ -734,13 +734,13 @@ namespace OrangeJuiceModMaker
             Voice = 4,
             Sound = 5,
             Undefined = -1
-        };
+        }
 
         public readonly TypeList Type;
 
         public readonly string Name;
 
-        public string[][] Rows { get; set; }
+        public string[][] Rows { get; }
 
         public string[] GetRow(int rowNumber)
         {
@@ -752,8 +752,7 @@ namespace OrangeJuiceModMaker
             return Rows.Select(z => z[columnNumber]).ToArray();
         }
 
-        public string[] Headers;
-
+        private string[] Headers { get; }
     }
 
     public class ModDefinition

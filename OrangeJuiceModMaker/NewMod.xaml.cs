@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace OrangeJuiceModMaker
 {
@@ -193,7 +193,7 @@ namespace OrangeJuiceModMaker
             textLock = false;
         }
 
-        string GetHex(int r, int g, int b)
+        private static string GetHex(int r, int g, int b)
         {
             int[] values = new int[6];
             values[0] = r / 16;

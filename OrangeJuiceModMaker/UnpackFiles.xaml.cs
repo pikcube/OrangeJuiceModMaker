@@ -21,14 +21,14 @@ namespace OrangeJuiceModMaker
         private const int TotalFilesInitial = 9521;
         private int totalFiles;
         private static int cardsConverted;
-        readonly string[] paks = "cards,units".Split(',');
+        private readonly string[] paks = "cards,units".Split(',');
         private int paksUnzipped = 1;
-        int finished;
-        private Thread timer;
+        private int finished;
+        private readonly Thread timer;
         private bool showStatus;
         private static bool exit;
-        private string appData;
-        private bool debug;
+        private readonly string appData;
+        private readonly bool debug;
 
         public UnpackFiles(string gameDirectory, string appData, bool debug)
         {
@@ -197,7 +197,7 @@ namespace OrangeJuiceModMaker
                 Priority = p
             };
             t.Start();
-            threads.Add(t);
+            Threads.Add(t);
             return Task.Run(() =>
             {
                 while (taskRunning)
@@ -208,13 +208,13 @@ namespace OrangeJuiceModMaker
         }
 
         private static ThreadPriority p = ThreadPriority.Highest;
-        private static List<Thread> threads = new();
+        private static readonly List<Thread> Threads = new();
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             showStatus = true;
             p = ThreadPriority.Lowest;
-            threads.Where(z => z.IsAlive).ForEach(z => z.Priority = p);
+            Threads.Where(z => z.IsAlive).ForEach(z => z.Priority = p);
             if (sender is Button b)
             {
                 b.IsEnabled = false;

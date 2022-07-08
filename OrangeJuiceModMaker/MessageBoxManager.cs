@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Text;
-using System.Threading;
 
 namespace OrangeJuiceModMaker
 
@@ -65,7 +63,7 @@ namespace OrangeJuiceModMaker
         [DllImport("user32.dll", EntryPoint = "SetWindowTextW", CharSet = CharSet.Unicode)]
         private static extern bool SetWindowText(IntPtr hWnd, string lpString);
         [DllImport("kernel32.dll")]
-        static extern uint GetCurrentThreadId();
+        private static extern uint GetCurrentThreadId();
 
 
         [StructLayout(LayoutKind.Sequential)]
@@ -76,10 +74,10 @@ namespace OrangeJuiceModMaker
             public IntPtr wParam;
             public uint message;
             public IntPtr hwnd;
-        };
+        }
 
-        private static HookProc hookProc;
-        private static EnumChildProc enumProc;
+        private static readonly HookProc hookProc;
+        private static readonly EnumChildProc enumProc;
         [ThreadStatic]
         private static IntPtr hHook;
         [ThreadStatic]
@@ -116,8 +114,8 @@ namespace OrangeJuiceModMaker
 
         static MessageBoxManager()
         {
-            hookProc = new HookProc(MessageBoxHookProc);
-            enumProc = new EnumChildProc(MessageBoxEnumProc);
+            hookProc = MessageBoxHookProc;
+            enumProc = MessageBoxEnumProc;
             hHook = IntPtr.Zero;
         }
 

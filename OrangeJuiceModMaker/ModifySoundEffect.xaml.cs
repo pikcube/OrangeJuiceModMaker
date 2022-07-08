@@ -1,44 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using Microsoft.Win32;
-using Path = System.IO.Path;
 
 namespace OrangeJuiceModMaker
 {
     /// <summary>
     /// Interaction logic for ModifySoundEffect.xaml
     /// </summary>
-    public partial class ModifySoundEffect : Window
+    public partial class ModifySoundEffect
     {
-        private MainWindow parent;
-        private string[] soundNameTable;
-        private string[] soundDescriptionTable;
-        private int SoundIndex
-        {
-            get => SelectedSongComboBox.SelectedIndex;
+        private readonly MainWindow parent;
+        private readonly string[] soundNameTable;
+        private readonly string[] soundDescriptionTable;
+        private int SoundIndex => SelectedSongComboBox.SelectedIndex;
+
+        /*
             set => SelectedSongComboBox.SelectedIndex = value;
-        }
-        private string selectedName => soundNameTable[SoundIndex];
-        private string selectedDescription => soundDescriptionTable[SoundIndex];
-        private List<string> ModdedSoundEffects;
-        private SoundPlayer WavPlayer = new();
+*/
+        private string SelectedName => soundNameTable[SoundIndex];
+        private string SelectedDescription => soundDescriptionTable[SoundIndex];
+        private readonly List<string> moddedSoundEffects;
+        private readonly SoundPlayer wavPlayer = new();
 
         public ModifySoundEffect(MainWindow parent)
         {
@@ -47,32 +38,32 @@ namespace OrangeJuiceModMaker
             CsvHolder soundTable = parent.CsvFiles.First(z => z.Type == CsvHolder.TypeList.Sound);
             soundNameTable = soundTable.Rows.Select(z => z[0]).ToArray();
             soundDescriptionTable = soundTable.Rows.Select(z => z[1]).ToArray();
-            ModdedSoundEffects = parent.LoadedModReplacements.SoundEffects.ToList();
+            moddedSoundEffects = parent.LoadedModReplacements.SoundEffects.ToList();
 
         }
 
         private async void SelectedSongComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DescriptionTextBox.Text = selectedDescription;
-            string filePath = $@"{parent.LoadedModPath}\sound\{selectedName}";
+            DescriptionTextBox.Text = SelectedDescription;
+            string filePath = $@"{parent.LoadedModPath}\sound\{SelectedName}";
             bool fileExist = File.Exists(filePath);
             PlayPauseButton.IsEnabled = fileExist;
             if (!fileExist)
             {
-                WavPlayer.Stream = null;
+                wavPlayer.Stream = null;
                 return;
             }
 
             byte[] fileBytes = await File.ReadAllBytesAsync(filePath);
 
-            WavPlayer.Stream = new MemoryStream(fileBytes);
-            WavPlayer.LoadAsync();
+            wavPlayer.Stream = new MemoryStream(fileBytes);
+            wavPlayer.LoadAsync();
         }
 
         private async void PlayPauseButton_OnClick(object sender, RoutedEventArgs e)
         {
             PlayPauseButton.IsEnabled = false;
-            await Task.Run(() => WavPlayer.PlaySync());
+            await Task.Run(() => wavPlayer.PlaySync());
             PlayPauseButton.IsEnabled = true;
         }
 
@@ -88,7 +79,7 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
-            string destFileName = $@"{parent.LoadedModPath}\sound\{selectedName}";
+            string destFileName = $@"{parent.LoadedModPath}\sound\{SelectedName}";
             if (o.FileName == destFileName)
             {
                 return;
@@ -114,8 +105,8 @@ namespace OrangeJuiceModMaker
 
             byte[] fileBytes = await File.ReadAllBytesAsync(destFileName);
 
-            WavPlayer.Stream = new MemoryStream(fileBytes);
-            WavPlayer.LoadAsync();
+            wavPlayer.Stream = new MemoryStream(fileBytes);
+            wavPlayer.LoadAsync();
 
             MusicReplaceButton.IsEnabled = true;
             PlayPauseButton.IsEnabled = true;
@@ -123,7 +114,7 @@ namespace OrangeJuiceModMaker
 
         private void SaveToMod_OnClick(object sender, RoutedEventArgs e)
         {
-            parent.LoadedModReplacements.SoundEffects = ModdedSoundEffects;
+            parent.LoadedModReplacements.SoundEffects = moddedSoundEffects;
             Root.WriteJson(parent.LoadedModPath, parent.LoadedModDefinition, parent.LoadedModReplacements);
         }
 
@@ -131,15 +122,15 @@ namespace OrangeJuiceModMaker
         {
             SelectedSongComboBox.ItemsSource = soundNameTable;
             SelectedSongComboBox.SelectedIndex = 0;
-            if (ModdedSoundEffects.Any())
+            if (moddedSoundEffects.Any())
             {
-                SelectedSongComboBox.SelectedItem = ModdedSoundEffects.First();
+                SelectedSongComboBox.SelectedItem = moddedSoundEffects.First();
             }
         }
 
         private void ModifySoundEffect_OnClosing(object? sender, CancelEventArgs e)
         {
-            WavPlayer.Dispose();
+            wavPlayer.Dispose();
         }
     }
 }

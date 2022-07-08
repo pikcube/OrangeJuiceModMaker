@@ -1,6 +1,4 @@
-﻿using ImageMagick;
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,9 +10,10 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
+using ImageMagick;
+using Microsoft.Win32;
 using Unosquare.FFME.Common;
 using MediaElement = Unosquare.FFME.MediaElement;
-using Path = System.IO.Path;
 
 namespace OrangeJuiceModMaker
 {
@@ -25,51 +24,49 @@ namespace OrangeJuiceModMaker
     {
         //Variable Declaration
         private Unit selectedUnit;
-        MainWindow mainWindow;
-        private MediaElement musicPlayer => MainWindow.MusicPlayer;
+        private readonly MainWindow mainWindow;
+        private MediaElement MusicPlayer => MainWindow.MusicPlayer;
         private long songLength = 1;
         private readonly List<ModifiedUnit> modifiedUnitHyperTable = new();
         private ModifiedUnit modifiedUnit;
         private int selectedHyper;
         private int selectedCharacter;
         private int selectedCharacterCard;
-        private PlayState mediaPlayerState;
         private PlayState MediaPlayerState
         {
+/*
             get => mediaPlayerState;
+*/
             set
             {
                 switch (value)
                 {
-                    case PlayState.Stop when musicPlayer.HasAudio:
-                        musicPlayer.Volume = 0;
-                        musicPlayer.Stop().GetAwaiter().GetResult();
-                        musicPlayer.Close();
-                        musicPlayer.Position = TimeSpan.Zero;
+                    case PlayState.Stop when MusicPlayer.HasAudio:
+                        MusicPlayer.Volume = 0;
+                        MusicPlayer.Stop().GetAwaiter().GetResult();
+                        MusicPlayer.Close();
+                        MusicPlayer.Position = TimeSpan.Zero;
                         PlayPauseButton.Content = "▶";
                         break;
-                    case PlayState.Play when musicPlayer.HasAudio:
-                        musicPlayer.Volume = 0.5;
-                        musicPlayer.Play().GetAwaiter().GetResult();
+                    case PlayState.Play when MusicPlayer.HasAudio:
+                        MusicPlayer.Volume = 0.5;
+                        MusicPlayer.Play().GetAwaiter().GetResult();
                         PlayPauseButton.Content = "▐▐";
                         break;
-                    case PlayState.Pause when musicPlayer.HasAudio:
-                        musicPlayer.Volume = 0;
-                        musicPlayer.Pause().GetAwaiter().GetResult();
+                    case PlayState.Pause when MusicPlayer.HasAudio:
+                        MusicPlayer.Volume = 0;
+                        MusicPlayer.Pause().GetAwaiter().GetResult();
                         PlayPauseButton.Content = "▶";
                         break;
                     default:
-                        musicPlayer.Volume = 0;
-                        mediaPlayerState = PlayState.Stop;
+                        MusicPlayer.Volume = 0;
                         return;
 
                 }
-                mediaPlayerState = value;
             }
         }
         private TimeSpan LoopPoint => TickFromSamples(modifiedUnit.Music?.LoopPoint ?? 0);
         private bool IsPlaying => PlayPauseButton.Content.ToString() == "▐▐";
-        public int RefreshRetries = 30;
 
         private int SelectedHyper
         {
@@ -98,13 +95,13 @@ namespace OrangeJuiceModMaker
             selectedUnit = mainWindow.UnitHyperTable.First();
             modifiedUnit = new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements);
             modifiedUnitHyperTable.Add(modifiedUnit);
-            musicPlayer.MediaEnded += MusicPlayer_MediaEnded;
-            musicPlayer.PositionChanged += MusicPlayer_PositionChanged;
-            musicPlayer.MediaOpened += MusicPlayer_MediaOpened;
+            MusicPlayer.MediaEnded += MusicPlayer_MediaEnded;
+            MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
+            MusicPlayer.MediaOpened += MusicPlayer_MediaOpened;
             if (mainWindow.Debug)
             {
-                musicPlayer.MessageLogged += MusicPlayer_MessageLogged;
-                musicPlayer.MediaFailed += MusicPlayer_MediaFailed;
+                MusicPlayer.MessageLogged += MusicPlayer_MessageLogged;
+                MusicPlayer.MediaFailed += MusicPlayer_MediaFailed;
             }
             InitializeComponent();
         }
@@ -119,14 +116,14 @@ namespace OrangeJuiceModMaker
             Console.WriteLine(e.Message);
         }
 
-        private void MusicPlayer_MediaOpened(object? sender, Unosquare.FFME.Common.MediaOpenedEventArgs e)
+        private void MusicPlayer_MediaOpened(object? sender, MediaOpenedEventArgs e)
         {
-            songLength = musicPlayer.NaturalDuration?.Ticks ?? 1;
-            musicPlayer.Position = TimeSpan.Zero;
+            songLength = MusicPlayer.NaturalDuration?.Ticks ?? 1;
+            MusicPlayer.Position = TimeSpan.Zero;
             CurrentPositionBox.Text = "0";
         }
 
-        private void MusicPlayer_PositionChanged(object? sender, Unosquare.FFME.Common.PositionChangedEventArgs e)
+        private void MusicPlayer_PositionChanged(object? sender, PositionChangedEventArgs e)
         {
             if (songLength == 0)
             {
@@ -152,8 +149,8 @@ namespace OrangeJuiceModMaker
 
         private void ModifyUnit_OnClosed(object? sender, EventArgs e)
         {
-            musicPlayer.Stop();
-            musicPlayer.Close();
+            MusicPlayer.Stop();
+            MusicPlayer.Close();
         }
 
         //On Unit Select
@@ -196,38 +193,38 @@ namespace OrangeJuiceModMaker
         //Media Functions
         private void ProgressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (musicPlayer.NaturalDuration is null)
+            if (MusicPlayer.NaturalDuration is null)
             {
                 return;
             }
-            long progress = (long)(musicPlayer.NaturalDuration.Value.Ticks * ProgressSlider.Value / 10);
-            musicPlayer.Position = TimeSpan.FromTicks(progress);
+            long progress = (long)(MusicPlayer.NaturalDuration.Value.Ticks * ProgressSlider.Value / 10);
+            MusicPlayer.Position = TimeSpan.FromTicks(progress);
         }
 
         private async void MusicPlayer_MediaEnded(object? sender, EventArgs e)
         {
-            await musicPlayer.Stop();
+            await MusicPlayer.Stop();
             if (PreviewLoopCheckBox.IsChecked is not true || modifiedUnit.Music?.LoopPoint is null)
             {
                 MediaPlayerState = PlayState.Pause;
-                musicPlayer.Position = TimeSpan.Zero;
+                MusicPlayer.Position = TimeSpan.Zero;
                 UpdateCurrentPosition(0);
                 return;
             }
 
             UpdateCurrentPosition(LoopPoint.Ticks);
-            await musicPlayer.Play();
+            await MusicPlayer.Play();
             UpdateCurrentPosition(LoopPoint.Ticks);
         }
 
-        private void UpdateCurrentPosition() => UpdateCurrentPositionUi(musicPlayer.Position.Ticks);
+        private void UpdateCurrentPosition() => UpdateCurrentPositionUi(MusicPlayer.Position.Ticks);
         private void UpdateCurrentPosition(long ticks)
         {
             if (songLength == 0)
             {
                 return;
             }
-            musicPlayer.Position = TimeSpan.FromTicks(ticks);
+            MusicPlayer.Position = TimeSpan.FromTicks(ticks);
             UpdateCurrentPositionUi(ticks);
         }
 
@@ -251,7 +248,7 @@ namespace OrangeJuiceModMaker
             SelectedCharacter = 0;
             UnloadImages();
             EnableMusicControls(false);
-            musicPlayer.Stop().GetAwaiter().GetResult();
+            MusicPlayer.Stop().GetAwaiter().GetResult();
 
             FaceXBox.Text = modifiedUnit.FaceX.First().ToString();
             FaceYBox.Text = modifiedUnit.FaceY.First().ToString();
@@ -349,7 +346,7 @@ namespace OrangeJuiceModMaker
             }
 
             int retry = 5;
-            while (!await musicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute)))
+            while (!await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute)))
             {
                 await Task.Run(() => Thread.Sleep(100));
                 if (retry == 0)
@@ -366,7 +363,7 @@ namespace OrangeJuiceModMaker
                 }
             }
 
-            musicPlayer.Pause().GetAwaiter().GetResult();
+            MusicPlayer.Pause().GetAwaiter().GetResult();
 
             if (modifiedUnit.Music is null)
             {
@@ -571,7 +568,7 @@ namespace OrangeJuiceModMaker
             path = tempName;
         }
 
-        TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
+        private TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
 
         private BitmapImage GetUnitArt(string x)
         {

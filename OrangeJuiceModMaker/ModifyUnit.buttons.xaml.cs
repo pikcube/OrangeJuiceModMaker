@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
-using Path = System.IO.Path;
+using Microsoft.Win32;
 
 namespace OrangeJuiceModMaker
 {
@@ -245,7 +244,7 @@ namespace OrangeJuiceModMaker
                 UnitId = modifiedUnit.UnitId,
                 Volume = 0
             };
-            await musicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
+            await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
             LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
             MusicReplaceButton.IsEnabled = true;
@@ -273,12 +272,12 @@ namespace OrangeJuiceModMaker
         }
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            musicPlayer.Position -= TimeSpan.FromSeconds(7);
+            MusicPlayer.Position -= TimeSpan.FromSeconds(7);
         }
 
         private void ButtonFFOnClick(object sender, RoutedEventArgs e)
         {
-            musicPlayer.Position += TimeSpan.FromSeconds(30);
+            MusicPlayer.Position += TimeSpan.FromSeconds(30);
         }
 
         private async void ResetUnitCard_OnClick(object sender, RoutedEventArgs e)
@@ -331,7 +330,7 @@ namespace OrangeJuiceModMaker
             }
             if (!IsPlaying)
             {
-                musicPlayer.Position = TickFromSamples(CurrentPositionBox.Text.ToLongOrDefault());
+                MusicPlayer.Position = TickFromSamples(CurrentPositionBox.Text.ToLongOrDefault());
             }
         }
 

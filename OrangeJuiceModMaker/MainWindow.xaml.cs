@@ -7,10 +7,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ImageMagick;
+using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
+using Unosquare.FFME;
 using Unosquare.FFME.Common;
+using MediaElement = Unosquare.FFME.MediaElement;
+using SearchOption = System.IO.SearchOption;
 
 namespace OrangeJuiceModMaker
 {
@@ -19,7 +24,7 @@ namespace OrangeJuiceModMaker
         public static MainWindow? Instance { get; private set; }
         public readonly bool Debug;
         public static string? GameDirectory;
-        public static readonly Unosquare.FFME.MediaElement MusicPlayer = new();
+        public static readonly MediaElement MusicPlayer = new();
         private static bool steamVersion;
         public static bool UnpackComplete = true;
         public readonly string Temp;
@@ -36,7 +41,7 @@ namespace OrangeJuiceModMaker
         private readonly string[] config;
         private readonly string modPath = "";
         private readonly string exePath = "";
-        private Task<bool> ready;
+        private readonly Task<bool> ready;
 
         public static bool ExitTime
         {
@@ -71,9 +76,9 @@ namespace OrangeJuiceModMaker
             DebugLogger.Initialize(debug);
             DebugLogger.LogLine("Initializing Constants");
             Debug = debug;
-            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            Temp = @$"{appdata}\OrangeJuiceModMaker\temp";
-            AppData = $@"{appdata}\OrangeJuiceModMaker";
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            Temp = @$"{appData}\OrangeJuiceModMaker\temp";
+            AppData = $@"{appData}\OrangeJuiceModMaker";
             InitializeComponent();
             config = File.Exists($@"{Temp}\oj.config")
                 ? File.ReadAllLines($@"{Temp}\oj.config")
@@ -124,15 +129,15 @@ namespace OrangeJuiceModMaker
                     if (File.Exists("ffmpeg.7z"))
                     {
                         DebugLogger.LogLine("Setting up ffmpeg");
-                        ProcessStartInfo unpackinfo = new()
+                        ProcessStartInfo unpackInfo = new()
                         {
-                            Arguments = $@"e ffmpeg.7z -offmpeg -y",
+                            Arguments = @"e ffmpeg.7z -offmpeg -y",
                             FileName = "7za.exe",
                             UseShellExecute = false,
                             WindowStyle = ProcessWindowStyle.Hidden,
                             CreateNoWindow = true
                         };
-                        Process.Start(unpackinfo)?.WaitForExit();
+                        Process.Start(unpackInfo)?.WaitForExit();
                         File.Delete("ffmpeg.7z");
                     }
                     else
@@ -153,7 +158,7 @@ namespace OrangeJuiceModMaker
                     if (File.Exists("csvFiles.7z"))
                     {
                         DebugLogger.LogLine("Unpacking csv files");
-                        ProcessStartInfo unpackinfo = new()
+                        ProcessStartInfo unpackInfo = new()
                         {
                             Arguments = @"e csvFiles.7z -y -ocsvFiles",
                             FileName = "7za.exe",
@@ -161,7 +166,7 @@ namespace OrangeJuiceModMaker
                             WindowStyle = ProcessWindowStyle.Hidden,
                             CreateNoWindow = true
                         };
-                        Process.Start(unpackinfo)?.WaitForExit();
+                        Process.Start(unpackInfo)?.WaitForExit();
                         File.Delete("csvFiles.7z");
                     }
                     string[] csvFileList = Directory.GetFiles("csvFiles");
@@ -258,7 +263,7 @@ namespace OrangeJuiceModMaker
                 Task loadHyperData = Task.Run(() =>
                 {
                     DebugLogger.LogLine("Preparing to load in HyperLookupTable");
-                    using Microsoft.VisualBasic.FileIO.TextFieldParser parser = new("HyperLookupTable.csv");
+                    using TextFieldParser parser = new("HyperLookupTable.csv");
                     parser.Delimiters = new[] { "," };
                     parser.HasFieldsEnclosedInQuotes = true;
                     _ = parser.ReadFields();
@@ -291,7 +296,7 @@ namespace OrangeJuiceModMaker
                 }
 
                 dumpTempFiles.Wait();
-                Unosquare.FFME.Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
+                Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
                 MusicPlayer.ScrubbingEnabled = true;
                 MusicPlayer.LoopingBehavior = MediaPlaybackState.Manual;
 
@@ -575,7 +580,7 @@ namespace OrangeJuiceModMaker
         }
 
         //Click on image
-        private void Viewbox_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Viewbox_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ReplacePreview();
         }
