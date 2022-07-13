@@ -34,7 +34,7 @@ namespace OrangeJuiceModMaker
         public string LoadedModPath = "";
         public readonly List<CsvHolder> CsvFiles = new();
         public readonly List<Unit> UnitHyperTable = new();
-        public readonly CsvHolder? FlavorLookUp;
+        public CsvHolder? FlavorLookUp;
         public readonly List<string> Cards = new();
         private static bool exitTime;
         private List<string> mods = new();
@@ -42,6 +42,12 @@ namespace OrangeJuiceModMaker
         private readonly string modPath = "";
         private readonly string exePath = "";
         private readonly Task<bool> ready;
+
+        private Task flavorTask = Task.CompletedTask;
+        private Task dumpTempFiles = Task.CompletedTask;
+        private Task loadHyperData = Task.CompletedTask;
+        private Task loadOjData = Task.CompletedTask;
+
 
         public static bool ExitTime
         {
@@ -121,68 +127,6 @@ namespace OrangeJuiceModMaker
                         File.Copy(@$"{exeDirectory}\OrangeJuiceModMaker\{file}", @$"{AppData}\{file}", true);
                     }
                 }
-                DebugLogger.LogLine("Reading FlavorLookUp");
-                FlavorLookUp = new CsvHolder($@"{AppData}\FlavorLookUp.csv");
-
-                Task dumpTempFiles = Task.Run(() =>
-                {
-                    if (File.Exists("ffmpeg.7z"))
-                    {
-                        DebugLogger.LogLine("Setting up ffmpeg");
-                        ProcessStartInfo unpackInfo = new()
-                        {
-                            Arguments = @"e ffmpeg.7z -offmpeg -y",
-                            FileName = "7za.exe",
-                            UseShellExecute = false,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true
-                        };
-                        Process.Start(unpackInfo)?.WaitForExit();
-                        File.Delete("ffmpeg.7z");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please download ffmpeg executable");
-                        Environment.Exit(0);
-                    }
-
-                    DebugLogger.LogLine("Cleaning up temp files");
-                    foreach (string? f in Directory.GetFiles(Temp).Where(z => Path.GetExtension(z) != ".config"))
-                    {
-                        File.Delete(f);
-                    }
-                });
-                Task loadOjData = Task.Run(() =>
-                {
-                    DebugLogger.LogLine("Fetching csvFiles");
-                    if (File.Exists("csvFiles.7z"))
-                    {
-                        DebugLogger.LogLine("Unpacking csv files");
-                        ProcessStartInfo unpackInfo = new()
-                        {
-                            Arguments = @"e csvFiles.7z -y -ocsvFiles",
-                            FileName = "7za.exe",
-                            UseShellExecute = false,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true
-                        };
-                        Process.Start(unpackInfo)?.WaitForExit();
-                        File.Delete("csvFiles.7z");
-                    }
-                    string[] csvFileList = Directory.GetFiles("csvFiles");
-                    const int count = 23;
-                    if (csvFileList.Length != count)
-                    {
-                        throw csvFileList.Length > count
-                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 166 again?")
-                            : new Exception("Didn't find all files");
-                    }
-                    foreach (string file in csvFileList)
-                    {
-                        DebugLogger.LogLine($"Reading {file}");
-                        CsvFiles.Add(new CsvHolder(file));
-                    }
-                });
                 steamVersion = File.Exists(@"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice\100orange.exe");
                 //First Time Setup Code
                 DebugLogger.LogLine("Setting up game directory");
@@ -260,7 +204,93 @@ namespace OrangeJuiceModMaker
 
                 Cards = Directory.GetFiles(@"pakFiles\cards").ToList();
 
-                Task loadHyperData = Task.Run(() =>
+                DebugLogger.LogLine("Loading mods");
+                modPath = $@"{GameDirectory}\mods";
+
+                if (!UpdateModsLoaded())
+                {
+                    Close();
+                    Environment.Exit(0);
+                    return;
+                }
+
+                App.ShowHideConsole(debug);
+
+                DebugLogger.LogLine("Main window initialized");
+
+                flavorTask = new Task(() =>
+                {
+                    DebugLogger.LogLine("Reading FlavorLookUp");
+                    FlavorLookUp = new CsvHolder($@"{AppData}\FlavorLookUp.csv");
+                    foreach (string[] t in FlavorLookUp.Rows)
+                    {
+                        for (int m = 0; m < t.Length; ++m)
+                        {
+                            t[m] = t[m].Replace(@"\n", Environment.NewLine);
+                        }
+                    }
+                });
+
+                dumpTempFiles = new Task(() =>
+                {
+                    if (File.Exists("ffmpeg.7z"))
+                    {
+                        DebugLogger.LogLine("Setting up ffmpeg");
+                        ProcessStartInfo unpackInfo = new()
+                        {
+                            Arguments = @"e ffmpeg.7z -offmpeg -y",
+                            FileName = "7za.exe",
+                            UseShellExecute = false,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true
+                        };
+                        Process.Start(unpackInfo)?.WaitForExit();
+                        File.Delete("ffmpeg.7z");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please download ffmpeg executable");
+                        Environment.Exit(0);
+                    }
+
+                    DebugLogger.LogLine("Cleaning up temp files");
+                    foreach (string? f in Directory.GetFiles(Temp).Where(z => Path.GetExtension(z) != ".config"))
+                    {
+                        File.Delete(f);
+                    }
+                });
+                loadOjData = new Task(() =>
+                {
+                    DebugLogger.LogLine("Fetching csvFiles");
+                    if (File.Exists("csvFiles.7z"))
+                    {
+                        DebugLogger.LogLine("Unpacking csv files");
+                        ProcessStartInfo unpackInfo = new()
+                        {
+                            Arguments = @"e csvFiles.7z -y -ocsvFiles",
+                            FileName = "7za.exe",
+                            UseShellExecute = false,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true
+                        };
+                        Process.Start(unpackInfo)?.WaitForExit();
+                        File.Delete("csvFiles.7z");
+                    }
+                    string[] csvFileList = Directory.GetFiles("csvFiles");
+                    const int count = 23;
+                    if (csvFileList.Length != count)
+                    {
+                        throw csvFileList.Length > count
+                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 166 again?")
+                            : new Exception("Didn't find all files");
+                    }
+                    foreach (string file in csvFileList)
+                    {
+                        DebugLogger.LogLine($"Reading {file}");
+                        CsvFiles.Add(new CsvHolder(file));
+                    }
+                });
+                loadHyperData = new Task(() =>
                 {
                     DebugLogger.LogLine("Preparing to load in HyperLookupTable");
                     using TextFieldParser parser = new("HyperLookupTable.csv");
@@ -275,42 +305,6 @@ namespace OrangeJuiceModMaker
                         UnitHyperTable.Add(new Unit(parser.ReadFields() ?? throw new InvalidOperationException(), charCards, this));
                     }
                 });
-
-                DebugLogger.LogLine("Loading mods");
-                modPath = $@"{GameDirectory}\mods";
-
-                if (!UpdateModsLoaded())
-                {
-                    Close();
-                    Environment.Exit(0);
-                    return;
-                }
-
-                loadOjData.Wait();
-                loadHyperData.Wait();
-                AggregateException? ex = loadOjData.Exception ?? loadHyperData.Exception ?? null;
-
-                if (ex is not null)
-                {
-                    throw ex;
-                }
-
-                dumpTempFiles.Wait();
-                Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
-                MusicPlayer.ScrubbingEnabled = true;
-                MusicPlayer.LoopingBehavior = MediaPlaybackState.Manual;
-
-                foreach (string[] t in FlavorLookUp.Rows)
-                {
-                    for (int m = 0; m < t.Length; ++m)
-                    {
-                        t[m] = t[m].Replace(@"\n", Environment.NewLine);
-                    }
-                }
-
-                App.ShowHideConsole(debug);
-
-                DebugLogger.LogLine("Main window initialized");
                 //CreateLookUp();
             }
             catch (Exception exception)
@@ -402,13 +396,17 @@ namespace OrangeJuiceModMaker
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            EditButton.IsEnabled = false;
+            Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
+            MusicPlayer.ScrubbingEnabled = true;
+            MusicPlayer.LoopingBehavior = MediaPlaybackState.Manual;
             SelectedModComboBox.SelectedIndex = config[0].ToInt();
             SelectedModeComboBox.ItemsSource = new[]
             {
-                "Modify Unit", 
-                "Modify Card", 
-                "Modify Music", 
-                "Modify Sound Effect", 
+                "Modify Unit",
+                "Modify Card",
+                "Modify Music",
+                "Modify Sound Effect",
                 "Modify Mod Definition"
             };
             SelectedModeComboBox.SelectedIndex = config[1].ToInt();
@@ -417,6 +415,24 @@ namespace OrangeJuiceModMaker
                 SelectedModeComboBox.SelectedIndex = 0;
             }
 
+            loadOjData.Start();
+            loadHyperData.Start();
+            flavorTask.Start();
+            dumpTempFiles.Start();
+
+            await loadOjData;
+            await loadHyperData;
+            await flavorTask;
+            AggregateException? ex = loadOjData.Exception ?? loadHyperData.Exception ?? flavorTask.Exception ?? null;
+
+            if (ex is not null)
+            {
+                MessageBox.Show(ex.Message);
+                Close();
+                return;
+            }
+            EditButton.IsEnabled = true;
+            await dumpTempFiles;
             if (await ready)
             {
                 return;

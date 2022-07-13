@@ -983,6 +983,7 @@ namespace OrangeJuiceModMaker
 
         public static void WriteJson(string modPath, ModDefinition definition, ModReplacements replacements)
         {
+            RepairMod(ref replacements, modPath);
             WriteJson(new Root(definition)
             {
                 ModReplacements = replacements
@@ -1138,6 +1139,35 @@ namespace OrangeJuiceModMaker
             replacements.Textures.RemoveAll(z => BadCard128(z, modPath));
             replacements.Textures.RemoveAll(z => BadCard256(z, modPath));
             replacements.Textures.RemoveAll(z => BadUnit(z, modPath));
+            replacements.Textures.RemoveAll(z => IsUnmodifiedItem(z, modPath).Result);
+        }
+
+        private static async Task<bool> IsUnmodifiedItem(Texture t, string modPath)
+        {
+            switch (t.Path[..5].ToLower())
+            {
+                case "units":
+                    return await FilesMatch(File.ReadAllBytesAsync($@"{modPath}\{t.Path}"), File.ReadAllBytesAsync($@"pakFiles\{t.Path}"));
+                case "cards":
+                    if (t.CustomName is not null)
+                    {
+                        return false;
+                    }
+                    if (t.CustomFlavor is not null)
+                    {
+                        return false;
+                    }
+                    return await FilesMatch(File.ReadAllBytesAsync($@"{modPath}\{t.Path}"), File.ReadAllBytesAsync($@"pakFiles\{t.Path}"));
+                default:
+                    return false;
+            }
+        }
+
+        private static async Task<bool> FilesMatch(Task<byte[]> fileA, Task<byte[]> fileB)
+        {
+            await fileA;
+            await fileB;
+            return fileA.Result.Length == fileB.Result.Length && fileA.Result.Zip(fileB.Result).All(bytes => bytes.First == bytes.Second);
         }
 
         public static int CleanMod(ModReplacements replacements, string modLocation)

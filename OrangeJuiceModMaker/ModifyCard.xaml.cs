@@ -37,11 +37,17 @@ namespace OrangeJuiceModMaker
 
         private void ModifyCard_OnLoaded(object sender, RoutedEventArgs e)
         {
+            foreach (Texture t in replacements.Textures.Where(z => z.Path.ToLower().StartsWith("cards")))
+            {
+                modifiedTextures.Add(new ModTexture(t.Path, replacements, modPath));
+            }
+            
             if (modifiedTextures.Any())
             {
+                SetSelectionBox.ItemsSource = files.Select(z => z.Name);
                 ModTexture itemToSelect = modifiedTextures.First();
-                //todo
-
+                SetSelectionBox.SelectedItem = files.Last(z => z.Rows.Any(y => y[1] == itemToSelect.Id)).Name;
+                CardSelectionBox.SelectedItem = loadedRows.First(z => z[1] == itemToSelect.Id)[0];
             }
             else
             {
