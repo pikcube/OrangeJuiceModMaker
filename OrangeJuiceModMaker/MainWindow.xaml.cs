@@ -39,14 +39,14 @@ namespace OrangeJuiceModMaker
         private static bool exitTime;
         private List<string> mods = new();
         private readonly string[] config;
-        private readonly string modPath = "";
+        private readonly string modsDirectoryPath = "";
         private readonly string exePath = "";
         private readonly Task<bool> ready;
 
-        private Task flavorTask = Task.CompletedTask;
-        private Task dumpTempFiles = Task.CompletedTask;
-        private Task loadHyperData = Task.CompletedTask;
-        private Task loadOjData = Task.CompletedTask;
+        private readonly Task flavorTask = Task.CompletedTask;
+        private readonly Task dumpTempFiles = Task.CompletedTask;
+        private readonly Task loadHyperData = Task.CompletedTask;
+        private readonly Task loadOjData = Task.CompletedTask;
 
 
         public static bool ExitTime
@@ -205,7 +205,7 @@ namespace OrangeJuiceModMaker
                 Cards = Directory.GetFiles(@"pakFiles\cards").ToList();
 
                 DebugLogger.LogLine("Loading mods");
-                modPath = $@"{GameDirectory}\mods";
+                modsDirectoryPath = $@"{GameDirectory}\mods";
 
                 if (!UpdateModsLoaded())
                 {
@@ -444,13 +444,13 @@ namespace OrangeJuiceModMaker
         private bool UpdateModsLoaded()
         {
             //Load a mod
-            mods = Directory.GetFiles(path: modPath, searchPattern: "*.json", searchOption: SearchOption.AllDirectories).ToList();
+            mods = Directory.GetFiles(path: modsDirectoryPath, searchPattern: "*.json", searchOption: SearchOption.AllDirectories).ToList();
 
             //The zero mod case
             if (mods.Count == 0)
             {
                 new NewMod(this) { Owner = IsLoaded ? this : null }.ShowDialog();
-                mods = Directory.GetFiles(modPath, "*.json", SearchOption.AllDirectories).ToList();
+                mods = Directory.GetFiles(modsDirectoryPath, "*.json", SearchOption.AllDirectories).ToList();
                 if (mods.Count == 0)
                 {
                     return false;
@@ -702,6 +702,69 @@ namespace OrangeJuiceModMaker
         {
             int redundantFiles = Root.CleanMod(LoadedModReplacements, LoadedModPath);
             MessageBox.Show(redundantFiles == 0 ? "Directory already clean" : $"{redundantFiles} extra files removed");
+        }
+
+        private void OpenModDirectory_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (Directory.Exists(modsDirectoryPath))
+            {
+                ProcessStartInfo startInfo = new()
+                {
+                    Arguments = modsDirectoryPath,
+                    FileName = "explorer.exe"
+                };
+
+                Process.Start(startInfo);
+            }
+            else
+            {
+                MessageBox.Show("Something has gone horribly wrong, application will now shutdown to save data");
+                Close();
+            }
+        }
+
+        private void OpenModDotJson_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (OpenJson($@"{LoadedModPath}\mod.json"))
+            {
+                return;
+            }
+
+            if (OpenJson($@"{LoadedModPath}\disabled_mod.json"))
+            {
+                return;
+            }
+
+            string? mod = Directory.GetFiles(LoadedModPath, "*.json", SearchOption.AllDirectories).FirstOrDefault();
+
+            if (mod is null)
+            {
+                return;
+            }
+
+            OpenJson(mod);
+
+            static bool OpenJson(string path)
+            {
+                if (!File.Exists(path))
+                {
+                    return false;
+                }
+                
+                ProcessStartInfo startInfo = new()
+                {
+                    FileName = "explorer",
+                    Arguments = $@"{path}\"
+                };
+                Process.Start(startInfo);
+                return true;
+            }
+        }
+
+        private void EditSettings(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Not implemented yet");
+            //todo
         }
     }
 }
