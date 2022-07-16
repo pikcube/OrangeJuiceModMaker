@@ -1023,7 +1023,21 @@ namespace OrangeJuiceModMaker
                     {
                         continue;
                     }
-                    rModReplacements.Textures.Add(t);
+
+                    if (rModReplacements.Textures.Any(z => z.Path == t.Path))
+                    {
+                        Texture existing = rModReplacements.Textures.First(z => z.Path == t.Path);
+                        existing.CostumeId ??= t.CostumeId;
+                        existing.CustomFlavor ??= t.CustomFlavor;
+                        existing.CustomName ??= t.CustomName;
+                        existing.FaceX ??= t.FaceX;
+                        existing.FaceY ??= t.FaceY;
+                        existing.SingleFile ??= t.SingleFile;
+                    }
+                    else
+                    {
+                        rModReplacements.Textures.Add(t);
+                    }
                 }
                 catch
                 {
@@ -1139,15 +1153,15 @@ namespace OrangeJuiceModMaker
             replacements.Textures.RemoveAll(z => BadCard128(z, modPath));
             replacements.Textures.RemoveAll(z => BadCard256(z, modPath));
             replacements.Textures.RemoveAll(z => BadUnit(z, modPath));
-            replacements.Textures.RemoveAll(z => IsUnmodifiedItem(z, modPath).Result);
+            replacements.Textures.RemoveAll(z => IsUnmodifiedItem(z, modPath));
         }
 
-        private static async Task<bool> IsUnmodifiedItem(Texture t, string modPath)
+        private static bool IsUnmodifiedItem(Texture t, string modPath)
         {
             switch (t.Path[..5].ToLower())
             {
                 case "units":
-                    return await FilesMatch(File.ReadAllBytesAsync($@"{modPath}\{t.Path}"), File.ReadAllBytesAsync($@"pakFiles\{t.Path}"));
+                    return FilesMatch(File.ReadAllBytes($@"{modPath}\{t.Path}.png"), File.ReadAllBytes($@"pakFiles\{t.Path}.png"));
                 case "cards":
                     if (t.CustomName is not null)
                     {
@@ -1157,17 +1171,15 @@ namespace OrangeJuiceModMaker
                     {
                         return false;
                     }
-                    return await FilesMatch(File.ReadAllBytesAsync($@"{modPath}\{t.Path}"), File.ReadAllBytesAsync($@"pakFiles\{t.Path}"));
+                    return FilesMatch(File.ReadAllBytes($@"{modPath}\{t.Path}.png"), File.ReadAllBytes($@"pakFiles\{t.Path}.png"));
                 default:
                     return false;
             }
         }
 
-        private static async Task<bool> FilesMatch(Task<byte[]> fileA, Task<byte[]> fileB)
+        private static bool FilesMatch(byte[] fileA, byte[] fileB)
         {
-            await fileA;
-            await fileB;
-            return fileA.Result.Length == fileB.Result.Length && fileA.Result.Zip(fileB.Result).All(bytes => bytes.First == bytes.Second);
+            return fileA.Length == fileB.Length && fileA.Zip(fileB).All(bytes => bytes.First == bytes.Second);
         }
 
         public static int CleanMod(ModReplacements replacements, string modLocation)
