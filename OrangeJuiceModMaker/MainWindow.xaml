@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="460" Width="420" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="MainWindow" Height="460" Width="450" Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
@@ -63,15 +63,15 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Text="Other Options" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-            <Button Grid.Column="2" Grid.Row="0" Content="Open Orange Juice" x:Name="OpenOj" Click="OpenOJ_OnClick"/>
-            <Button Grid.Column="4" Grid.Row="4" Content="Clean Mod Folder" x:Name="CleanDirectory" Click="CleanDirectory_OnClick"/>
-            <Button Grid.Column="4" Grid.Row="0" Content="Validate Mod" x:Name="ValidateModButton" Click="ValidateModButton_OnClick"/>
-            <Button Grid.Column="6" Grid.Row="2" Content="Disable Mod" x:Name="DisableModButton" Click="DisableModButton_OnClick"/>
-            <Button Grid.Column="6" Grid.Row="4" Content="Delete Mod" x:Name="DeleteModButton" Click="DeleteModButton_OnClick"/>
-            <Button Grid.Column="4" Grid.Row="2" Content="Repair Mod" x:Name="RepairModButton" Click="RepairModButton_OnClick"/>
-            <Button Grid.Column="2" Grid.Row="2" Content="Open Mod Folder" Click="OpenModDirectory_OnClick"/>
-            <Button Grid.Column="2" Grid.Row="4" Content="Open Mod Definition" Click="OpenModDotJson_OnClick"/>
-            <Button Grid.Column="6" Grid.Row="0" Content="Edit Settings" Click="EditSettings"/>
+            <Button Grid.Column="2" Grid.Row="0" Content=" Open Orange Juice " x:Name="OpenOj" Click="OpenOJ_OnClick"/>
+            <Button Grid.Column="4" Grid.Row="4" Content=" Clean Mod Folder " x:Name="CleanDirectory" Click="CleanDirectory_OnClick"/>
+            <Button Grid.Column="4" Grid.Row="0" Content=" Validate Mod " x:Name="ValidateModButton" Click="ValidateModButton_OnClick"/>
+            <Button Grid.Column="6" Grid.Row="2" Content=" Disable Mod " x:Name="DisableModButton" Click="DisableModButton_OnClick"/>
+            <Button Grid.Column="6" Grid.Row="4" Content=" Delete Mod " x:Name="DeleteModButton" Click="DeleteModButton_OnClick"/>
+            <Button Grid.Column="4" Grid.Row="2" Content=" Repair Mod " x:Name="RepairModButton" Click="RepairModButton_OnClick"/>
+            <Button Grid.Column="2" Grid.Row="2" Content=" Open Mod Folder " Click="OpenModDirectory_OnClick"/>
+            <Button Grid.Column="2" Grid.Row="4" Content=" Open Mod Definition " Click="OpenModDotJson_OnClick"/>
+            <Button Grid.Column="6" Grid.Row="0" Content=" Edit Settings " Click="EditSettings"/>
         </Grid>
     </Grid>
 

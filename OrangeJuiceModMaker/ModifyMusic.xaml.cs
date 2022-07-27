@@ -318,7 +318,7 @@ namespace OrangeJuiceModMaker
         {
             OpenFileDialog o = new()
             {
-                Filter = "Audio Files (*.mp3;*.ogg;*.wav)|*.mp3;*.ogg;*.wav|MP3 (*.mp3)|*.mp3|OGG (*.ogg)|*.ogg||WAV (*.wav)|*.wav|All Files (*.*)|*.*",
+                Filter = "Audio Files (*.mp3;*.ogg;*.wav)|*.mp3;*.ogg;*.wav|MP3 (*.mp3)|*.mp3|OGG (*.ogg)|*.ogg|WAV (*.wav)|*.wav|All Files (*.*)|*.*",
                 Title = "Select music file"
             };
             if (o.ShowDialog() is not true)

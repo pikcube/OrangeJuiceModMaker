@@ -48,6 +48,9 @@ namespace OrangeJuiceModMaker
         private readonly Task loadHyperData = Task.CompletedTask;
         private readonly Task loadOjData = Task.CompletedTask;
 
+        private const string DisableMod = " Disable Mod ";
+        private const string EnableMod = " Enable Mod ";
+
 
         public static bool ExitTime
         {
@@ -515,7 +518,7 @@ namespace OrangeJuiceModMaker
                     return;
             }
 
-            DisableModButton.Content = Path.GetFileNameWithoutExtension(possibleMods[0]) == "mod" ? "Disable Mod" : "Enable Mod";
+            DisableModButton.Content = Path.GetFileNameWithoutExtension(possibleMods[0]) == "mod" ? DisableMod : EnableMod;
 
             if (!File.Exists($@"{LoadedModPath}\preview.png"))
             {
@@ -635,12 +638,12 @@ namespace OrangeJuiceModMaker
 
         private void DisableModButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DisableModButton.Content is "Disable Mod")
+            if (DisableModButton.Content is DisableMod)
             {
                 if (File.Exists(@$"{LoadedModPath}\mod.json"))
                 {
                     File.Move(@$"{LoadedModPath}\mod.json", @$"{LoadedModPath}\disabled_mod.json");
-                    DisableModButton.Content = "Enable Mod";
+                    DisableModButton.Content = EnableMod;
                 }
                 else
                 {
@@ -652,7 +655,7 @@ namespace OrangeJuiceModMaker
                 if (File.Exists(@$"{LoadedModPath}\disabled_mod.json"))
                 {
                     File.Move(@$"{LoadedModPath}\disabled_mod.json", @$"{LoadedModPath}\mod.json");
-                    DisableModButton.Content = "Disable Mod";
+                    DisableModButton.Content = DisableMod;
                 }
                 else
                 {
