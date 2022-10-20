@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
+using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace OrangeJuiceModMaker
 {
@@ -154,10 +155,23 @@ namespace OrangeJuiceModMaker
             throw new NotImplementedException();
         }
 
-        private void CheckForUpdatestButton_OnClick(object sender, RoutedEventArgs e)
+        private async void CheckForUpdatestButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //Maybe instant reboot?
-            throw new NotImplementedException();
+            UpdateApp.UpdateState result = await (parent.UpdateApp?.CheckForUpdate(true) ?? 
+                                                  Task.FromResult(UpdateApp.UpdateState.UpdateFailed));
+            switch (result)
+            {
+                case UpdateApp.UpdateState.UpToDate:
+                    MessageBox.Show("You are on the latest version");
+                    break;
+                case UpdateApp.UpdateState.UpdateFailed:
+                    MessageBox.Show("Update failed, please check the official github");
+                    break;
+                case UpdateApp.UpdateState.UpdatingLater:
+                case UpdateApp.UpdateState.UpdatingNow:
+                default:
+                    break;
+            }
         }
 
         private void NewModFolderButton_OnClick(object sender, RoutedEventArgs e)
