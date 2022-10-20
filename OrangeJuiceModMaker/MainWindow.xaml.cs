@@ -23,6 +23,7 @@ namespace OrangeJuiceModMaker
     public partial class MainWindow
     {
         public static MainWindow? Instance { get; private set; }
+        public readonly UpdateApp? UpdateApp;
         public readonly bool Debug;
         public static string? GameDirectory;
         public static readonly MediaElement MusicPlayer = new();
@@ -112,7 +113,15 @@ namespace OrangeJuiceModMaker
                 DebugLogger.LogLine("Setting up app data");
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
-                ready = new UpdateApp(app).CheckForUpdate(downloadPath, debug, exeDirectory);
+                UpdateApp = new UpdateApp(app, downloadPath, debug, exeDirectory);
+                ready = Task.Run(() => UpdateApp.CheckForUpdate().Result switch
+                {
+                    UpdateApp.UpdateState.UpToDate => true,
+                    UpdateApp.UpdateState.UpdateFailed => true,
+                    UpdateApp.UpdateState.UpdatingLater => true,
+                    UpdateApp.UpdateState.UpdatingNow => false,
+                    _ => throw new ArgumentOutOfRangeException()
+                });
                 Directory.CreateDirectory(AppData);
                 Directory.SetCurrentDirectory(AppData);
                 Directory.CreateDirectory(Temp);

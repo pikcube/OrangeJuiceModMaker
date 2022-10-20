@@ -12,6 +12,7 @@ using ImageMagick;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
 using Octokit;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace OrangeJuiceModMaker
@@ -91,10 +92,24 @@ namespace OrangeJuiceModMaker
     public class UpdateApp
     {
         private readonly App app;
+        private string downloadPath;
+        private bool debug;
+        private string exeLocation;
 
-        public UpdateApp(App app)
+        public enum UpdateState
+        {
+            UpdateFailed = -1,
+            UpToDate = 0,
+            UpdatingLater = 1,
+            UpdatingNow = 2,
+        }
+
+        public UpdateApp(App app, string downloadPath, bool debug, string exeLocation)
         {
             this.app = app;
+            this.downloadPath = downloadPath;
+            this.debug = debug;
+            this.exeLocation = exeLocation;
         }
 
         private static bool SkipVersion(string newVersion)
@@ -127,32 +142,46 @@ namespace OrangeJuiceModMaker
             return path;
         }
 
-        public async Task<bool> CheckForUpdate(string downloadPath, bool debug, string exeLocation)
+        public async Task<UpdateState> CheckForUpdate(bool force = false)
         {
+            //Go to github, look up the newest version
             using HttpClient client = new();
-            Task<string> a = client.GetStringAsync(@"https://raw.githubusercontent.com/pikcube/OrangeJuiceModMaker/main/release.version");
+            Task<string> onlineVersionStringTask = client.GetStringAsync(@"https://raw.githubusercontent.com/pikcube/OrangeJuiceModMaker/main/release.version");
+            
+            //Go to the executable, look up the current version
             string[] version = (await File.ReadAllTextAsync($@"{exeLocation}\release.version")).Split(":");
-            string[] checkedVersion = (await a).Split(":");
             bool isBeta = version[0] == "Beta";
+
+            //Finish checking github, spaced out to give the task time to run
+            string[] checkedVersion = (await onlineVersionStringTask).Split(":");
+
+            //Grab stable vs beta from online
             string checkedVersionString = isBeta ? checkedVersion[1] : checkedVersion[3];
+
+            //Check if we are up to date
             bool upToDate = version[1] == checkedVersionString;
 
-            if (SkipVersion(checkedVersionString))
+            //Check if we are skipping this version based on local files
+            if (SkipVersion(checkedVersionString) && !force)
             {
-                return true;
+                return UpdateState.UpToDate;
             }
 
+            //If we are up to date, return true
             if (upToDate)
             {
-                return true;
+                return UpdateState.UpToDate;
             }
 
+            //Get release from GitHub
             IReadOnlyList<Release>? releases = await new GitHubClient(new ProductHeaderValue("OrangeJuiceModUpdateChecker"))
                 .Repository.Release.GetAll("pikcube", "OrangeJuiceModMaker");
-            Release? release = releases.Where(z => !z.Prerelease || isBeta).MaxBy(z => z.CreatedAt) ?? null;
+            Release? release = releases.Where(z => !z.Prerelease || isBeta).MaxBy(z => z.CreatedAt);
+            
             if (release is null)
             {
-                return true;
+                DebugLogger.LogLine("Update check failed, couldn't find valid release");
+                return UpdateState.UpdateFailed;
             }
 
             int? option = GetOption(debug);
@@ -163,20 +192,20 @@ namespace OrangeJuiceModMaker
                     string path = await DownloadExeAsync(client, release, isBeta, downloadPath);
                     Process.Start(path);
                     Environment.Exit(0);
-                    return false;
+                    return UpdateState.UpdatingNow;
                 case 2:
                     app.PostAction = DownloadExeAsync(client, release, isBeta, downloadPath);
-                    return true;
+                    return UpdateState.UpdatingLater;
                 case 3:
-                    return true;
+                    return UpdateState.UpdatingLater;
                 case 4:
                     await File.WriteAllTextAsync(
                         $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\release.version",
                         checkedVersionString);
-                    return true;
+                    return UpdateState.UpToDate;
                 default:
                     Console.WriteLine("Invalid option");
-                    return false;
+                    return UpdateState.UpdateFailed;
             }
         }
 
