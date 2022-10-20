@@ -714,7 +714,7 @@ namespace OrangeJuiceModMaker
             }
 
 
-            Headers = parser.ReadFields() ?? throw new InvalidOperationException();
+            _ = parser.ReadFields() ?? throw new InvalidOperationException();
 
             while (!parser.EndOfData)
             {
@@ -751,8 +751,6 @@ namespace OrangeJuiceModMaker
         {
             return Rows.Select(z => z[columnNumber]).ToArray();
         }
-
-        private string[] Headers { get; }
     }
 
     public class ModDefinition

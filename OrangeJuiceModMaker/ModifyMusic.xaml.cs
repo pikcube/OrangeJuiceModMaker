@@ -327,6 +327,7 @@ namespace OrangeJuiceModMaker
             }
 
             MusicReplaceButton.IsEnabled = false;
+            SaveButton.IsEnabled = false;
             MusicReplaceButton.Content = "Loading Music";
             EnableMusicControls(false);
 
@@ -377,6 +378,7 @@ namespace OrangeJuiceModMaker
             await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
             LoopPointBox.Text = (modifiedMusic.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
+            SaveButton.IsEnabled = true;
             MusicReplaceButton.IsEnabled = true;
             MusicReplaceButton.Content = "Replace with...";
         }

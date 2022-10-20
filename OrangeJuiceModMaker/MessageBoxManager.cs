@@ -160,7 +160,7 @@ namespace OrangeJuiceModMaker
             if (msg.message == WM_INITDIALOG)
             {
                 int nLength = GetWindowTextLength(msg.hwnd);
-                StringBuilder className = new StringBuilder(10);
+                StringBuilder className = new(10);
                 GetClassName(msg.hwnd, className, className.Capacity);
                 if (className.ToString() == "#32770")
                 {
@@ -180,7 +180,7 @@ namespace OrangeJuiceModMaker
 
         private static bool MessageBoxEnumProc(IntPtr hWnd, IntPtr lParam)
         {
-            StringBuilder className = new StringBuilder(10);
+            StringBuilder className = new(10);
             GetClassName(hWnd, className, className.Capacity);
             if (className.ToString() == "Button")
             {

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using ImageMagick;
 using Microsoft.VisualBasic.FileIO;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Unosquare.FFME;
 using Unosquare.FFME.Common;
 using MediaElement = Unosquare.FFME.MediaElement;
@@ -36,6 +37,7 @@ namespace OrangeJuiceModMaker
         public readonly List<Unit> UnitHyperTable = new();
         public CsvHolder? FlavorLookUp;
         public readonly List<string> Cards = new();
+        public readonly GlobalSettings globalSettings;
         private static bool exitTime;
         private List<string> mods = new();
         private readonly string[] config;
@@ -95,10 +97,18 @@ namespace OrangeJuiceModMaker
             MusicPlayer.LoadedBehavior = MediaPlaybackState.Pause;
             MusicPlayer.UnloadedBehavior = MediaPlaybackState.Manual;
             ready = Task.Run(() => true);
+            globalSettings = new GlobalSettings(true);
 
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             try
             {
+                if (!File.Exists($@"{AppData}\GlobalSettings.json"))
+                {
+                    File.WriteAllText($@"{AppData}\GlobalSettings.json", JsonConvert.SerializeObject(new GlobalSettings(true)));
+                }
+
+                globalSettings = GlobalSettings.LoadSettingsFromFile($@"{AppData}\GlobalSettings.json");
+                
                 DebugLogger.LogLine("Setting up app data");
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
@@ -766,8 +776,7 @@ namespace OrangeJuiceModMaker
 
         private void EditSettings(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Not implemented yet");
-            //todo
+            new OptionsMenu(this) { Owner = this }.ShowDialog();
         }
     }
 }

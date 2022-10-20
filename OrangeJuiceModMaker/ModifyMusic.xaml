@@ -93,6 +93,6 @@
             </Grid>
             <Button Grid.Row="6" Content="Replace with..." FontSize="20" x:Name="MusicReplaceButton" Click="MusicReplaceButton_OnClick"/>
         </Grid>
-        <Button Grid.Row="5" Grid.Column="1" Content="Save to Mod" FontSize="20" Click="ButtonBase_OnClick"/>
+        <Button Grid.Row="5" Grid.Column="1" Content="Save to Mod" FontSize="20" x:Name="SaveButton" Click="ButtonBase_OnClick"/>
     </Grid>
 </Window>
