@@ -45,7 +45,6 @@ namespace OrangeJuiceModMaker
         private readonly string[] config;
         private readonly string modsDirectoryPath = "";
         private readonly string exePath = "";
-        private readonly Task<bool> ready;
         private static string[] newHash;
         private readonly Task flavorTask = Task.CompletedTask;
         private readonly Task dumpTempFiles = Task.CompletedTask;
@@ -98,7 +97,6 @@ namespace OrangeJuiceModMaker
                 : new[] { "0", "0" };
             MusicPlayer.LoadedBehavior = MediaPlaybackState.Pause;
             MusicPlayer.UnloadedBehavior = MediaPlaybackState.Manual;
-            ready = Task.Run(() => true);
             globalSettings = new GlobalSettings(true);
 
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -119,14 +117,6 @@ namespace OrangeJuiceModMaker
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
                 UpdateApp = new UpdateApp(app, downloadPath, debug, exeDirectory);
-                ready = Task.Run(() => UpdateApp.CheckForUpdate().Result switch
-                {
-                    UpdateApp.UpdateState.UpToDate => true,
-                    UpdateApp.UpdateState.UpdateFailed => true,
-                    UpdateApp.UpdateState.UpdatingLater => true,
-                    UpdateApp.UpdateState.UpdatingNow => false,
-                    _ => throw new ArgumentOutOfRangeException()
-                });
                 Directory.CreateDirectory(AppData);
                 Directory.SetCurrentDirectory(AppData);
                 Directory.CreateDirectory(Temp);
@@ -496,6 +486,20 @@ namespace OrangeJuiceModMaker
             await flavorTask;
             AggregateException? ex = loadOjData.Exception ?? loadHyperData.Exception ?? flavorTask.Exception ?? null;
 
+            bool r = (await UpdateApp!.CheckForUpdate()) switch
+            {
+                UpdateApp.UpdateState.UpToDate => true,
+                UpdateApp.UpdateState.UpdateFailed => true,
+                UpdateApp.UpdateState.UpdatingLater => true,
+                UpdateApp.UpdateState.UpdatingNow => false,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            if (!r)
+            {
+                Close();
+            }
+            
             if (ex is not null)
             {
                 MessageBox.Show(ex.Message);
@@ -504,11 +508,6 @@ namespace OrangeJuiceModMaker
             }
             EditButton.IsEnabled = true;
             await dumpTempFiles;
-            if (await ready)
-            {
-                return;
-            }
-            Close();
         }
 
         //Check the game directory for mod files
