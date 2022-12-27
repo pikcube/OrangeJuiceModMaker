@@ -87,13 +87,19 @@ namespace OrangeJuiceModMaker
                             UseShellExecute = debug,
                             WindowStyle = debug ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden,
                             CreateNoWindow = !debug,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
+                            RedirectStandardOutput = !debug,
+                            RedirectStandardError = !debug,
                         };
                         Process process = Process.Start(unpackInfo) ?? throw new Exception("Unpack Failed");
 
-                        string output = process.StandardOutput.ReadToEnd();
-                        string error = process.StandardError.ReadToEnd();
+                        string output = "";
+                        string error = "";
+
+                        if (!debug)
+                        {
+                            output = process.StandardOutput.ReadToEnd();
+                            error = process.StandardError.ReadToEnd();
+                        }
 
                         process.WaitForExit();
 

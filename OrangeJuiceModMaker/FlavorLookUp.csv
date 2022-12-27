@@ -1,4 +1,4 @@
-lookup
+lookup,,,
 Name,id,Description,Flavor
 Dash!,dash,"For this turn, roll two dice for movement.",Faster! -Suguri
 Extend,extend,"Stock Effect\nAfter suffering KO, you will revive on the following turn.",All good for now! -Marc
@@ -199,3 +199,5 @@ Fluffy Shokupan,bty_item_fshokupan,Heal 2 HP every turn until your next KO. The 
 Holy Water,bty_item_holywater,"For this battle, gain 5 HP and +1 ATK, DEF, EVD.","Fufufu, this pure water will cure your thirst, you have my word on it! -Innkeeper"
 Smoke of the Lost Memories,bty_item_smokelostmemories,Forget your past mistakes and trigger a Bounty Battle. Can only be used on a panel with a discovered monster location. You must possess the bounty to start the battle. Your turn ends after playing this card.,Don't let it run away! -Alchemist
 Adventurer's Radar,bty_item_radar,Effect Duration: 2 to 5 chapters\nAble to discern all monster locations for the duration of the effect.,It will greatly ease your expedition... if it works long enough! -Armorer
+Torrent of Magic,torrentofmagic,"Effect Duration: 3 Chapters. Gain +2 DEF. The maximum stacks of Hardened Scales are increased to 10. If you gain 10 stacks of Hardened Scales, all other players suffer KO.",Th-that's dangerous… I'm sorry. -Watty
+Goodest Boy,goodestboy,"Effect duration: 3 Chapters Immune to instant KO effects. When staying on a panel with another player at the end of either player's turn, gain a copy of a random card in their hand. You can neither challenge nor be challenged; instead, opponents may stop to Pet you. Effect expires on KO.",*Wimper* -Pomeranius

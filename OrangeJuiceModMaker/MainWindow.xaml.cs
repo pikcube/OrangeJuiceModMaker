@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +46,7 @@ namespace OrangeJuiceModMaker
         private readonly string modsDirectoryPath = "";
         private readonly string exePath = "";
         private readonly Task<bool> ready;
-
+        private static string[] newHash;
         private readonly Task flavorTask = Task.CompletedTask;
         private readonly Task dumpTempFiles = Task.CompletedTask;
         private readonly Task loadHyperData = Task.CompletedTask;
@@ -103,6 +104,10 @@ namespace OrangeJuiceModMaker
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             try
             {
+                if (!Directory.Exists(AppData))
+                {
+                    Directory.CreateDirectory(AppData);
+                }
                 if (!File.Exists($@"{AppData}\GlobalSettings.json"))
                 {
                     File.WriteAllText($@"{AppData}\GlobalSettings.json", JsonConvert.SerializeObject(new GlobalSettings(true)));
@@ -206,10 +211,13 @@ namespace OrangeJuiceModMaker
                     }
                 }
 
+                //Hash the pak files to see if we need a new unpack. Don't bother making this async, it's load blocking
+                newHash = NewHashStrings();
+
                 //Unpack Base Files
-                if (!Directory.Exists(@$"{AppData}\pakFiles") ||
-                    File.Exists($@"{AppData}\pakFiles\filesUnpacked.status"))
+                if (IsNotUnpacked())
                 {
+                    App.ShowHideConsole(debug);
                     DebugLogger.LogLine("Unpacking pakFiles");
                     Directory.CreateDirectory(@$"{AppData}\pakFiles");
                     File.WriteAllText(@$"{AppData}\pakFiles\filesUnpacked.status", "false");
@@ -222,6 +230,8 @@ namespace OrangeJuiceModMaker
                         return;
                     }
                     File.Delete(@"pakFiles\filesUnpacked.status");
+                    File.WriteAllLines($@"{AppData}\pakfiles.hash", newHash);
+                    
                 }
 
                 Cards = Directory.GetFiles(@"pakFiles\cards").ToList();
@@ -303,7 +313,7 @@ namespace OrangeJuiceModMaker
                     if (csvFileList.Length != count)
                     {
                         throw csvFileList.Length > count
-                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 166 again?")
+                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 312 again?")
                             : new Exception("Didn't find all files");
                     }
                     foreach (string file in csvFileList)
@@ -414,6 +424,45 @@ namespace OrangeJuiceModMaker
 
                 return true;
             }
+        }
+
+        private bool IsNotUnpacked()
+        {
+            if (!Directory.Exists(@$"{AppData}\pakFiles"))
+            {
+                return true;
+            }
+
+            if (File.Exists($@"{AppData}\pakFiles\filesUnpacked.status"))
+            {
+                return true;
+            }
+
+            if (!File.Exists($@"{AppData}\pakfiles.hash"))
+            {
+                return true;
+            }
+            
+            Task<string[]> oldHashTask = File.ReadAllLinesAsync($@"{AppData}\pakfiles.hash");
+
+            string[] oldHashStrings = oldHashTask.GetAwaiter().GetResult();
+
+            return oldHashStrings.Zip(newHash).Any(z => z.First != z.Second);
+        }
+
+        private static string[] NewHashStrings()
+        {
+            SHA256 sha256 = SHA256.Create();
+
+
+
+            byte[] unitHashTask = sha256.ComputeHash(new MemoryStream(File.ReadAllBytes($@"{GameDirectory}\data\units.pak")));
+            byte[] cardsHashTask = sha256.ComputeHash(new MemoryStream(File.ReadAllBytes($@"{GameDirectory}\data\cards.pak")));
+
+            return new []{
+                Convert.ToBase64String(unitHashTask),
+                Convert.ToBase64String(cardsHashTask)
+            };
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -785,7 +834,8 @@ namespace OrangeJuiceModMaker
 
         private void EditSettings(object sender, RoutedEventArgs e)
         {
-            new OptionsMenu(this) { Owner = this }.ShowDialog();
+            MessageBox.Show("Not implemented yet");
+            //new OptionsMenu(this) { Owner = this }.ShowDialog();
         }
     }
 }

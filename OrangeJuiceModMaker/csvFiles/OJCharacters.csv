@@ -1,4 +1,4 @@
-unit
+unit,
 CardName,UnitID
 Alicianrone,alicianrone
 Alte,alte
@@ -99,3 +99,5 @@ Gost,ghost
 Emerangler,mole
 Globbu,magma
 Aurora,fae
+Pomeranius,pomeranius
+Watty,watty

@@ -1,4 +1,4 @@
-card
+card,
 Card Name,ID
 Beak of the Godbird,coop_chicken_beakofthegodbird
 Call of the Chicken,coop_chicken_callofthechicken
@@ -344,3 +344,5 @@ Seagull Master,coop_sbeast_seagullmaster
 Splash Water,coop_sbeast_splashwater
 Tire Out,coop_sbeast_tireout
 Watermelon Splitting,coop_sbeast_watermelonsplitting
+Goodest Boy,goodestboy
+Torrent of Magic,torrentofmagic
