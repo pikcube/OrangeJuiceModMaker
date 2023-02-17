@@ -24,7 +24,7 @@ namespace OrangeJuiceModMaker
     public partial class MainWindow
     {
         public static MainWindow? Instance { get; private set; }
-        public readonly UpdateApp? UpdateApp;
+        //public readonly UpdateApp? UpdateApp;
         public readonly bool Debug;
         public static string? GameDirectory;
         public static readonly MediaElement MusicPlayer = new();
@@ -50,6 +50,7 @@ namespace OrangeJuiceModMaker
         private readonly Task dumpTempFiles = Task.CompletedTask;
         private readonly Task loadHyperData = Task.CompletedTask;
         private readonly Task loadOjData = Task.CompletedTask;
+        public static string? WorkshopItemsDirectory = null;
 
         private const string DisableMod = " Disable Mod ";
         private const string EnableMod = " Enable Mod ";
@@ -116,7 +117,7 @@ namespace OrangeJuiceModMaker
                 DebugLogger.LogLine("Setting up app data");
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
-                UpdateApp = new UpdateApp(app, downloadPath, debug, exeDirectory);
+                //UpdateApp = new UpdateApp(app, downloadPath, debug, exeDirectory);
                 Directory.CreateDirectory(AppData);
                 Directory.SetCurrentDirectory(AppData);
                 Directory.CreateDirectory(Temp);
@@ -201,6 +202,15 @@ namespace OrangeJuiceModMaker
                     }
                 }
 
+                WorkshopItemsDirectory = $@"{GameDirectory}\..\..\workshop\content\282800";
+                WorkshopItemsDirectory = Path.GetFullPath(WorkshopItemsDirectory);
+
+                if (!Directory.Exists(WorkshopItemsDirectory))
+                {
+                    WorkshopItemsDirectory = null;
+                }
+
+
                 //Hash the pak files to see if we need a new unpack. Don't bother making this async, it's load blocking
                 newHash = NewHashStrings();
 
@@ -227,7 +237,20 @@ namespace OrangeJuiceModMaker
                 Cards = Directory.GetFiles(@"pakFiles\cards").ToList();
 
                 DebugLogger.LogLine("Loading mods");
-                modsDirectoryPath = $@"{GameDirectory}\mods";
+                if (globalSettings.ModDirectories.SelectedItem is null)
+                {
+                    if (globalSettings.ModDirectories.Items.Any())
+                    {
+                        globalSettings.ModDirectories.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        globalSettings.ModDirectories =
+                            new GlobalSettings.SettingsList<string>(new List<string> { $@"{GameDirectory}\mods" }, 0);
+                    }
+                }
+
+                modsDirectoryPath = globalSettings.ModDirectories.SelectedItem!;
 
                 if (!UpdateModsLoaded())
                 {
@@ -486,19 +509,6 @@ namespace OrangeJuiceModMaker
             await flavorTask;
             AggregateException? ex = loadOjData.Exception ?? loadHyperData.Exception ?? flavorTask.Exception ?? null;
 
-            bool r = (await UpdateApp!.CheckForUpdate()) switch
-            {
-                UpdateApp.UpdateState.UpToDate => true,
-                UpdateApp.UpdateState.UpdateFailed => true,
-                UpdateApp.UpdateState.UpdatingLater => true,
-                UpdateApp.UpdateState.UpdatingNow => false,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            if (!r)
-            {
-                Close();
-            }
             
             if (ex is not null)
             {
@@ -663,6 +673,26 @@ namespace OrangeJuiceModMaker
             }
 
             File.WriteAllLines(@$"{Temp}\oj.config", config);
+
+            if (globalSettings.MirrorDirectories.SelectedItem is null or "None")
+            {
+                return;
+            }
+
+            string mirror = globalSettings.MirrorDirectories.SelectedItem;
+
+            if (!Directory.Exists(mirror))
+            {
+                Directory.CreateDirectory(mirror);
+            }
+
+            var p = new ProcessStartInfo();
+            p.CreateNoWindow = !Debug;
+            p.WindowStyle = Debug ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden;
+            p.FileName = "CMD.exe";
+            p.Arguments = $"/c robocopy /MIR /MT:8 \"{modsDirectoryPath}\" \"{mirror}\"";
+            Process.Start(p).WaitForExit();
+
         }
 
         //Click on image
@@ -833,8 +863,7 @@ namespace OrangeJuiceModMaker
 
         private void EditSettings(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Not implemented yet");
-            //new OptionsMenu(this) { Owner = this }.ShowDialog();
+            new OptionsMenu(this) { Owner = this }.ShowDialog();
         }
     }
 }

@@ -5,7 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using Microsoft.Win32;
 using Newtonsoft.Json;
+using static OrangeJuiceModMaker.GlobalSettings;
 using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace OrangeJuiceModMaker
@@ -15,14 +18,12 @@ namespace OrangeJuiceModMaker
         private string FileLocation;
         public SettingsList<string> ModDirectories { get; set; }
         public SettingsList<string> MirrorDirectories { get; set; }
-        public SettingsList<string> SelectedUpdateChannel { get; set; }
         public SettingsList<string> AutoUpdate { get; set; }
 
         public GlobalSettings()
         {
             ModDirectories = new SettingsList<string>();
             MirrorDirectories = new SettingsList<string>();
-            SelectedUpdateChannel = new SettingsList<string>();
             AutoUpdate = new SettingsList<string>();
             FileLocation =
                 $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\GlobalSettings.json";
@@ -32,12 +33,11 @@ namespace OrangeJuiceModMaker
         {
             ModDirectories = new SettingsList<string>();
             MirrorDirectories = new SettingsList<string>();
-            SelectedUpdateChannel = new SettingsList<string>();
             AutoUpdate = new SettingsList<string>();
             if (clean)
             {
-                SelectedUpdateChannel = new SettingsList<string>(new List<string> { "Stable", "Beta" });
-                AutoUpdate = new SettingsList<string>(new List<string> { "Check for updates", "Skip this version", "Don't check for updates" });
+                AutoUpdate = new SettingsList<string>(new List<string> { "Check for updates", "Skip this version", "Don't check for updates" }, 0);
+                MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
             }
             FileLocation =
                 $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\GlobalSettings.json";
@@ -94,7 +94,10 @@ namespace OrangeJuiceModMaker
     {
         private readonly MainWindow parent;
         private GlobalSettings globalSettings => parent.globalSettings;
-        
+        private string[] WorkshopModNames;
+        private string[] WorkshopModPaths;
+
+
         public OptionsMenu(MainWindow parent)
         {
             this.parent = parent;
@@ -111,11 +114,6 @@ namespace OrangeJuiceModMaker
             globalSettings.AutoUpdate.SelectedIndex = autoUpdateComboBox.SelectedIndex;
         }
 
-        private void UpdateChannelComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            globalSettings.SelectedUpdateChannel.SelectedIndex = updateChannelComboBox.SelectedIndex;
-        }
-
         private void ModDirectoryComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             globalSettings.ModDirectories.SelectedIndex = modDirectoryComboBox.SelectedIndex;
@@ -126,16 +124,85 @@ namespace OrangeJuiceModMaker
             
         }
 
-        private void OptionsMenu_OnLoaded(object sender, RoutedEventArgs e)
+        private async void OptionsMenu_OnLoaded(object sender, RoutedEventArgs e)
         {
             autoUpdateComboBox.ItemsSource = globalSettings.AutoUpdate.Items;
             autoUpdateComboBox.SelectedIndex = globalSettings.AutoUpdate.SelectedIndex;
             modDirectoryComboBox.ItemsSource = globalSettings.ModDirectories.Items;
             modDirectoryComboBox.SelectedIndex = globalSettings.ModDirectories.SelectedIndex;
+
+            if (globalSettings.MirrorDirectories.Items.Count == 0)
+            {
+                globalSettings.MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
+                globalSettings.Save();
+            }
+
             backupDirectoryComboBox.ItemsSource = globalSettings.MirrorDirectories.Items;
             backupDirectoryComboBox.SelectedIndex = globalSettings.MirrorDirectories.SelectedIndex;
-            updateChannelComboBox.ItemsSource = globalSettings.SelectedUpdateChannel.Items;
-            updateChannelComboBox.SelectedIndex = globalSettings.SelectedUpdateChannel.SelectedIndex;
+            if (MainWindow.WorkshopItemsDirectory is null)
+            {
+                NoWorkshopMods();
+            }
+            else
+            {
+                workshopModComboBox.IsEnabled = false;
+                importButton.IsEnabled = false;
+                await Task.Run(() =>
+                {
+                    string?[] mods = Directory.GetDirectories(MainWindow.WorkshopItemsDirectory)
+                        .Where(z => File.Exists(z + @"\mod.json"))
+                        .Where(z => Root.IsValidMod(z, out _))
+                        .ToArray();
+                    if (!mods.Any())
+                    {
+                        
+                        return;
+                    }
+
+                    string?[] modNames = mods.Select(z => Root.ReadJson(z + @"\mod.json")?.ModDefinition.Name)
+                        .ToArray();
+                    if (modNames.Any(z => z is null) || mods.Any(z => z is null))
+                    {
+                        for (int n = 0; n < modNames.Length; ++n)
+                        {
+                            if (modNames[n] is null)
+                            {
+                                mods[n] = null;
+                            }
+
+                            if (mods[n] is null)
+                            {
+                                modNames[n] = null;
+                            }
+                        }
+                    }
+
+                    WorkshopModPaths = mods.Where(z => z is not null).ToArray()!;
+                    WorkshopModNames = modNames.Where(z => z is not null).ToArray()!;
+                });
+
+                importButton.IsEnabled = true;
+
+                if (WorkshopModNames.Any())
+                {
+                    workshopModComboBox.ItemsSource = WorkshopModNames;
+                    workshopModComboBox.SelectedIndex = 0;
+                    workshopModComboBox.IsEnabled = true;
+                }
+                else
+                {
+                    NoWorkshopMods();
+                }
+
+            }
+        }
+
+        private void NoWorkshopMods()
+        {
+            workshopModComboBox.ItemsSource = new List<string> { "We can't find your workshop items" };
+            workshopModComboBox.SelectedIndex = 0;
+            importButton.Content = "Locate?";
+            workshopModComboBox.IsEnabled = false;
         }
 
         private void OptionsMenu_OnUnloaded(object sender, RoutedEventArgs e)
@@ -150,31 +217,27 @@ namespace OrangeJuiceModMaker
 
         private async void CheckForUpdatestButton_OnClick(object sender, RoutedEventArgs e)
         {
-            UpdateApp.UpdateState result = await (parent.UpdateApp?.CheckForUpdate(true) ?? 
-                                                  Task.FromResult(UpdateApp.UpdateState.UpdateFailed));
-            switch (result)
-            {
-                case UpdateApp.UpdateState.UpToDate:
-                    MessageBox.Show("You are on the latest version");
-                    break;
-                case UpdateApp.UpdateState.UpdateFailed:
-                    MessageBox.Show("Update failed, please check the official github");
-                    break;
-                case UpdateApp.UpdateState.UpdatingLater:
-                case UpdateApp.UpdateState.UpdatingNow:
-                default:
-                    break;
-            }
+            throw new NotImplementedException();
         }
 
         private void NewModFolderButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            FolderBrowserDialog fd = new();
+            fd.ShowDialog();
+            if (fd.SelectedPath == "") return;
+            globalSettings.ModDirectories.Items.Add(fd.SelectedPath);
+            globalSettings.ModDirectories.SelectedItem = fd.SelectedPath;
+            OptionsMenu_OnLoaded(sender, e);
         }
 
         private void NewMirrorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            FolderBrowserDialog fd = new();
+            fd.ShowDialog();
+            if (fd.SelectedPath == "") return;
+            globalSettings.MirrorDirectories.Items.Add(fd.SelectedPath);
+            globalSettings.MirrorDirectories.SelectedItem = fd.SelectedPath;
+            OptionsMenu_OnLoaded(sender, e);
         }
     }
 }

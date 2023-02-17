@@ -53,10 +53,10 @@ namespace OrangeJuiceModMaker
             new MainWindow(debug, this, downloadPath).ShowDialog();
 
             //postAction is set as part of check update
-            if (!string.IsNullOrEmpty(PostAction.Result))
-            {
-                Process.Start(PostAction.Result);
-            }
+            //if (!string.IsNullOrEmpty(PostAction.Result))
+            //{
+            //    Process.Start(PostAction.Result);
+            //}
         }
 
         public static void ShowHideConsole(bool debug)

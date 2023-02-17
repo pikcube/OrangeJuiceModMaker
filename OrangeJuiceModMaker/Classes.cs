@@ -1156,6 +1156,18 @@ namespace OrangeJuiceModMaker
             return missing.Count == 0;
         }
 
+        public static bool IsValidMod(string modPath, out List<string> missing)
+        {
+            var r = ReadJson(modPath + @"\mod.json");
+            if (r is null || r.ModReplacements is null)
+            {
+                missing = new List<string>();
+                return false;
+            }
+
+            return IsValidMod(r.ModReplacements, modPath, out missing);
+        }
+
         private static bool BadMusic(Music z, string modPath) => BadItem(z.File, @"music\", modPath, ".ogg");
         private static bool BadUnit(Texture z, string modPath) => BadItem(z.Path, @"units\", modPath, ".png");
         private static bool BadCard256(Texture z, string modPath) => BadItem(z.Path, @"cards\", modPath, "256.png");
