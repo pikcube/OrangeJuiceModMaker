@@ -118,6 +118,7 @@ namespace OrangeJuiceModMaker
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
                 //UpdateApp = new UpdateApp(app, downloadPath, debug, exeDirectory);
+
                 Directory.CreateDirectory(AppData);
                 Directory.SetCurrentDirectory(AppData);
                 Directory.CreateDirectory(Temp);
@@ -642,7 +643,15 @@ namespace OrangeJuiceModMaker
                 case null:
                     return;
                 case "Modify Unit":
-                    new ModifyUnit(this) { Owner = this }.ShowDialog();
+                    try
+                    {
+                        new ModifyUnit(this) { Owner = this }.ShowDialog();
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        throw;
+                    }
                     return;
                 case "Modify Card":
                     new ModifyCard(CsvFiles, this) { Owner = this }.ShowDialog();

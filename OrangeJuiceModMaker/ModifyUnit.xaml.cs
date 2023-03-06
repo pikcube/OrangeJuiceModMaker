@@ -92,9 +92,9 @@ namespace OrangeJuiceModMaker
         public ModifyUnit(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.UnitHyperTable.Sort((x, y) => string.Compare(x.UnitName, y.UnitName, StringComparison.Ordinal));
             selectedUnit = mainWindow.UnitHyperTable.First();
             modifiedUnit = new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements);
-            modifiedUnitHyperTable.Add(modifiedUnit);
             MusicPlayer.MediaEnded += MusicPlayer_MediaEnded;
             MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
             MusicPlayer.MediaOpened += MusicPlayer_MediaOpened;
@@ -135,7 +135,15 @@ namespace OrangeJuiceModMaker
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             UnitSelectionBox.ItemsSource = mainWindow.UnitHyperTable.Select(z => z.UnitName).OrderBy(z => z);
-            UnitSelectionBox.SelectedIndex = 0;
+
+            int index = mainWindow.UnitHyperTable.FindIndex(z =>
+                new ModifiedUnit(z, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements).IsModified);
+            if (index == -1)
+            {
+                index = 0;
+            }
+
+            UnitSelectionBox.SelectedIndex = index;
         }
 
         private void ModifyUnit_OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -609,6 +617,11 @@ namespace OrangeJuiceModMaker
         private void CheckForNumber(object sender, TextCompositionEventArgs e)
         {
             e.Handled = e.Text.IsNumber();
+        }
+
+        private void ModifyUnit_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

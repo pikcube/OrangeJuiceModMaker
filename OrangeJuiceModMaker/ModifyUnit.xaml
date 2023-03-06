@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
         Closed="ModifyUnit_OnClosed"
-        Title="ModifyUnit" Height="620" Width="1200" Loaded="Window_Loaded" MinWidth="1170" MinHeight="590" SizeChanged="ModifyUnit_OnSizeChanged">
+        Title="ModifyUnit" Height="620" Width="1200" Loaded="Window_Loaded" Unloaded="ModifyUnit_OnUnloaded" MinWidth="1170" MinHeight="590" SizeChanged="ModifyUnit_OnSizeChanged">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>

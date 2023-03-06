@@ -373,8 +373,8 @@ namespace OrangeJuiceModMaker
             replacements.Textures.Add(t);
             if (CurrentArtPath != $@"{modPath}\{Path}256.png")
             {
-                File.Copy(CurrentArtPath, $@"{modPath}\{Path}256.png");
-                File.Copy(CurrentLowArtPath, $@"{modPath}\{Path}128.png");
+                File.Copy(CurrentArtPath, $@"{modPath}\{Path}256.png", true);
+                File.Copy(CurrentLowArtPath, $@"{modPath}\{Path}128.png", true);
             }
 
             Root.WriteJson(modPath, definition, replacements);
@@ -399,6 +399,7 @@ namespace OrangeJuiceModMaker
         public string[] CharacterArt { get; }
         public int[] FaceX { get; }
         public int[] FaceY { get; }
+        public bool IsModified { get; }
 
         public ModifiedUnit(Unit baseUnit, string baseResourcePath, ModReplacements? replacements, bool includeModData = true)
         {
@@ -419,6 +420,7 @@ namespace OrangeJuiceModMaker
             Music = null;
             FaceX = new int[CharacterArt.Length];
             FaceY = new int[CharacterArt.Length];
+            IsModified = false;
 
             if (!includeModData)
             {
@@ -440,6 +442,7 @@ namespace OrangeJuiceModMaker
                     UnitId = m.UnitId,
                     File = $@"{baseResourcePath}\{m.File}.ogg"
                 };
+                IsModified = true;
             }
 
             //Search for Hyper Replacements
@@ -456,6 +459,7 @@ namespace OrangeJuiceModMaker
                 Texture.EnsureCardExists(r.Path, HyperCardPaths[n], HyperCardPathsLow[n]);
                 HyperFlavor[n] = r.CustomFlavor ?? HyperFlavor[n];
                 HyperNames[n] = r.CustomName ?? HyperNames[n];
+                IsModified = true;
             }
 
             //Search for Character Card Replacements
@@ -470,6 +474,7 @@ namespace OrangeJuiceModMaker
                 CharacterCardPathsLow[n] = $@"{baseResourcePath}\{r.Path}128.png";
                 Texture.EnsureCardExists(r.Path, CharacterCardPaths[n], CharacterCardPathsLow[n]);
                 CharacterCardNames[n] = r.CustomName ?? CharacterCardNames[n];
+                IsModified = true;
             }
 
             //Search for Unit Replacements
@@ -485,6 +490,7 @@ namespace OrangeJuiceModMaker
                 Texture.EnsureUnitExists(r.Path, CharacterArt[n]);
                 FaceX[n] = r.FaceX ?? 0;
                 FaceY[n] = r.FaceY ?? 0;
+                IsModified = true;
             }
         }
 

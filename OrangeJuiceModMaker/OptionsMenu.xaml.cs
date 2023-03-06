@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -212,12 +213,86 @@ namespace OrangeJuiceModMaker
 
         private void ImportButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (importButton.Content.ToString() == "Locate?")
+            {
+                FolderBrowserDialog fd = new();
+                fd.ShowDialog();
+                if (fd.SelectedPath == "") return;
+                MainWindow.WorkshopItemsDirectory = fd.SelectedPath;
+                importButton.Content = "Import This?";
+                OptionsMenu_OnLoaded(sender, e);
+                return;
+            }
+            
+            try
+            {
+                //Get Selected Index
+                int index = workshopModComboBox.SelectedIndex;
+                if (index == -1)
+                {
+                    return;
+                }
+                string workshopModPath = WorkshopModPaths[index];
+
+                ImportMod(workshopModPath);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+
+        private void ImportMod(string workshopModPath)
+        {
+            //Delete temp directory if it exists
+            if (Directory.Exists($@"{globalSettings.ModDirectories.SelectedItem}\temp"))
+            {
+                Directory.Delete($@"{globalSettings.ModDirectories.SelectedItem}\temp", true);
+            }
+
+            //Create temp directory
+            Directory.CreateDirectory(
+                $@"{globalSettings.ModDirectories.SelectedItem ?? throw new FileNotFoundException()}\temp");
+
+            //Copy over workshop files
+            foreach (string file in Directory.GetFiles(workshopModPath, "*.*", SearchOption.AllDirectories))
+            {
+                string stripFile = file.Substring(workshopModPath.Length);
+                string newPath = $@"{globalSettings.ModDirectories.SelectedItem}\temp{stripFile}";
+                Directory.CreateDirectory(Path.GetDirectoryName(newPath)!);
+                File.Copy(file, newPath);
+            }
+
+            //Read Mod Definition
+            Root r = Root.ReadJson($@"{globalSettings.ModDirectories.SelectedItem}\temp\mod.json") ??
+                     throw new Exception("Mod def error");
+
+            //Find new directory name (should be mod name unless copies were made)
+            string modName = r.ModDefinition.Name;
+            if (Directory.Exists($@"{globalSettings.ModDirectories.SelectedItem}\{modName}"))
+            {
+                //Add numbers afterwards until we find something that works
+                int n;
+                for (n = 1; Directory.Exists($@"{globalSettings.ModDirectories.SelectedItem}\{modName}{n}"); ++n)
+                {
+                }
+
+                modName = r.ModDefinition.Name + n;
+                r.ModDefinition.Name = modName;
+            }
+
+            //Rename Directory
+            Directory.Move($@"{globalSettings.ModDirectories.SelectedItem}\temp",
+                $@"{globalSettings.ModDirectories.SelectedItem}\{modName}");
+
+            //Write json in case changes were made
+            Root.WriteJson(r, $@"{globalSettings.ModDirectories.SelectedItem}\{modName}\mod.json");
         }
 
         private async void CheckForUpdatestButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            await Process.Start("CMD.exe", @"/C winget upgrade Pikcube.OrangeJuiceModMaker").WaitForExitAsync();
         }
 
         private void NewModFolderButton_OnClick(object sender, RoutedEventArgs e)
