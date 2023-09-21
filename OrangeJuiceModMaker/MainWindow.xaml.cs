@@ -179,8 +179,12 @@ namespace OrangeJuiceModMaker
                         {
                             if (open.ShowDialog() == true)
                             {
-                                GameDirectory = Path.GetDirectoryName(open.FileName) ??
-                                                throw new FileNotFoundException();
+                                GameDirectory = Path.GetDirectoryName(open.FileName);
+                                if (GameDirectory is null)
+                                {
+                                    Environment.Exit(0);
+                                    return;
+                                }
                                 if (!Directory.Exists($@"{GameDirectory}\data"))
                                 {
                                     if (!HelpFindSteamDirectory())

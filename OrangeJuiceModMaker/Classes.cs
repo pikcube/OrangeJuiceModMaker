@@ -616,6 +616,23 @@ namespace OrangeJuiceModMaker
 
         private readonly Task<string[]> getCharacterArt;
 
+        //[JsonConstructor]
+        //public Unit(string unitId, string unitName, string[] hyperIds, string[] hyperNames, string[] hyperFlavor, string[] hyperCardPaths, string[] hyperCardPathsLow, string[] characterCards, string[] characterCardNames, string[] characterCardPaths, string[] characterCardPathsLow, string[] characterArt)
+        //{
+        //    UnitId = unitId;
+        //    UnitName = unitName;
+        //    HyperIds = hyperIds;
+        //    HyperNames = hyperNames;
+        //    HyperFlavor = hyperFlavor;
+        //    HyperCardPaths = hyperCardPaths;
+        //    HyperCardPathsLow = hyperCardPathsLow;
+        //    CharacterCards = characterCards;
+        //    CharacterCardNames = characterCardNames;
+        //    CharacterCardPaths = characterCardPaths;
+        //    CharacterCardPathsLow = characterCardPathsLow;
+        //    getCharacterArt = Task.Run(() => characterArt);
+        //}
+
         public Unit(string[] row, CsvHolder characterCards, MainWindow mainWindow)
         {
             if (row.Length < 3)

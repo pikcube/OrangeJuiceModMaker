@@ -31,7 +31,16 @@ namespace OrangeJuiceModMaker
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             Console.WriteLine("Loading");
-            Process.Start("CMD.exe", "/C winget upgrade Pikcube.OrangeJuiceModMaker --accept-source-agreements --accept-package-agreements").WaitForExit();
+            try
+            {
+                Process.Start("CMD.exe",
+                        "/C winget upgrade Pikcube.OrangeJuiceModMaker --accept-source-agreements --accept-package-agreements")
+                    .WaitForExit();
+            }
+            catch
+            {
+                //ignore
+            }
             bool debug = e.Args.Any(z => z.ToLower().StripStart(1) is "debug" or "d" or "verbose" or "v");
             createStars = !debug;
             Task.Run(() =>
