@@ -210,3 +210,8 @@ When My Slumber Breaks,slumberb,"Deal X+1 damage to all other players and the Bo
 Threats to My Slumber,slumbera,"When you cancel exactly 1 damage in battle while holding this card, gain a stock of Waking. (Max 4. Does not stack.)
 Transform to When My Slumber Breaks upon use.","""I suggest you keep quiet for your own safety..."" ?Krilalaris"
 Make-Believe Prison Break,prisonbreak,"Move to your Home panel without activating it. Cannot be challenged or be the target of other players' Boost cards. Immune to Trap cards, instant KO effects, and card damage from other players. Roll 2 dice for movement. Effect ends after traveling 20 panels.","""Pitter-patter, pitter-patter!"" ?Mimyuu"
+Mother Power,mpower,"Effect Duration: Player level. Gain Lvl x1 stars for every point of damage you take. If the effect ends or is replaced while active, heal all damage taken during the effect. Effect ends on KO.","""This is a Mother's love, poppo."" -Mother Poppo"
+Lulu is an Unlucky Dragon,lisunlucky,"Can only be played with 2 HP or less. Trigger one of the following effects at random:
+-Roll a die. All other players lose the die number x (their Lvl) stars.
+-All other players discard a card at random.
+-All other players' HP is lowered to 2.","""Lulu is... an unlucky dragon..."" -Dark Lulu"
