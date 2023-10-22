@@ -332,7 +332,7 @@ namespace OrangeJuiceModMaker
                     if (csvFileList.Length != count)
                     {
                         throw csvFileList.Length > count
-                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 312 again?")
+                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 331 again?")
                             : new Exception("Didn't find all files");
                     }
                     foreach (string file in csvFileList)
@@ -877,7 +877,12 @@ namespace OrangeJuiceModMaker
 
         private void EditSettings(object sender, RoutedEventArgs e)
         {
-            new OptionsMenu(this) { Owner = this }.ShowDialog();
+            OptionsMenu optionsMenu = new OptionsMenu(this) { Owner = this };
+            optionsMenu.ShowDialog();
+            if (optionsMenu.ForceRefresh)
+            {
+                UpdateModsLoaded();
+            }
         }
     }
 }

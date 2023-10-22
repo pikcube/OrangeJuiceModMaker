@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using static OrangeJuiceModMaker.GlobalSettings;
@@ -97,6 +98,8 @@ namespace OrangeJuiceModMaker
         private GlobalSettings globalSettings => parent.globalSettings;
         private string[] WorkshopModNames;
         private string[] WorkshopModPaths;
+
+        public bool ForceRefresh = false;
 
 
         public OptionsMenu(MainWindow parent)
@@ -288,6 +291,9 @@ namespace OrangeJuiceModMaker
 
             //Write json in case changes were made
             Root.WriteJson(r, $@"{globalSettings.ModDirectories.SelectedItem}\{modName}\mod.json");
+
+            ForceRefresh = true;
+            Close();
         }
 
         private async void CheckForUpdatestButton_OnClick(object sender, RoutedEventArgs e)

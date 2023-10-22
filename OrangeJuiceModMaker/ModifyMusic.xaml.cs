@@ -10,6 +10,7 @@ using System.Windows.Input;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Unosquare.FFME.Common;
 using MediaElement = Unosquare.FFME.MediaElement;
 
