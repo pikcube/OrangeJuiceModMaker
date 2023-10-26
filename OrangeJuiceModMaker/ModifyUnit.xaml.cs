@@ -329,8 +329,6 @@ namespace OrangeJuiceModMaker
             {
                 MusicReplaceButton.IsEnabled = false;
                 MusicReplaceButton.Content = "Loading Music";
-                MusicReplaceButton.IsEnabled = false;
-                MusicReplaceButton.Content = "Loading Music";
                 InputFile inFile = new(modifiedUnit.Music.File);
                 OutputFile outFile = new(mp3Path);
                 Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
@@ -380,6 +378,7 @@ namespace OrangeJuiceModMaker
             }
 
             LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
+            VolumeBox.Text = (modifiedUnit.Music.Volume ?? 0).ToString();
 
             UpdateCurrentPosition(0);
 

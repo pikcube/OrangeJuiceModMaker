@@ -10,7 +10,6 @@ using System.Windows.Input;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using Unosquare.FFME.Common;
 using MediaElement = Unosquare.FFME.MediaElement;
 
@@ -76,6 +75,11 @@ namespace OrangeJuiceModMaker
             {
                 throw new Exception("No Music");
             }
+
+            foreach (MusicList set in sets)
+            {
+                set.Tracks.Sort((first, second) => string.CompareOrdinal(first.Id, second.Id));
+            }
             songs = sets.First();
 
             InitializeComponent();
@@ -94,8 +98,8 @@ namespace OrangeJuiceModMaker
             }
 
             SetComboBox.ItemsSource = sets.Select(z => z.Name);
-            SelectedSongComboBox.ItemsSource = songs.Id;
-            DescriptionComboBox.ItemsSource = songs.Description;
+            SelectedSongComboBox.ItemsSource = songs.Tracks.Select(z => z.Id);
+            DescriptionComboBox.ItemsSource = songs.Tracks.Select(z => z.Description);
             SetComboBox.SelectedIndex = 0;
             SelectedSongComboBox.SelectedIndex = 0;
         }
@@ -193,6 +197,7 @@ namespace OrangeJuiceModMaker
             {
                 CurrentPositionBox.Text = "";
                 LoopPointBox.Text = "";
+                VolumeBox.Text = "";
                 return;
             }
 
@@ -251,6 +256,7 @@ namespace OrangeJuiceModMaker
             await MusicPlayer.Pause();
 
             LoopPointBox.Text = (modifiedMusic.LoopPoint ?? 0).ToString();
+            VolumeBox.Text = (modifiedMusic.Volume ?? 0).ToString();
 
             UpdateCurrentPosition(0);
 
@@ -394,10 +400,10 @@ namespace OrangeJuiceModMaker
         {
             songs = sets[SetComboBox.SelectedIndex];
 
-            SelectedSongComboBox.ItemsSource = songs.Id;
+            SelectedSongComboBox.ItemsSource = songs.Tracks.Select(z => z.Id);
             SelectedSongComboBox.SelectedIndex = 0;
 
-            DescriptionComboBox.ItemsSource = songs.Description;
+            DescriptionComboBox.ItemsSource = songs.Tracks.Select(z => z.Description);
             DescriptionComboBox.SelectedIndex = 0;
         }
 
@@ -413,7 +419,7 @@ namespace OrangeJuiceModMaker
             }
 
             ModMusic.SongType t = songs.Name == "Events" ? ModMusic.SongType.EventTheme : ModMusic.SongType.UnitTheme;
-            string id = songs.Id[SelectedSongComboBox.SelectedIndex];
+            string id = songs.Tracks[SelectedSongComboBox.SelectedIndex].Id;
             if (musicMods.Any(z => z.Id == id && z.Song == t))
             {
             }
@@ -467,7 +473,7 @@ namespace OrangeJuiceModMaker
             SelectedSongComboBox.SelectedIndex = DescriptionComboBox.SelectedIndex;
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
             modifiedMusic.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, ref mainWindow.LoadedModReplacements);
         }

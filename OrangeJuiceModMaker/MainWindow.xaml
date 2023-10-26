@@ -5,73 +5,105 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="460" Width="450" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="100% Orange Juice Mod Maker" Height="460" Width="450" Loaded="Window_Loaded" Closed="Window_Closed" MinWidth="450" MinHeight="400">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="10"/>
-        </Grid.ColumnDefinitions>
-
-        <ComboBox Grid.Column="1" Grid.Row="1" x:Name="SelectedModComboBox" SelectionChanged="SelectedModComboBox_SelectionChanged" />
-        <Button Grid.Column="3" Grid.Row="1" x:Name="NewModButton" Content="  New Mod  " Click="NewModButton_OnClick"/>
-        <ComboBox Grid.Column="1" Grid.Row="3" x:Name="SelectedModeComboBox" SelectionChanged="SelectedModeComboBox_OnSelectionChanged"/>
-        <Button Grid.Column="3" Grid.Row="3" x:Name="EditButton" Click="EditButton_OnClick" Content=" Edit "/>
-        
-        <TextBlock Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Text="Preview Image (Click to Replace)" TextAlignment="Center" MouseDown="Viewbox_MouseDown"/>
-        <Viewbox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" MouseDown="Viewbox_MouseDown">
-            <Rectangle Width="3200" Height="1800">
-                <Rectangle.Fill>
-                    <ImageBrush x:Name="Preview"/>
-                </Rectangle.Fill>
-            </Rectangle>
-        </Viewbox>
-        <Viewbox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" MouseDown="Viewbox_MouseDown">
-            <TextBlock Text="For best results upload a 16:9 image" x:Name="Text16By9"/>
-        </Viewbox>
-        <Grid Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3">
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="New" x:Name="NewMenuItem" Click="NewMenuItem_OnClick"/>
+                <MenuItem Header="Load Mod From File" x:Name="LoadFromFileMenuItem" Click="LoadFromFileMenuItem_OnClick"/>
+                <MenuItem Header="Load Mod From Workshop" x:Name="LoadFromWorkshopMenuItem" Click="LoadFromWorkshopMenuItem_OnClick"/>
+                <MenuItem Header="Open 100% Orange Juice" x:Name="OpenGameMenuItem" Click="OpenGameMenuItem_OnClick"/>
+                <MenuItem Header="Save As" x:Name="SaveAsMenuItem" Click="SaveAsMenuItem_OnClick"/>
+                <MenuItem Header="Close" x:Name="CloseMenuItem" Click="CloseMenuItem_OnClick"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Name" x:Name="EditNameMenuItem" Click="EditNameMenuItem_OnClick"/>
+                <MenuItem Header="Definition" x:Name="EditDefinitionMenuItem" Click="EditDefinitionMenuItem_OnClick"/>
+                <MenuItem Header="Unit" x:Name="EditUnitMenuItem" Click="EditUnitMenuItem_OnClick"/>
+                <MenuItem Header="Card" x:Name="EditCardMenuItem" Click="EditCardMenuItem_OnClick"/>
+                <MenuItem Header="Music" x:Name="EditMusicMenuItem" Click="EditMusicMenuItem_OnClick"/>
+                <MenuItem Header="Sound Effect" x:Name="EditSoundEffectMenuItem" Click="EditSoundEffectMenuItem_OnClick"/>
+                <MenuItem Header="Settings" x:Name="EditSettingsMenuItem" Click="EditSettingsMenuItem_OnClick"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Open Mod Folder" x:Name="ToolsOpenModFolderMenuItem" Click="ToolsOpenModFolderMenuItem_OnClick"/>
+                <MenuItem Header="Open Mod.json File" x:Name="ToolsOpenJsonMenuItem" Click="ToolsOpenJsonMenuItem_OnClick"/>
+                <MenuItem Header="Repair Mod" x:Name="ToolsRepairMenuItem" Click="ToolsRepairMenuItem_OnClick"/>
+                <MenuItem Header="Clean Mod" x:Name="ToolsCleanMenuItem" Click="ToolsCleanMenuItem_OnClick"/>
+                <MenuItem Header="Delete Mod" x:Name="ToolsDeleteModMenuItem" Click="ToolsDeleteModMenuItem_OnClick"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="10"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Text="Other Options" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
-            <Button Grid.Column="2" Grid.Row="0" Content=" Open Orange Juice " x:Name="OpenOj" Click="OpenOJ_OnClick"/>
-            <Button Grid.Column="4" Grid.Row="4" Content=" Clean Mod Folder " x:Name="CleanDirectory" Click="CleanDirectory_OnClick"/>
-            <Button Grid.Column="4" Grid.Row="0" Content=" Validate Mod " x:Name="ValidateModButton" Click="ValidateModButton_OnClick"/>
-            <Button Grid.Column="6" Grid.Row="2" Content=" Disable Mod " x:Name="DisableModButton" Click="DisableModButton_OnClick"/>
-            <Button Grid.Column="6" Grid.Row="4" Content=" Delete Mod " x:Name="DeleteModButton" Click="DeleteModButton_OnClick"/>
-            <Button Grid.Column="4" Grid.Row="2" Content=" Repair Mod " x:Name="RepairModButton" Click="RepairModButton_OnClick"/>
-            <Button Grid.Column="2" Grid.Row="2" Content=" Open Mod Folder " Click="OpenModDirectory_OnClick"/>
-            <Button Grid.Column="2" Grid.Row="4" Content=" Open Mod Definition " Click="OpenModDotJson_OnClick"/>
-            <Button Grid.Column="6" Grid.Row="0" Content=" Edit Settings " Click="EditSettings"/>
+            <ComboBox Grid.Column="1" Grid.Row="1" x:Name="SelectedModComboBox" SelectionChanged="SelectedModComboBox_SelectionChanged" />
+            <Button Grid.Column="3" Grid.Row="1" x:Name="NewModButton" Content="  New Mod  " Click="NewModButton_OnClick"/>
+            <ComboBox Grid.Column="1" Grid.Row="3" x:Name="SelectedModeComboBox" SelectionChanged="SelectedModeComboBox_OnSelectionChanged"/>
+            <Button Grid.Column="3" Grid.Row="3" x:Name="EditButton" Click="EditButton_OnClick" Content=" Edit "/>
+
+            <TextBlock Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" Text="Preview Image (Click to Replace)" TextAlignment="Center" MouseDown="Viewbox_MouseDown"/>
+            <Viewbox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" MouseDown="Viewbox_MouseDown">
+                <Rectangle Width="3200" Height="1800">
+                    <Rectangle.Fill>
+                        <ImageBrush x:Name="Preview"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Viewbox>
+            <Viewbox Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="3" MouseDown="Viewbox_MouseDown">
+                <TextBlock Text="For best results upload a 16:9 image" x:Name="Text16By9"/>
+            </Viewbox>
+            <Grid Grid.Column="1" Grid.Row="9" Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*" MinWidth="124"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*" MinWidth="105"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*" MinWidth="78"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="5" Text="Other Options" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                <Button Grid.Column="2" Grid.Row="0" Content=" Open Orange Juice " x:Name="OpenOj" Click="OpenOJ_OnClick"/>
+                <Button Grid.Column="4" Grid.Row="4" Content=" Clean Mod Folder " x:Name="CleanDirectory" Click="CleanDirectory_OnClick"/>
+                <Button Grid.Column="4" Grid.Row="0" Content=" Validate Mod " x:Name="ValidateModButton" Click="ValidateModButton_OnClick"/>
+                <Button Grid.Column="6" Grid.Row="2" Content=" Disable Mod " x:Name="DisableModButton" Click="DisableModButton_OnClick"/>
+                <Button Grid.Column="6" Grid.Row="4" Content=" Delete Mod " x:Name="DeleteModButton" Click="DeleteModButton_OnClick"/>
+                <Button Grid.Column="4" Grid.Row="2" Content=" Repair Mod " x:Name="RepairModButton" Click="RepairModButton_OnClick"/>
+                <Button Grid.Column="2" Grid.Row="2" Content=" Open Mod Folder " Click="OpenModDirectory_OnClick"/>
+                <Button Grid.Column="2" Grid.Row="4" Content=" Open Mod.Json" Click="OpenModDotJson_OnClick"/>
+                <Button Grid.Column="6" Grid.Row="0" Content=" Edit Settings " Click="EditSettings"/>
+            </Grid>
         </Grid>
     </Grid>
 

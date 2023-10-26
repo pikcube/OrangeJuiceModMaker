@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d"
         Loaded="ModifyCard_OnLoaded"
-        Title="ModifyCard" Height="500" Width="600" MinHeight="450" MinWidth="540">
+        Title="Modify Card" Height="500" Width="600" MinHeight="450" MinWidth="540">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

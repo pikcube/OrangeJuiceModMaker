@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrangeJuiceModMaker"
         mc:Ignorable="d" Loaded="OptionsMenu_OnLoaded" Unloaded="OptionsMenu_OnUnloaded"
-        Title="OptionsMenu" Height="450" Width="1200">
+        Title="Options Menu" Height="450" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -24,8 +24,6 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
@@ -33,20 +31,17 @@
         <!--Labels-->
         <TextBlock Grid.Row="1" Grid.Column="1" FontSize="20" Text="Workshop Mods: "/>
         <TextBlock Grid.Row="3" Grid.Column="1" FontSize="20" Text="Load Mods From: "/>
-        <TextBlock Grid.Row="5" Grid.Column="1" FontSize="20" Text="Auto Updater Options: "/>
-        <TextBlock Grid.Row="7" Grid.Column="1" FontSize="20" Text="Copy My Mods To: "/>
+        <TextBlock Grid.Row="5" Grid.Column="1" FontSize="20" Text="Copy My Mods To: "/>
 
         <!--Dropdowns-->
         <ComboBox Grid.Row="1" Grid.Column="3" FontSize="20" x:Name="workshopModComboBox" SelectionChanged="WorkshopModComboBox_OnSelectionChanged"/>
         <ComboBox Grid.Row="3" Grid.Column="3" FontSize="20" x:Name="modDirectoryComboBox" SelectionChanged="ModDirectoryComboBox_OnSelectionChanged"/>
-        <ComboBox Grid.Row="5" Grid.Column="3" FontSize="20" x:Name="autoUpdateComboBox" SelectionChanged="AutoUpdateComboBox_OnSelectionChanged"/>
-        <ComboBox Grid.Row="7" Grid.Column="3" FontSize="20" x:Name="backupDirectoryComboBox" SelectionChanged="BackupDirectoryComboBox_OnSelectionChanged"/>
+        <ComboBox Grid.Row="5" Grid.Column="3" FontSize="20" x:Name="backupDirectoryComboBox" SelectionChanged="BackupDirectoryComboBox_OnSelectionChanged"/>
         
         <!--Buttons-->
         <Button Grid.Row="1" Grid.Column="5" FontSize="20" x:Name="importButton" Content="Import This?" Click="ImportButton_OnClick"/>
         <Button Grid.Row="3" Grid.Column="5" FontSize="20" x:Name="newModFolderButton" Content="New Location?" Click="NewModFolderButton_OnClick"/>
-        <Button Grid.Row="5" Grid.Column="5" FontSize="20" x:Name="checkForUpdatestButton" Content="Check Now?" Click="CheckForUpdatestButton_OnClick"/>
-        <Button Grid.Row="7" Grid.Column="5" FontSize="20" x:Name="newMirrorButton" Content="New Location?" Click="NewMirrorButton_OnClick"/>
+        <Button Grid.Row="5" Grid.Column="5" FontSize="20" x:Name="newMirrorButton" Content="New Location?" Click="NewMirrorButton_OnClick"/>
 
     </Grid>
 </Window>

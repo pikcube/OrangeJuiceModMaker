@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Media.Animation;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using static OrangeJuiceModMaker.GlobalSettings;
-using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
+using MessageBox = System.Windows.MessageBox;
 
 namespace OrangeJuiceModMaker
 {
     public class GlobalSettings
     {
-        private string FileLocation;
+        private readonly string fileLocation;
         public SettingsList<string> ModDirectories { get; set; }
         public SettingsList<string> MirrorDirectories { get; set; }
         public SettingsList<string> AutoUpdate { get; set; }
@@ -27,7 +25,7 @@ namespace OrangeJuiceModMaker
             ModDirectories = new SettingsList<string>();
             MirrorDirectories = new SettingsList<string>();
             AutoUpdate = new SettingsList<string>();
-            FileLocation =
+            fileLocation =
                 $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\GlobalSettings.json";
         }
 
@@ -41,7 +39,7 @@ namespace OrangeJuiceModMaker
                 AutoUpdate = new SettingsList<string>(new List<string> { "Check for updates", "Skip this version", "Don't check for updates" }, 0);
                 MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
             }
-            FileLocation =
+            fileLocation =
                 $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\GlobalSettings.json";
         }
 
@@ -85,7 +83,7 @@ namespace OrangeJuiceModMaker
         public void Save()
         {
             string json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            File.WriteAllText(FileLocation, json);
+            File.WriteAllText(fileLocation, json);
         }
     }
     
@@ -95,12 +93,11 @@ namespace OrangeJuiceModMaker
     public partial class OptionsMenu : Window
     {
         private readonly MainWindow parent;
-        private GlobalSettings globalSettings => parent.globalSettings;
-        private string[] WorkshopModNames;
-        private string[] WorkshopModPaths;
+        private GlobalSettings GlobalSettings => parent.GlobalSettings;
+        private string[] workshopModNames;
+        private string[] workshopModPaths;
 
-        public bool ForceRefresh = false;
-
+        public string? ImportedMod = null;
 
         public OptionsMenu(MainWindow parent)
         {
@@ -110,17 +107,13 @@ namespace OrangeJuiceModMaker
 
         private void BackupDirectoryComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            globalSettings.MirrorDirectories.SelectedIndex = backupDirectoryComboBox.SelectedIndex;
+            GlobalSettings.MirrorDirectories.SelectedIndex = backupDirectoryComboBox.SelectedIndex;
         }
 
-        private void AutoUpdateComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            globalSettings.AutoUpdate.SelectedIndex = autoUpdateComboBox.SelectedIndex;
-        }
 
         private void ModDirectoryComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            globalSettings.ModDirectories.SelectedIndex = modDirectoryComboBox.SelectedIndex;
+            GlobalSettings.ModDirectories.SelectedIndex = modDirectoryComboBox.SelectedIndex;
         }
 
         private void WorkshopModComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -130,19 +123,17 @@ namespace OrangeJuiceModMaker
 
         private async void OptionsMenu_OnLoaded(object sender, RoutedEventArgs e)
         {
-            autoUpdateComboBox.ItemsSource = globalSettings.AutoUpdate.Items;
-            autoUpdateComboBox.SelectedIndex = globalSettings.AutoUpdate.SelectedIndex;
-            modDirectoryComboBox.ItemsSource = globalSettings.ModDirectories.Items;
-            modDirectoryComboBox.SelectedIndex = globalSettings.ModDirectories.SelectedIndex;
+            modDirectoryComboBox.ItemsSource = GlobalSettings.ModDirectories.Items;
+            modDirectoryComboBox.SelectedIndex = GlobalSettings.ModDirectories.SelectedIndex;
 
-            if (globalSettings.MirrorDirectories.Items.Count == 0)
+            if (GlobalSettings.MirrorDirectories.Items.Count == 0)
             {
-                globalSettings.MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
-                globalSettings.Save();
+                GlobalSettings.MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
+                GlobalSettings.Save();
             }
 
-            backupDirectoryComboBox.ItemsSource = globalSettings.MirrorDirectories.Items;
-            backupDirectoryComboBox.SelectedIndex = globalSettings.MirrorDirectories.SelectedIndex;
+            backupDirectoryComboBox.ItemsSource = GlobalSettings.MirrorDirectories.Items;
+            backupDirectoryComboBox.SelectedIndex = GlobalSettings.MirrorDirectories.SelectedIndex;
             if (MainWindow.WorkshopItemsDirectory is null)
             {
                 NoWorkshopMods();
@@ -181,15 +172,15 @@ namespace OrangeJuiceModMaker
                         }
                     }
 
-                    WorkshopModPaths = mods.Where(z => z is not null).ToArray()!;
-                    WorkshopModNames = modNames.Where(z => z is not null).ToArray()!;
+                    workshopModPaths = mods.Where(z => z is not null).ToArray()!;
+                    workshopModNames = modNames.Where(z => z is not null).ToArray()!;
                 });
 
                 importButton.IsEnabled = true;
 
-                if (WorkshopModNames.Any())
+                if (workshopModNames.Any())
                 {
-                    workshopModComboBox.ItemsSource = WorkshopModNames;
+                    workshopModComboBox.ItemsSource = workshopModNames;
                     workshopModComboBox.SelectedIndex = 0;
                     workshopModComboBox.IsEnabled = true;
                 }
@@ -211,7 +202,7 @@ namespace OrangeJuiceModMaker
 
         private void OptionsMenu_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            globalSettings.Save();
+            GlobalSettings.Save();
         }
 
         private void ImportButton_OnClick(object sender, RoutedEventArgs e)
@@ -235,7 +226,7 @@ namespace OrangeJuiceModMaker
                 {
                     return;
                 }
-                string workshopModPath = WorkshopModPaths[index];
+                string workshopModPath = workshopModPaths[index];
 
                 ImportMod(workshopModPath);
             }
@@ -249,50 +240,56 @@ namespace OrangeJuiceModMaker
         private void ImportMod(string workshopModPath)
         {
             //Delete temp directory if it exists
-            if (Directory.Exists($@"{globalSettings.ModDirectories.SelectedItem}\temp"))
+            if (Directory.Exists($@"{GlobalSettings.ModDirectories.SelectedItem}\temp"))
             {
-                Directory.Delete($@"{globalSettings.ModDirectories.SelectedItem}\temp", true);
+                Directory.Delete($@"{GlobalSettings.ModDirectories.SelectedItem}\temp", true);
             }
 
             //Create temp directory
             Directory.CreateDirectory(
-                $@"{globalSettings.ModDirectories.SelectedItem ?? throw new FileNotFoundException()}\temp");
+                $@"{GlobalSettings.ModDirectories.SelectedItem ?? throw new FileNotFoundException()}\temp");
 
             //Copy over workshop files
             foreach (string file in Directory.GetFiles(workshopModPath, "*.*", SearchOption.AllDirectories))
             {
                 string stripFile = file.Substring(workshopModPath.Length);
-                string newPath = $@"{globalSettings.ModDirectories.SelectedItem}\temp{stripFile}";
+                string newPath = $@"{GlobalSettings.ModDirectories.SelectedItem}\temp{stripFile}";
                 Directory.CreateDirectory(Path.GetDirectoryName(newPath)!);
                 File.Copy(file, newPath);
             }
 
             //Read Mod Definition
-            Root r = Root.ReadJson($@"{globalSettings.ModDirectories.SelectedItem}\temp\mod.json") ??
+            Root r = Root.ReadJson($@"{GlobalSettings.ModDirectories.SelectedItem}\temp\mod.json") ??
                      throw new Exception("Mod def error");
 
             //Find new directory name (should be mod name unless copies were made)
             string modName = r.ModDefinition.Name;
-            if (Directory.Exists($@"{globalSettings.ModDirectories.SelectedItem}\{modName}"))
+            if (Directory.Exists($@"{GlobalSettings.ModDirectories.SelectedItem}\{modName}"))
             {
-                //Add numbers afterwards until we find something that works
-                int n;
-                for (n = 1; Directory.Exists($@"{globalSettings.ModDirectories.SelectedItem}\{modName}{n}"); ++n)
-                {
-                }
+                MessageBoxResult result = MessageBox.Show(this,
+                    "A mod with this name already exists. Would you like to overwrite it?",
+                    "Mod already exists", MessageBoxButton.YesNo);
 
-                modName = r.ModDefinition.Name + n;
-                r.ModDefinition.Name = modName;
+                if (result == MessageBoxResult.Yes)
+                {
+                    Directory.Delete($@"{GlobalSettings.ModDirectories.SelectedItem}\{modName}", true);
+                }
+                else
+                {
+                    Directory.Delete($@"{GlobalSettings.ModDirectories.SelectedItem}\temp", true);
+                    return;
+                }
             }
 
             //Rename Directory
-            Directory.Move($@"{globalSettings.ModDirectories.SelectedItem}\temp",
-                $@"{globalSettings.ModDirectories.SelectedItem}\{modName}");
+            Directory.Move($@"{GlobalSettings.ModDirectories.SelectedItem}\temp",
+                $@"{GlobalSettings.ModDirectories.SelectedItem}\{modName}");
 
             //Write json in case changes were made
-            Root.WriteJson(r, $@"{globalSettings.ModDirectories.SelectedItem}\{modName}\mod.json");
+            Root.WriteJson(r, $@"{GlobalSettings.ModDirectories.SelectedItem}\{modName}\mod.json");
 
-            ForceRefresh = true;
+            parent.OnLoadedModsChanged();
+            ImportedMod = r.ModDefinition.Name;
             Close();
         }
 
@@ -306,8 +303,8 @@ namespace OrangeJuiceModMaker
             FolderBrowserDialog fd = new();
             fd.ShowDialog();
             if (fd.SelectedPath == "") return;
-            globalSettings.ModDirectories.Items.Add(fd.SelectedPath);
-            globalSettings.ModDirectories.SelectedItem = fd.SelectedPath;
+            GlobalSettings.ModDirectories.Items.Add(fd.SelectedPath);
+            GlobalSettings.ModDirectories.SelectedItem = fd.SelectedPath;
             OptionsMenu_OnLoaded(sender, e);
         }
 
@@ -316,8 +313,8 @@ namespace OrangeJuiceModMaker
             FolderBrowserDialog fd = new();
             fd.ShowDialog();
             if (fd.SelectedPath == "") return;
-            globalSettings.MirrorDirectories.Items.Add(fd.SelectedPath);
-            globalSettings.MirrorDirectories.SelectedItem = fd.SelectedPath;
+            GlobalSettings.MirrorDirectories.Items.Add(fd.SelectedPath);
+            GlobalSettings.MirrorDirectories.SelectedItem = fd.SelectedPath;
             OptionsMenu_OnLoaded(sender, e);
         }
     }

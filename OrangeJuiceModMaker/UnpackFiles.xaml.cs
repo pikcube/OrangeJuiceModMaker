@@ -20,13 +20,13 @@ namespace OrangeJuiceModMaker
         private readonly string gameDirectory;
         private const int TotalFilesInitial = 9521;
         private int totalFiles;
-        private static int cardsConverted;
+        private static int _cardsConverted;
         private readonly string[] paks = "cards,units".Split(',');
         private int paksUnzipped = 1;
         private int finished;
         private readonly Thread timer;
         private bool showStatus;
-        private static bool exit;
+        private static bool _exit;
         private readonly string appData;
         private readonly bool debug;
 
@@ -46,10 +46,10 @@ namespace OrangeJuiceModMaker
                         {
                             f.Status.Text =
                                 $"Unpacking {(f.paksUnzipped > 2 ? "Complete" : $"{f.paksUnzipped}/2")}{Environment.NewLine}" +
-                                $"Converting {cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
+                                $"Converting {_cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
                         });
                     }
-                    if (exit)
+                    if (_exit)
                     {
                         return;
                     }
@@ -58,7 +58,7 @@ namespace OrangeJuiceModMaker
                 f.Dispatcher.Invoke(() =>
                 {
                     f.Status.Text = $"Unpacking {(f.paksUnzipped > 2 ? "Complete" : $"{f.paksUnzipped}/2")}{Environment.NewLine}" +
-                                    $"Converting {cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
+                                    $"Converting {_cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
                     MainWindow.UnpackComplete = true;
                     f.Close();
                 });
@@ -111,7 +111,7 @@ namespace OrangeJuiceModMaker
                             MainWindow.ExitTime = true;
                         }
 
-                        if (exit)
+                        if (_exit)
                         {
                             return;
                         }
@@ -134,7 +134,7 @@ namespace OrangeJuiceModMaker
                 throw;
             }
 
-            cardsConverted = 0;
+            _cardsConverted = 0;
             timer.Start();
         }
 
@@ -181,8 +181,8 @@ namespace OrangeJuiceModMaker
                     using MagickImage m = new(file);
                     m.Format = MagickFormat.Png;
                     m.Write(Path.ChangeExtension(file, "png"));
-                    ++cardsConverted;
-                    if (exit)
+                    ++_cardsConverted;
+                    if (_exit)
                     {
                         return;
                     }
@@ -191,7 +191,7 @@ namespace OrangeJuiceModMaker
                 foreach (string file in unpackedFiles)
                 {
                     File.Delete(file);
-                    if (exit)
+                    if (_exit)
                     {
                         return;
                     }
@@ -200,7 +200,7 @@ namespace OrangeJuiceModMaker
             })
             {
                 IsBackground = true,
-                Priority = p
+                Priority = _p
             };
             t.Start();
             Threads.Add(t);
@@ -213,14 +213,14 @@ namespace OrangeJuiceModMaker
             });
         }
 
-        private static ThreadPriority p = ThreadPriority.Highest;
+        private static ThreadPriority _p = ThreadPriority.Highest;
         private static readonly List<Thread> Threads = new();
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             showStatus = true;
-            p = ThreadPriority.Lowest;
-            Threads.Where(z => z.IsAlive).ForEach(z => z.Priority = p);
+            _p = ThreadPriority.Lowest;
+            Threads.Where(z => z.IsAlive).ForEach(z => z.Priority = _p);
             if (sender is Button b)
             {
                 b.IsEnabled = false;
@@ -229,7 +229,7 @@ namespace OrangeJuiceModMaker
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            exit = true;
+            _exit = true;
         }
     }
 }

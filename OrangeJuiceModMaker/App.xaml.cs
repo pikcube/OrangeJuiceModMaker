@@ -26,7 +26,7 @@ namespace OrangeJuiceModMaker
         private const int SwHide = 0;
         private const int SwShow = 5;
         public Task<string> PostAction = Task.Run(() => "");
-        private static bool createStars;
+        private static bool _createStars;
 
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
@@ -42,10 +42,10 @@ namespace OrangeJuiceModMaker
                 //ignore
             }
             bool debug = e.Args.Any(z => z.ToLower().StripStart(1) is "debug" or "d" or "verbose" or "v");
-            createStars = !debug;
+            _createStars = !debug;
             Task.Run(() =>
             {
-                while (createStars)
+                while (_createStars)
                 {
                     Console.Write("*");
                     Thread.Sleep(100);
@@ -70,7 +70,7 @@ namespace OrangeJuiceModMaker
 
         public static void ShowHideConsole(bool debug)
         {
-            createStars = false;
+            _createStars = false;
             IntPtr handle = GetConsoleWindow();
             int swInt = debug ? SwShow : SwHide;
 
