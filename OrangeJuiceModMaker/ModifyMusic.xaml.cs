@@ -10,8 +10,6 @@ using System.Windows.Input;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using Microsoft.Win32;
-using Unosquare.FFME.Common;
-using MediaElement = Unosquare.FFME.MediaElement;
 
 namespace OrangeJuiceModMaker
 {
@@ -20,15 +18,14 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class ModifyMusic
     {
-        private MediaElement MusicPlayer => MainWindow.MusicPlayer;
-        private long songLength = 1;
+        private MyMusicPlayer MusicPlayer = new();
         private PlayState mediaPlayerState;
         private readonly MusicList[] sets;
         private MusicList songs;
-        private readonly List<ModMusic> musicMods = new();
+        private readonly List<ModMusic> musicMods = [];
         private ModMusic modifiedMusic;
         private TimeSpan LoopPoint => TickFromSamples(modifiedMusic.LoopPoint ?? 0);
-        private TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
+        private static TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
         private readonly MainWindow mainWindow;
         private PlayState MediaPlayerState
         {
@@ -37,25 +34,25 @@ namespace OrangeJuiceModMaker
             {
                 switch (value)
                 {
-                    case PlayState.Stop when MusicPlayer.HasAudio:
-                        MusicPlayer.Volume = 0;
-                        MusicPlayer.Stop().GetAwaiter().GetResult();
-                        MusicPlayer.Close();
+                    case PlayState.Stop when MusicPlayer.Reader is not null:
+                        MusicPlayer.Out.Volume = 0;
+                        MusicPlayer.Out.Stop();
+                        MusicPlayer.Reader.Close();
                         MusicPlayer.Position = TimeSpan.Zero;
                         PlayPauseButton.Content = "▶";
                         break;
-                    case PlayState.Play when MusicPlayer.HasAudio:
-                        MusicPlayer.Volume = 0.5;
-                        MusicPlayer.Play().GetAwaiter().GetResult();
+                    case PlayState.Play when MusicPlayer.Reader is not null:
+                        MusicPlayer.Out.Volume = 0.5f;
+                        MusicPlayer.Out.Play();
                         PlayPauseButton.Content = "▐▐";
                         break;
-                    case PlayState.Pause when MusicPlayer.HasAudio:
-                        MusicPlayer.Volume = 0;
-                        MusicPlayer.Pause().GetAwaiter().GetResult();
+                    case PlayState.Pause when MusicPlayer.Reader is not null:
+                        MusicPlayer.Out.Volume = 0;
+                        MusicPlayer.Out.Pause();
                         PlayPauseButton.Content = "▶";
                         break;
                     default:
-                        MusicPlayer.Volume = 0;
+                        MusicPlayer.Out.Volume = 0;
                         mediaPlayerState = PlayState.Stop;
                         return;
 
@@ -68,10 +65,12 @@ namespace OrangeJuiceModMaker
         {
             mainWindow = window;
             modifiedMusic = new ModMusic(null, ModMusic.SongType.UnitTheme);
+            MusicPlayer.EndOfSong += MusicPlayer_EndOfSong;
+            MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
             //musicPlayer.BufferingEnded += MusicPlayer_BufferingEnded;
 
             sets = mainWindow.CsvFiles.Where(z => z.Type == CsvHolder.TypeList.Music).Select(z => new MusicList(z)).ToArray();
-            if (!sets.Any())
+            if (sets.Length == 0)
             {
                 throw new Exception("No Music");
             }
@@ -83,13 +82,8 @@ namespace OrangeJuiceModMaker
             songs = sets.First();
 
             InitializeComponent();
-            MusicPlayer.MediaEnded += MusicPlayer_MediaEnded;
-            MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
-            MusicPlayer.MediaOpened += MusicPlayer_MediaOpened;
             if (mainWindow.Debug)
             {
-                MusicPlayer.MessageLogged += MusicPlayer_MessageLogged;
-                MusicPlayer.MediaFailed += MusicPlayer_MediaFailed;
             }
 
             foreach (Music m in mainWindow.LoadedModReplacements.Music)
@@ -104,59 +98,37 @@ namespace OrangeJuiceModMaker
             SelectedSongComboBox.SelectedIndex = 0;
         }
 
-        private static void MusicPlayer_MediaFailed(object? sender, MediaFailedEventArgs e)
+        private void MusicPlayer_PositionChanged(object? sender, TimeSpan e)
         {
-            Console.WriteLine(e.ErrorException);
+            Dispatcher.Invoke(() => UpdateCurrentPositionUi(e.Ticks));
         }
 
-        private static void MusicPlayer_MessageLogged(object? sender, MediaLogMessageEventArgs e)
+        private void MusicPlayer_EndOfSong(object? sender, EventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Dispatcher.Invoke(() =>
+            {
+                MediaPlayerState = PlayState.Pause;
+                MusicPlayer.Position = TimeSpan.Zero;
+                UpdateCurrentPosition(0);
+            });
         }
 
-        private void MusicPlayer_MediaOpened(object? sender, MediaOpenedEventArgs e)
+        private void MusicPlayer_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
         {
-            songLength = MusicPlayer.NaturalDuration?.Ticks ?? 1;
-            MusicPlayer.Position = TimeSpan.Zero;
-            CurrentPositionBox.Text = "0";
-        }
-
-        private void MusicPlayer_PositionChanged(object? sender, PositionChangedEventArgs e)
-        {
-            UpdateCurrentPosition();
+            Console.WriteLine(e.ErrorException.Message);
         }
 
         //Media Functions
         private void ProgressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (MusicPlayer.NaturalDuration is null)
-            {
-                return;
-            }
-            long progress = (long)(songLength * ProgressSlider.Value / 10);
+            long progress = (long)(MusicPlayer.Duration.Ticks * ProgressSlider.Value / 10);
             MusicPlayer.Position = TimeSpan.FromTicks(progress);
         }
 
-        private async void MusicPlayer_MediaEnded(object? sender, EventArgs e)
-        {
-            await MusicPlayer.Stop();
-            if (PreviewLoopCheckBox.IsChecked is not true || modifiedMusic.LoopPoint is null)
-            {
-                MediaPlayerState = PlayState.Pause;
-                MusicPlayer.Position = TimeSpan.Zero;
-                UpdateCurrentPosition(0);
-                return;
-            }
 
-            UpdateCurrentPosition(LoopPoint.Ticks);
-            await MusicPlayer.Play();
-            UpdateCurrentPosition(LoopPoint.Ticks);
-        }
-
-        private void UpdateCurrentPosition() => UpdateCurrentPositionUi(MusicPlayer.Position.Ticks);
         private void UpdateCurrentPosition(long ticks)
         {
-            if (songLength == 0)
+            if (MusicPlayer.Duration == TimeSpan.Zero)
             {
                 return;
             }
@@ -167,7 +139,7 @@ namespace OrangeJuiceModMaker
         private void UpdateCurrentPositionUi(long ticks)
         {
             string s = $"{43 * ticks / 10000}";
-            double p = (double)ticks * 10 / songLength;
+            double p = (double)ticks * 10 / MusicPlayer.Duration.Ticks;
             ProgressSlider.ValueChanged -= ProgressSlider_ValueChanged;
             ProgressSlider.Value = p;
             ProgressSlider.ValueChanged += ProgressSlider_ValueChanged;
@@ -235,25 +207,8 @@ namespace OrangeJuiceModMaker
                 }
             }
 
-            int retry = 5;
-            while (!await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute)))
-            {
-                await Task.Run(() => Thread.Sleep(100));
-                if (retry == 0)
-                {
-                    if (MessageBox.Show("Media failed to load. Try again?", "An error occurred", MessageBoxButton.YesNo)
-                        is MessageBoxResult.No)
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    --retry;
-                }
-            }
-            
-            await MusicPlayer.Pause();
+            MusicPlayer.Open(mp3Path);
+            MusicPlayer.Out.Pause();
 
             LoopPointBox.Text = (modifiedMusic.LoopPoint ?? 0).ToString();
             VolumeBox.Text = (modifiedMusic.Volume ?? 0).ToString();
@@ -306,6 +261,11 @@ namespace OrangeJuiceModMaker
             }
 
             modifiedMusic.LoopPoint = LoopPointBox.Text.ToIntOrNull();
+            if (modifiedMusic.LoopPoint is not null)
+            {
+                MusicPlayer.LoopPoint = TickFromSamples(modifiedMusic.LoopPoint.Value);
+            }
+
         }
 
         private void VolumeBox_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -382,7 +342,8 @@ namespace OrangeJuiceModMaker
                 Id = modifiedMusic.Id,
                 Volume = 0
             };
-            await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
+            MusicPlayer.Open(mp3Path);
+            MusicPlayer.Out.Pause();
             LoopPointBox.Text = (modifiedMusic.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
             SaveButton.IsEnabled = true;
@@ -392,8 +353,7 @@ namespace OrangeJuiceModMaker
 
         private void MusicEditor_OnClosed(object? sender, EventArgs e)
         {
-            MusicPlayer.Stop();
-            MusicPlayer.Close();
+            MusicPlayer.Dispose();
         }
 
         private void Set_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -476,6 +436,16 @@ namespace OrangeJuiceModMaker
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
             modifiedMusic.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, ref mainWindow.LoadedModReplacements);
+        }
+
+        private void PreviewLoopCheckBox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.IsLooped = PreviewLoopCheckBox.IsChecked is true;
+        }
+
+        private void PreviewLoopCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.IsLooped = PreviewLoopCheckBox.IsChecked is true;
         }
     }
 }

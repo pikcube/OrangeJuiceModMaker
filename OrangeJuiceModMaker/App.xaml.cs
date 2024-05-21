@@ -59,7 +59,15 @@ namespace OrangeJuiceModMaker
                 Directory.Delete(downloadPath, true);
             }
 
-            new MainWindow(debug, this, downloadPath).ShowDialog();
+            try
+            {
+                new MainWindow(debug).ShowDialog();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
 
             //postAction is set as part of check update
             //if (!string.IsNullOrEmpty(PostAction.Result))

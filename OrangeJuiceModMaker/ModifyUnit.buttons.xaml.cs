@@ -244,7 +244,8 @@ namespace OrangeJuiceModMaker
                 UnitId = modifiedUnit.UnitId,
                 Volume = 0
             };
-            await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute));
+            
+            MusicPlayer.Open(mp3Path);
             LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
             MusicReplaceButton.IsEnabled = true;
@@ -342,6 +343,10 @@ namespace OrangeJuiceModMaker
             }
 
             modifiedUnit.Music.LoopPoint = LoopPointBox.Text.ToIntOrNull();
+            if (modifiedUnit.Music.LoopPoint is not null)
+            {
+                MusicPlayer.LoopPoint = TickFromSamples(modifiedUnit.Music.LoopPoint.Value);
+            }
         }
 
         private void VolumeBox_OnTextChanged(object sender, TextChangedEventArgs e)

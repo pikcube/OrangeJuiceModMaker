@@ -1,4 +1,4 @@
-card
+card,
 Card Name,ID
 Balloon Jerk,balloonjerk
 Big Poppo,bpoppo
@@ -11,3 +11,15 @@ Star Devourer,gpoppo
 Summer Beast,bqp
 Swimming Coach,swimmingcoach
 Swimming Ringer,swimmingringer
+Robo Ball,ballatk
+Robo Ball,balldef
+Robo Ball,ballevd
+Chicken,chickenatk
+Chicken,chickendef
+Chicken,chickenevd
+Marie Poppo,poppoatk
+Marie Poppo,poppodef
+Marie Poppo,poppoevd
+Seagull,seagullatk
+Seagull,seagull
+Seagull,seagullevd
