@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>false</UseWindowsForms>
+    <UseWindowsForms>true</UseWindowsForms>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <Platforms>AnyCPU;x64</Platforms>
     <StartupObject>OrangeJuiceModMaker.App</StartupObject>
@@ -20,10 +20,10 @@
 
 
   <ItemGroup>
-    <PackageReference Include="FFME.Windows" Version="4.4.350" />
-    <PackageReference Include="Magick.NET-Q16-OpenMP-x64" Version="13.4.0" />
+    <PackageReference Include="Magick.NET-Q16-OpenMP-x64" Version="13.8.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="xFFmpeg.NET" Version="7.1.3" />
+    <PackageReference Include="xFFmpeg.NET" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,6 +75,63 @@
     <None Update="csvFiles\BountyHuntCards.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="csvFiles\Cards\AllCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\BigHaruoCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\BigJonathanCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\BossCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\BountyHuntCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\CharacterCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\CoOpAbilityCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\CoOpHyperCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\CoOpNpcCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\HyperCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\ItemCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\M10Cards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\MiscCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\NormalCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\QuestCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\RoPoChiCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\StarDevourerCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\SummerBeastCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Cards\SwimCoachCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="csvFiles\CharacterCards.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -100,6 +157,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="csvFiles\MiscCards.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Music\Events.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Music\SoundEffects.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="csvFiles\Music\UnitThemes.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="csvFiles\NormalCards.csv">
@@ -189,7 +255,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call &quot;C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\$(ConfigurationName)\net6.0-windows\post.bat&quot;" />
+    <Exec Command="call &quot;C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\$(ConfigurationName)\net8.0-windows10.0.22621.0\post.bat&quot;" />
   </Target>
 
 </Project>

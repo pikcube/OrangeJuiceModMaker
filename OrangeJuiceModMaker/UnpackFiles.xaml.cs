@@ -18,7 +18,7 @@ namespace OrangeJuiceModMaker
     public partial class UnpackFiles
     {
         private readonly string gameDirectory;
-        private const int TotalFilesInitial = 9521;
+        private const int TotalFilesInitial = 11119;
         private int totalFiles;
         private static int _cardsConverted;
         private readonly string[] paks = "cards,units".Split(',');
@@ -128,7 +128,7 @@ namespace OrangeJuiceModMaker
             catch (Exception exception)
             {
                 string[] error =
-                    { exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? "" };
+                    [exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "", exception.StackTrace ?? ""];
                 File.WriteAllLines("unpack_error.txt", error);
                 Console.WriteLine(error.AsString());
                 throw;
@@ -214,7 +214,7 @@ namespace OrangeJuiceModMaker
         }
 
         private static ThreadPriority _p = ThreadPriority.Highest;
-        private static readonly List<Thread> Threads = new();
+        private static readonly List<Thread> Threads = [];
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {

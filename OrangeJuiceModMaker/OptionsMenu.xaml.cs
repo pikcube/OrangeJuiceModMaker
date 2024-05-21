@@ -36,8 +36,8 @@ namespace OrangeJuiceModMaker
             AutoUpdate = new SettingsList<string>();
             if (clean)
             {
-                AutoUpdate = new SettingsList<string>(new List<string> { "Check for updates", "Skip this version", "Don't check for updates" }, 0);
-                MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
+                AutoUpdate = new SettingsList<string>(["Check for updates", "Skip this version", "Don't check for updates"], 0);
+                MirrorDirectories = new SettingsList<string>(["None"], 0);
             }
             fileLocation =
                 $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\OrangeJuiceModMaker\GlobalSettings.json";
@@ -64,7 +64,7 @@ namespace OrangeJuiceModMaker
             public SettingsList(int selectedIndex = -1)
             {
                 SelectedIndex = selectedIndex;
-                Items = new List<T>();
+                Items = [];
             }
 
             public SettingsList(List<T> items, int selectedIndex = -1)
@@ -128,7 +128,7 @@ namespace OrangeJuiceModMaker
 
             if (GlobalSettings.MirrorDirectories.Items.Count == 0)
             {
-                GlobalSettings.MirrorDirectories = new SettingsList<string>(new List<string> { "None" }, 0);
+                GlobalSettings.MirrorDirectories = new SettingsList<string>(["None"], 0);
                 GlobalSettings.Save();
             }
 
@@ -148,7 +148,7 @@ namespace OrangeJuiceModMaker
                         .Where(z => File.Exists(z + @"\mod.json"))
                         .Where(z => Root.IsValidMod(z, out _))
                         .ToArray();
-                    if (!mods.Any())
+                    if (mods.Length == 0)
                     {
                         
                         return;
@@ -178,7 +178,7 @@ namespace OrangeJuiceModMaker
 
                 importButton.IsEnabled = true;
 
-                if (workshopModNames.Any())
+                if (workshopModNames.Length != 0)
                 {
                     workshopModComboBox.ItemsSource = workshopModNames;
                     workshopModComboBox.SelectedIndex = 0;
@@ -203,6 +203,7 @@ namespace OrangeJuiceModMaker
         private void OptionsMenu_OnUnloaded(object sender, RoutedEventArgs e)
         {
             GlobalSettings.Save();
+            parent.OnLoadedModsChanged();
         }
 
         private void ImportButton_OnClick(object sender, RoutedEventArgs e)
@@ -252,7 +253,7 @@ namespace OrangeJuiceModMaker
             //Copy over workshop files
             foreach (string file in Directory.GetFiles(workshopModPath, "*.*", SearchOption.AllDirectories))
             {
-                string stripFile = file.Substring(workshopModPath.Length);
+                string stripFile = file[workshopModPath.Length..];
                 string newPath = $@"{GlobalSettings.ModDirectories.SelectedItem}\temp{stripFile}";
                 Directory.CreateDirectory(Path.GetDirectoryName(newPath)!);
                 File.Copy(file, newPath);

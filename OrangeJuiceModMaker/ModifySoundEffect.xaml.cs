@@ -38,7 +38,7 @@ namespace OrangeJuiceModMaker
             CsvHolder soundTable = parent.CsvFiles.First(z => z.Type == CsvHolder.TypeList.Sound);
             soundNameTable = soundTable.Rows.Select(z => z[0]).ToArray();
             soundDescriptionTable = soundTable.Rows.Select(z => z[1]).ToArray();
-            moddedSoundEffects = parent.LoadedModReplacements.SoundEffects.ToList();
+            moddedSoundEffects = [.. parent.LoadedModReplacements.SoundEffects];
 
         }
 

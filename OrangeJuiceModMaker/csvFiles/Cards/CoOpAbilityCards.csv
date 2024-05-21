@@ -1,0 +1,7 @@
+card
+Card Name,ID
+Attacker,coop_class_atk
+Guardian,coop_class_def
+Support,coop_class_sup
+Avenger,coop_class_avg
+Dealer,coop_class_dealer

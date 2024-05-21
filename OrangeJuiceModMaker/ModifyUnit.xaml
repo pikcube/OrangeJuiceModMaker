@@ -31,9 +31,8 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
-            
-        </Grid.RowDefinitions>
 
+        </Grid.RowDefinitions>
         <!--Top Items-->
         <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7">
             <Grid.ColumnDefinitions>
@@ -191,7 +190,7 @@
                 <TextBox Grid.Column="2" Grid.Row="4" Text="0" TextAlignment="Right" x:Name="LoopPointBox" TextChanged="LoopPointBox_OnTextChanged" PreviewTextInput="CheckForNumber"/>
                 <TextBox Grid.Column="4" Grid.Row="4" Text="0" TextAlignment="Right" x:Name="VolumeBox" TextChanged="VolumeBox_OnTextChanged" PreviewTextInput="CheckForNumber"/>
                 <Button Grid.Column="0" Grid.Row="6" Content="Set Loop Here" Click="SetLoopButtonClick" x:Name="SetLoopButton"/>
-                <CheckBox Grid.Column="2" Grid.Row="6" Content="Preview Loop" x:Name="PreviewLoopCheckBox"/>
+                <CheckBox Grid.Column="2" Grid.Row="6" Content="Preview Loop" x:Name="PreviewLoopCheckBox" Checked="PreviewLoopCheckBox_OnChecked" Unchecked="PreviewLoopCheckBox_OnUnchecked"/>
                 <TextBlock Grid.Column="4" Grid.Row="6" Text="Volume will not preview in app" TextWrapping="Wrap"/>
             </Grid>
             <Button Grid.Row="10" Content="Replace with..." FontSize="20" x:Name="MusicReplaceButton" Click="MusicReplaceButton_OnClick"/>

@@ -1,0 +1,93 @@
+﻿sound
+File Name,Description
+decision.wav,Player selects something
+cancel.wav,"Player cancels selection, going back in a menu"
+page1.wav,Scrolling through pages (Forward)
+page2.wav,Scrolling through pages (Backward)
+trapset.wav,Trap card set
+cardget.wav,Card obtained
+carduse.wav,Using a card
+traptrigger.wav,Trap card has been activated
+powerup.wav,"Battle boosts, fireworks, dialogue"
+healing.wav,Recovering HP
+ko.wav,Unit has been KO'd
+throw.wav,Throwing dice
+normaclear.wav,Norma has been cleared
+normamiss.wav,Norma clear conditions weren't met
+chapterstart.wav,Chapter start
+star.wav,Obtaining a star
+hit.wav,Battle light hit
+warp.wav,Warp
+turnstart.wav,"Player turn start, countdowns"
+rebound.wav,Dice bounce
+encounter.wav,Battle start
+miracle.wav,Miracle
+miracle2.wav,"Revival of Stars, Lulu's Lucky Egg, Arcade animations"
+discard.wav,Card discard
+stockeffect.wav,Stock effect applied
+win.wav,Win a game
+alert.wav,Boss appears on the field
+battlewin.wav,Either side wins or flees from a battle
+criticalhit.wav,Battle strong hit
+evasion.wav,Battle evasion
+cannon.wav,"Explosions, Marc's rockets"
+blaze.wav,"Blazing!, bomb explosions, hand discards"
+status1.wav,Battle status effect
+status2.wav,Battle status effect
+chain.wav,Binding Chains
+airraid.wav,Air Raid field event
+shield.wav,"Battle star-guard, several card effects"
+electricity.wav,"Turbo Charged, Delta Field"
+sugurihyper.wav,Hyper sound from SUGURI series
+lockon.wav,"Bomb ticking, Extended Photon Rifle's and Rocket Cannon's animation"
+qps_damage.wav,"Summer Beast KO, Workshop Mod downvote"
+synth-sweep2.wav,Melting Memories' animation
+synthsweep_wind.wav,Cutscene
+propeller.wav,"Cutscene, Rival's and Rocket Cannon's animation"
+wind.wav,Cutscene
+qps_hyper.wav,"Melting Memories' animation, cutscenes, Arcade"
+synthsweep_new.wav,"Extension, Lulu's Lucky Egg"
+item_get.wav,Getting chocolate or snow from panels
+cardflip1.wav,"Playground! minigames, flipping a piece in Build-A-Castle"
+cardflip2.wav,Playground! minigames
+crash.wav,Cutscene
+crash2.wav,Cutscene
+destruction.wav,Cutscene
+schoolchime.wav,Cutscene
+se_quake.wav,"Cutscene, Unforgiving Avenger"
+se_sea_waves.wav,Cutscene
+wind2.wav,White Christsmasher's animations
+food_crunch.wav,Cutscene
+gulp_once.wav,Cutscene
+gulp_3times.wav,Cutscene
+phone.wav,Cutscene
+sms.wav,Cutscene
+jingle01_full.wav,Cutscene logo
+jingle01_short.wav,Unused
+throw01.wav,Snowball throwing
+throw02.wav,Snowball throwing
+throw03.wav,Snowball throwing
+snowball_ground01.wav,Snowball land
+snowball_ground02.wav,Snowball land
+snowball_ground03.wav,Snowball land
+lighter.wav,Cutscene
+laser.wav,Extended Photon Rifle's animation
+clang.wav,Metallic Monocoque's effect
+launch.wav,Indiscriminate Fire Support's and Rocket Cannon's animation
+missilehit.wav,Indiscriminate Fire Support's animation
+place_cup.wav,Cutscene
+sip.wav,Cutscene
+pour_water.wav,Cutscene
+explosion.wav,"Cutscene, Bounty Hunt smoke bomb"
+ags_weaponattack.wav,Full Speed Alicianrone's animation
+ags_weaponswing_1.wav,Full Speed Alicianrone's animation
+ags_weaponswing_2.wav,Full Speed Alicianrone's animation
+ags_weaponswing_3.wav,Full Speed Alicianrone's animation
+ags_weaponswing_4.wav,Full Speed Alicianrone's animation
+ags_whoosh.wav,Full Speed Alicianrone's animation
+fishsplash.wav,Splash from Fish-a-Fish minigame
+se_fire.wav,Cutscene
+cicada_short.wav,Cutscene
+mudblup.wav,Step on a Goo panel
+trainpass.wav,Unused.
+motorcycle.wav,Lone Rider Hyper

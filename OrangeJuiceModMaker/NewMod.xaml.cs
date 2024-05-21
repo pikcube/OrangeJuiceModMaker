@@ -15,7 +15,7 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class NewMod
     {
-        private readonly List<TextBox> singleLineBoxes = new();
+        private readonly List<TextBox> singleLineBoxes = [];
 
         private readonly bool editMode;
 
@@ -117,7 +117,7 @@ namespace OrangeJuiceModMaker
             }
 
             Root root = new(mod);
-            if (Directory.Exists($@"{MainWindow.GameDirectory}\mods\{mod.Name}") && Directory.GetFiles($@"{MainWindow.GameDirectory}\mods\{mod.Name}").Any())
+            if (Directory.Exists($@"{MainWindow.GameDirectory}\mods\{mod.Name}") && Directory.GetFiles($@"{MainWindow.GameDirectory}\mods\{mod.Name}").Length != 0)
             {
                 MessageBoxResult r = MessageBox.Show(this, "Mod already exists in mods directory. Delete and overwrite?", "Non empty directory exists", MessageBoxButton.YesNo);
                 if (r == MessageBoxResult.Yes)
@@ -262,11 +262,11 @@ namespace OrangeJuiceModMaker
             textLock = true;
 
             int[] rgb =
-            {
+            [
                 16 * values[0] + values[1],
                 16 * values[2] + values[4],
                 16 * values[3] + values[5]
-            };
+            ];
 
             ColorBrush.Color = new Color
             {

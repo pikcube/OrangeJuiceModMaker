@@ -1,6 +1,6 @@
 #define public Dependency_NoExampleSetup
-#define public UseDotNet60Desktop
-#define public UseNetCoreCheck
+#define public UseDotNet80Desktop
+#define public Dependency_Path_NetCoreCheck "dependencies\"
 
 #include "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\CodeDependencies.iss"
 
@@ -8,11 +8,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Orange Juice Mod Maker"
-;#define MyAppVersion "0.8.3"
+; #define MyAppVersion "0.8.3"
 #define MyAppPublisher "Pikcube"
 #define MyAppURL "https://github.com/pikcube/OrangeJuiceModMaker"
 #define MyAppExeName "OrangeJuiceModMaker.exe"
-#define MyBasePath = "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\Release\net6.0-windows"
+#define MyBasePath = "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\Release\net8.0-windows10.0.22621.0"
 ; #define MyCompression "lzma2/max"
 ; Uncomment to compile in Inno
 
@@ -43,9 +43,11 @@ WizardStyle=modern
 [Code]
 function InitializeSetup: Boolean;
 begin
-  Dependency_AddDotNet60Desktop;
+  #ifdef Dependency_Path_NetCoreCheck
+  Dependency_AddDotNet80Desktop;
 
   Result := True;
+  #endif
 end;
 
 [Languages]
@@ -55,25 +57,19 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\netcorecheck.exe"; Flags: dontcopy noencryption
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\netcorecheck_x64.exe"; Flags: dontcopy noencryption
+Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\dependencies\netcorecheck.exe"; Flags: dontcopy noencryption
+Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\dependencies\netcorecheck_x64.exe"; Flags: dontcopy noencryption
 
 Source: "{#MyBasePath}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\Magick.NET.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\Magick.NET-Q16-OpenMP-x64.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\OrangeJuiceModMaker.deps.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\OrangeJuiceModMaker.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\OrangeJuiceModMaker.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\OrangeJuiceModMaker.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\ffme.win.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\FFMpeg.AutoGen.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MyBasePath}\FFmpeg.NET.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\release.version"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MyBasePath}\OrangeJuiceModMaker.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+
+Source: "{#MyBasePath}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "{#MyBasePath}\oj.version"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "{#MyBasePath}\7za.dll"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\7za.exe"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\HyperLookupTable.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\FlavorLookUp.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion

@@ -18,7 +18,7 @@ namespace OrangeJuiceModMaker
         private readonly CsvHolder[] files;
         private string[][] loadedRows;
         private ModTexture? loadedTexture;
-        private readonly List<ModTexture> modifiedTextures = new();
+        private readonly List<ModTexture> modifiedTextures = [];
         private ModReplacements replacements;
         private readonly CsvHolder flavorLookUp;
         private readonly string modPath;
@@ -26,7 +26,7 @@ namespace OrangeJuiceModMaker
         public ModifyCard(List<CsvHolder> csvFiles, MainWindow window)
         {
             modPath = window.LoadedModPath;
-            files = csvFiles.Where(z => z.Type == CsvHolder.TypeList.Card).Where(z => z.Rows.Any()).ToArray();
+            files = csvFiles.Where(z => z.Type == CsvHolder.TypeList.Card).Where(z => z.Rows.Length != 0).ToArray();
             InitializeComponent();
             loadedRows = files.First().Rows;
             replacements = window.LoadedModReplacements;
@@ -151,7 +151,7 @@ namespace OrangeJuiceModMaker
 
         private void SetSelectionBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            loadedRows = files[SetSelectionBox.SelectedIndex].Rows.OrderBy(z => z[0]).ToArray();
+            loadedRows = [.. files[SetSelectionBox.SelectedIndex].Rows.OrderBy(z => z[0])];
             CardSelectionBox.ItemsSource = loadedRows.Select(z => z[0]);
             CardSelectionBox.SelectedIndex = 0;
         }

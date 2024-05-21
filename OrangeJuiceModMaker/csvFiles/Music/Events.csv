@@ -1,0 +1,24 @@
+music
+Event identifier,Where is it played?
+main_menu,The main menu music.
+standby,"The music played when waiting in a multiplayer lobby, or on the campaign screen."
+dialog1,"A music played in dialogs, often when a campaign or event starts."
+dialog2,A music played in dialogs.
+dialog3,"A music played in dialogs, battle themed."
+conclusion,"A music played in dialogs, often when you reach the end of a campaign or event."
+ending1,A music played in the credits roll.
+dialog4,"A music played in dialogs, in the campaign of Arthur and Nico."
+final2,"A music played in dialogs, in the campaign of Arthur and Nico."
+ending2,"A music played in the credits, actually only used when you finish Arthur and Nico's campaign."
+idol_duet,A music played when Cuties use their hyper.
+idol_instrumental,A music played when a unit that is not Cuties or Poppo use the Special Stage hyper.
+idol_poppo,A music played when Poppo use the Special Stage hyper.
+dialog5,A music played in Mio's campaign. It's the default dialog song.
+dialog6,A music played in Mio's campaign. It's Kai's appearance song.
+ending3,A music played in Mio's campaign. It's the credits song.
+tomomo_sweeteater,A music played when Tomomo (Casual) plays her hyper.
+maynie_ragingmode,A music played when the Raging Madness hyper is active.
+finalstage,"Tomomo's Hell music, played in the campaign."
+field_wintertown,Beginner Town (Winter) Intro Music
+field_desert,Lonely Railway Intro Music
+field_pool,Whirlpool Intro Music

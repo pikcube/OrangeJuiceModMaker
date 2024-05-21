@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using ImageMagick;
 using Microsoft.Win32;
-using Unosquare.FFME.Common;
-using MediaElement = Unosquare.FFME.MediaElement;
+using NAudio.Wave;
+
 
 namespace OrangeJuiceModMaker
 {
@@ -25,9 +26,8 @@ namespace OrangeJuiceModMaker
         //Variable Declaration
         private Unit selectedUnit;
         private readonly MainWindow mainWindow;
-        private MediaElement MusicPlayer => MainWindow.MusicPlayer;
-        private long songLength = 1;
-        private readonly List<ModifiedUnit> modifiedUnitHyperTable = new();
+        private MyMusicPlayer MusicPlayer;
+        private readonly List<ModifiedUnit> modifiedUnitHyperTable = [];
         private ModifiedUnit modifiedUnit;
         private int selectedHyper;
         private int selectedCharacter;
@@ -41,25 +41,24 @@ namespace OrangeJuiceModMaker
             {
                 switch (value)
                 {
-                    case PlayState.Stop when MusicPlayer.HasAudio:
-                        MusicPlayer.Volume = 0;
-                        MusicPlayer.Stop().GetAwaiter().GetResult();
-                        MusicPlayer.Close();
-                        MusicPlayer.Position = TimeSpan.Zero;
+                    case PlayState.Stop when MusicPlayer.Reader is not null:
+                        MusicPlayer.Out.Volume = 0;
+                        MusicPlayer.Out.Stop();
+                        
                         PlayPauseButton.Content = "▶";
                         break;
-                    case PlayState.Play when MusicPlayer.HasAudio:
-                        MusicPlayer.Volume = 0.5;
-                        MusicPlayer.Play().GetAwaiter().GetResult();
+                    case PlayState.Play when MusicPlayer.Reader is not null:
+                        MusicPlayer.Out.Volume = 0.5f;
+                        MusicPlayer.Out.Play();
                         PlayPauseButton.Content = "▐▐";
                         break;
-                    case PlayState.Pause when MusicPlayer.HasAudio:
-                        MusicPlayer.Volume = 0;
-                        MusicPlayer.Pause().GetAwaiter().GetResult();
+                    case PlayState.Pause when MusicPlayer.Reader is not null:
+                        MusicPlayer.Out.Volume = 0;
+                        MusicPlayer.Out.Pause();
                         PlayPauseButton.Content = "▶";
                         break;
                     default:
-                        MusicPlayer.Volume = 0;
+                        MusicPlayer.Out.Volume = 0;
                         return;
 
                 }
@@ -91,45 +90,31 @@ namespace OrangeJuiceModMaker
         //On Load
         public ModifyUnit(MainWindow mainWindow)
         {
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             this.mainWindow = mainWindow;
             mainWindow.UnitHyperTable.Sort((x, y) => string.Compare(x.UnitName, y.UnitName, StringComparison.Ordinal));
             selectedUnit = mainWindow.UnitHyperTable.First();
             modifiedUnit = new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements);
-            MusicPlayer.MediaEnded += MusicPlayer_MediaEnded;
+            MusicPlayer = new();
             MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
-            MusicPlayer.MediaOpened += MusicPlayer_MediaOpened;
+            MusicPlayer.EndOfSong += MusicPlayer_EndOfSong;
+            InitializeComponent();
             if (mainWindow.Debug)
             {
-                MusicPlayer.MessageLogged += MusicPlayer_MessageLogged;
-                MusicPlayer.MediaFailed += MusicPlayer_MediaFailed;
             }
-            InitializeComponent();
         }
 
-        private static void MusicPlayer_MediaFailed(object? sender, MediaFailedEventArgs e)
+        private void MusicPlayer_EndOfSong(object? sender, EventArgs e)
         {
-            Console.WriteLine(e.ErrorException);
-        }
-
-        private static void MusicPlayer_MessageLogged(object? sender, MediaLogMessageEventArgs e)
-        {
-            Console.WriteLine(e.Message);
-        }
-
-        private void MusicPlayer_MediaOpened(object? sender, MediaOpenedEventArgs e)
-        {
-            songLength = MusicPlayer.NaturalDuration?.Ticks ?? 1;
-            MusicPlayer.Position = TimeSpan.Zero;
-            CurrentPositionBox.Text = "0";
-        }
-
-        private void MusicPlayer_PositionChanged(object? sender, PositionChangedEventArgs e)
-        {
-            if (songLength == 0)
+            Dispatcher.Invoke(() =>
             {
-                return;
-            }
-            UpdateCurrentPosition();
+                MediaPlayerState = PlayState.Pause;
+            });
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            Console.WriteLine(e.Exception.Message);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -157,13 +142,19 @@ namespace OrangeJuiceModMaker
 
         private void ModifyUnit_OnClosed(object? sender, EventArgs e)
         {
-            MusicPlayer.Stop();
-            MusicPlayer.Close();
+            MusicPlayer.Out.Stop();
+            MusicPlayer.Reader?.Close();
+            MusicPlayer.Dispose();
         }
 
         //On Unit Select
         private async void UnitSelectionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (UnitSelectionBox.IsEnabled == false)
+            {
+                e.Handled = false;
+                return;
+            }
             UnitSelectionBox.IsEnabled = false;
             //Guard Clause
             if (UnitSelectionBox.SelectedItem is not string unitName)
@@ -201,34 +192,20 @@ namespace OrangeJuiceModMaker
         //Media Functions
         private void ProgressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (MusicPlayer.NaturalDuration is null)
-            {
-                return;
-            }
-            long progress = (long)(MusicPlayer.NaturalDuration.Value.Ticks * ProgressSlider.Value / 10);
+            
+            long progress = (long)(MusicPlayer.Duration.Ticks * ProgressSlider.Value / 10);
             MusicPlayer.Position = TimeSpan.FromTicks(progress);
         }
 
-        private async void MusicPlayer_MediaEnded(object? sender, EventArgs e)
+        private void MusicPlayer_PositionChanged(object? sender, TimeSpan e)
         {
-            await MusicPlayer.Stop();
-            if (PreviewLoopCheckBox.IsChecked is not true || modifiedUnit.Music?.LoopPoint is null)
-            {
-                MediaPlayerState = PlayState.Pause;
-                MusicPlayer.Position = TimeSpan.Zero;
-                UpdateCurrentPosition(0);
-                return;
-            }
-
-            UpdateCurrentPosition(LoopPoint.Ticks);
-            await MusicPlayer.Play();
-            UpdateCurrentPosition(LoopPoint.Ticks);
+            Dispatcher.Invoke(() => UpdateCurrentPositionUi(e.Ticks));
         }
 
-        private void UpdateCurrentPosition() => UpdateCurrentPositionUi(MusicPlayer.Position.Ticks);
+
         private void UpdateCurrentPosition(long ticks)
         {
-            if (songLength == 0)
+            if (MusicPlayer.Duration.Ticks == 0)
             {
                 return;
             }
@@ -239,7 +216,7 @@ namespace OrangeJuiceModMaker
         private void UpdateCurrentPositionUi(long ticks)
         {
             string s = $"{43 * ticks / 10000}";
-            double p = (double)ticks * 10 / songLength;
+            double p = (double)ticks * 10 / MusicPlayer.Duration.Ticks;
             ProgressSlider.ValueChanged -= ProgressSlider_ValueChanged;
             ProgressSlider.Value = p is double.NaN ? 0 : p;
             ProgressSlider.ValueChanged += ProgressSlider_ValueChanged;
@@ -251,138 +228,123 @@ namespace OrangeJuiceModMaker
         //Refresh data
         private async Task RefreshGrid()
         {
-            SelectedCharacterCard = 0;
-            SelectedHyper = 0;
-            SelectedCharacter = 0;
-            UnloadImages();
-            EnableMusicControls(false);
-            MusicPlayer.Stop().GetAwaiter().GetResult();
-
-            FaceXBox.Text = modifiedUnit.FaceX.First().ToString();
-            FaceYBox.Text = modifiedUnit.FaceY.First().ToString();
-
-            //Get Hyper Art
-            if (selectedUnit.HyperIds.Any())
-            {
-                //HyperArt.ImageSource = GetCardImageFromPath(selectedUnit.HyperCardPaths.First());
-                HyperNameTextBox.Text = selectedUnit.HyperNames.First();
-                HyperNameUpdateBox.Text = modifiedUnit.HyperNames.First();
-                HyperFlavorUpdateBox.Text = modifiedUnit.HyperFlavor.First();
-                HyperNameUpdateBox.IsEnabled = true;
-            }
-            else
-            {
-                HyperArt.ImageSource = null;
-                HyperNameTextBox.Text = "";
-                HyperNameUpdateBox.Text = "";
-                HyperNameUpdateBox.IsEnabled = false;
-                HyperFlavorUpdateBox.Text = "";
-            }
-
-            bool hyperButtonsEnabled = selectedUnit.HyperIds.Length >= 2;
-            bool cardButtonsEnabled = selectedUnit.CharacterCards.Length >= 2;
-
-            HyperLeftButton.IsEnabled = hyperButtonsEnabled;
-            HyperRightButton.IsEnabled = hyperButtonsEnabled;
-
-            CharacterCardLeftButton.IsEnabled = cardButtonsEnabled;
-            CharacterCardRightButton.IsEnabled = cardButtonsEnabled;
-
-            CharacterNameTextBox.Text = selectedUnit.UnitId;
-
-            HyperFlavorUpdateBox.IsEnabled = HyperFlavorUpdateBox.Text != "";
-
-            //Get Card Art
-            if (selectedUnit.CharacterCards.Any())
+            while (true)
             {
                 SelectedCharacterCard = 0;
-                CharacterCardNameTextBox.Text = selectedUnit.CharacterCardNames.First();
-                CardNameUpdateBox.Text = modifiedUnit.CharacterCardNames.First();
-                CardNameUpdateBox.IsEnabled = true;
-            }
-            else
-            {
-                CardArt.ImageSource = null;
-                CharacterCardNameTextBox.Text = "";
-                CardNameUpdateBox.Text = "";
-                CardNameUpdateBox.IsEnabled = false;
-            }
+                SelectedHyper = 0;
+                SelectedCharacter = 0;
+                UnloadImages();
+                EnableMusicControls(false);
 
-            ReloadImages();
+                FaceXBox.Text = modifiedUnit.FaceX.First().ToString();
+                FaceYBox.Text = modifiedUnit.FaceY.First().ToString();
 
-            if (modifiedUnit.Music is null)
-            {
-                CurrentPositionBox.Text = "";
-                LoopPointBox.Text = "";
-                return;
-            }
-
-            if (Path.GetExtension(modifiedUnit.Music.File) != ".ogg")
-            {
-                modifiedUnit.Music = null;
-                return;
-            }
-
-            string mp3Path = Path.ChangeExtension(modifiedUnit.Music.File, "mp3");
-
-            if (!File.Exists(mp3Path))
-            {
-                MusicReplaceButton.IsEnabled = false;
-                MusicReplaceButton.Content = "Loading Music";
-                InputFile inFile = new(modifiedUnit.Music.File);
-                OutputFile outFile = new(mp3Path);
-                Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
-                ConversionOptions options = new()
+                //Get Hyper Art
+                if (selectedUnit.HyperIds.Length != 0)
                 {
-                    AudioSampleRate = AudioSampleRate.Hz44100
-                };
-                await ffmpeg.ConvertAsync(inFile, outFile, options, CancellationToken.None);
-                if (File.Exists(mp3Path))
-                {
-                    MusicReplaceButton.IsEnabled = true;
-                    MusicReplaceButton.Content = "Replace with...";
+                    //HyperArt.ImageSource = GetCardImageFromPath(selectedUnit.HyperCardPaths.First());
+                    HyperNameTextBox.Text = selectedUnit.HyperNames.First();
+                    HyperNameUpdateBox.Text = modifiedUnit.HyperNames.First();
+                    HyperFlavorUpdateBox.Text = modifiedUnit.HyperFlavor.First();
+                    HyperNameUpdateBox.IsEnabled = true;
                 }
                 else
                 {
-                    MessageBox.Show("Media failed to load. To retry, close and reopen window.");
-                    modifiedUnit.Music = null;
-                    await RefreshGrid();
+                    HyperArt.ImageSource = null;
+                    HyperNameTextBox.Text = "";
+                    HyperNameUpdateBox.Text = "";
+                    HyperNameUpdateBox.IsEnabled = false;
+                    HyperFlavorUpdateBox.Text = "";
+                }
+
+                bool hyperButtonsEnabled = selectedUnit.HyperIds.Length >= 2;
+                bool cardButtonsEnabled = selectedUnit.CharacterCards.Length >= 2;
+
+                HyperLeftButton.IsEnabled = hyperButtonsEnabled;
+                HyperRightButton.IsEnabled = hyperButtonsEnabled;
+
+                CharacterCardLeftButton.IsEnabled = cardButtonsEnabled;
+                CharacterCardRightButton.IsEnabled = cardButtonsEnabled;
+
+                CharacterNameTextBox.Text = selectedUnit.UnitId;
+
+                HyperFlavorUpdateBox.IsEnabled = HyperFlavorUpdateBox.Text != "";
+
+                //Get Card Art
+                if (selectedUnit.CharacterCards.Length != 0)
+                {
+                    SelectedCharacterCard = 0;
+                    CharacterCardNameTextBox.Text = selectedUnit.CharacterCardNames.First();
+                    CardNameUpdateBox.Text = modifiedUnit.CharacterCardNames.First();
+                    CardNameUpdateBox.IsEnabled = true;
+                }
+                else
+                {
+                    CardArt.ImageSource = null;
+                    CharacterCardNameTextBox.Text = "";
+                    CardNameUpdateBox.Text = "";
+                    CardNameUpdateBox.IsEnabled = false;
+                }
+
+                ReloadImages();
+
+                if (modifiedUnit.Music is null)
+                {
+                    CurrentPositionBox.Text = "";
+                    LoopPointBox.Text = "";
                     return;
                 }
-            }
 
-            int retry = 5;
-            while (!await MusicPlayer.Open(new Uri(mp3Path, UriKind.RelativeOrAbsolute)))
-            {
-                await Task.Run(() => Thread.Sleep(100));
-                if (retry == 0)
+                if (Path.GetExtension(modifiedUnit.Music.File) != ".ogg")
                 {
-                    if (MessageBox.Show("Media failed to load. Try again?", "An error occurred", MessageBoxButton.YesNo)
-                        is MessageBoxResult.No)
+                    modifiedUnit.Music = null;
+                    return;
+                }
+
+                string mp3Path = Path.ChangeExtension(modifiedUnit.Music.File, "mp3");
+
+                if (!File.Exists(mp3Path))
+                {
+                    MusicReplaceButton.IsEnabled = false;
+                    MusicReplaceButton.Content = "Loading Music";
+                    InputFile inFile = new(modifiedUnit.Music.File);
+                    OutputFile outFile = new(mp3Path);
+                    Engine ffmpeg = new($@"{mainWindow.AppData}\ffmpeg\ffmpeg.exe");
+                    ConversionOptions options = new() { AudioSampleRate = AudioSampleRate.Hz44100 };
+                    await ffmpeg.ConvertAsync(inFile, outFile, options, CancellationToken.None);
+                    if (File.Exists(mp3Path))
                     {
-                        return;
+                        MusicReplaceButton.IsEnabled = true;
+                        MusicReplaceButton.Content = "Replace with...";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Media failed to load. To retry, close and reopen window.");
+                        modifiedUnit.Music = null;
+                        continue;
                     }
                 }
-                else
+
+
+                MusicPlayer.Open(mp3Path);
+
+
+
+                MediaPlayerState = PlayState.Pause;
+
+                if (modifiedUnit.Music is null)
                 {
-                    --retry;
+                    continue;
                 }
+
+                LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
+                VolumeBox.Text = (modifiedUnit.Music.Volume ?? 0).ToString();
+
+                UpdateCurrentPosition(0);
+
+                EnableMusicControls(true);
+                break;
             }
-
-            MusicPlayer.Pause().GetAwaiter().GetResult();
-
-            if (modifiedUnit.Music is null)
-            {
-                await RefreshGrid();
-                return;
-            }
-
-            LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
-            VolumeBox.Text = (modifiedUnit.Music.Volume ?? 0).ToString();
-
-            UpdateCurrentPosition(0);
-
-            EnableMusicControls(true);
         }
 
         private void EnableMusicControls(bool musicEnabled)
@@ -513,7 +475,7 @@ namespace OrangeJuiceModMaker
         private void ReloadImages()
         {
             UnloadImages();
-            if (modifiedUnit.CharacterArt.Any())
+            if (modifiedUnit.CharacterArt.Length != 0)
             {
                 CharacterArt.ImageSource = GetUnitArt(modifiedUnit.CharacterArt[SelectedCharacter]);
                 CharacterNameTextBox.Text = $"{modifiedUnit.UnitId}_{selectedCharacter:00}";
@@ -524,7 +486,7 @@ namespace OrangeJuiceModMaker
                 CharacterNameTextBox.Text = "";
             }
 
-            if (modifiedUnit.CharacterCards.Any())
+            if (modifiedUnit.CharacterCards.Length != 0)
             {
                 CardArt.ImageSource = GetCardImageFromPath(modifiedUnit.CharacterCardPaths[SelectedCharacterCard]);
                 SmallCardArt.ImageSource = GetCardImageFromPath(modifiedUnit.CharacterCardPathsLow[SelectedCharacterCard]);
@@ -535,7 +497,7 @@ namespace OrangeJuiceModMaker
                 SmallCardArt.ImageSource = null;
             }
 
-            if (modifiedUnit.HyperIds.Any())
+            if (modifiedUnit.HyperIds.Length != 0)
             {
                 HyperArt.ImageSource = GetCardImageFromPath(modifiedUnit.HyperCardPaths[SelectedHyper]);
                 SmallHyperArt.ImageSource = GetCardImageFromPath(modifiedUnit.HyperCardPathsLow[SelectedHyper]);
@@ -575,9 +537,9 @@ namespace OrangeJuiceModMaker
             path = tempName;
         }
 
-        private TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
+        private static TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
 
-        private BitmapImage GetUnitArt(string x)
+        private static BitmapImage GetUnitArt(string x)
         {
             using MagickImage m = new(x);
 
@@ -595,7 +557,7 @@ namespace OrangeJuiceModMaker
             return bi;
         }
 
-        private BitmapImage GetCardImageFromPath(string path)
+        private static BitmapImage GetCardImageFromPath(string path)
         {
             using MagickImage m = new(path);
 
@@ -621,6 +583,16 @@ namespace OrangeJuiceModMaker
         private void ModifyUnit_OnUnloaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void PreviewLoopCheckBox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.IsLooped = PreviewLoopCheckBox.IsChecked is true;
+        }
+
+        private void PreviewLoopCheckBox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.IsLooped = PreviewLoopCheckBox.IsChecked is true;
         }
     }
 }
