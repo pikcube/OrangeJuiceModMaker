@@ -71,6 +71,7 @@ Source: "{#MyBasePath}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "{#MyBasePath}\oj.version"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\7za.exe"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\7za.dll"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\HyperLookupTable.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\FlavorLookUp.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\ffmpeg.7z"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion

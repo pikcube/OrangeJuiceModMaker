@@ -761,7 +761,7 @@ namespace OrangeJuiceModMaker
             parser.HasFieldsEnclosedInQuotes = true;
             List<string[]> rawRows = [];
 
-            string typeName = parser.ReadLine()!;
+            string typeName = parser.ReadLine()!.Trim(',');
             if (!Enum.TryParse(typeName, true, out Type))
             {
                 Type = TypeList.Undefined;
