@@ -25,7 +25,7 @@ namespace OrangeJuiceModMaker
 
     public class MyMusicPlayer : IDisposable
     {
-        public AudioFileReader? Reader { get; set; }
+        public AudioFileReader? Reader { get; private set; }
         public WaveOutEvent Out { get; set; } = new();
 
         public event EventHandler<TimeSpan>? PositionChanged;
@@ -53,9 +53,14 @@ namespace OrangeJuiceModMaker
                     }
 
                     TimeSpan cp;
-                    lock (Reader)
+                    lock (this)
                     {
                         if (Reader is null)
+                        {
+                            continue;
+                        }
+
+                        if (isDisposed)
                         {
                             continue;
                         }
@@ -70,7 +75,7 @@ namespace OrangeJuiceModMaker
                         }
                     }
 
-                    if (cp.Add(TimeSpan.FromMilliseconds(200)) > Duration)
+                    if (cp.Add(TimeSpan.FromMilliseconds(300)) > Duration)
                     {
                         if (IsLooped)
                         {
@@ -132,16 +137,19 @@ namespace OrangeJuiceModMaker
 
         public void Open(string path)
         {
-            Reader?.Dispose();
-            Reader = new AudioFileReader(path);
-            Out.Init(Reader);
+            lock (this)
+            {
+                Reader?.Dispose();
+                Reader = new AudioFileReader(path);
+                Out.Init(Reader);
+            }
         }
 
         public void Dispose()
         {
+            isDisposed = true;
             Reader?.Dispose();
             Out.Dispose();
-            isDisposed = true;
             GC.SuppressFinalize(this);
         }
     }

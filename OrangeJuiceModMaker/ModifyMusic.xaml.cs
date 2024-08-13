@@ -37,8 +37,8 @@ namespace OrangeJuiceModMaker
                     case PlayState.Stop when MusicPlayer.Reader is not null:
                         MusicPlayer.Out.Volume = 0;
                         MusicPlayer.Out.Stop();
-                        MusicPlayer.Reader.Close();
-                        MusicPlayer.Position = TimeSpan.Zero;
+                        //MusicPlayer.Reader.Close();
+                        //MusicPlayer.Position = TimeSpan.Zero;
                         PlayPauseButton.Content = "▶";
                         break;
                     case PlayState.Play when MusicPlayer.Reader is not null:
