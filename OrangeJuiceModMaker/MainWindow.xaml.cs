@@ -473,13 +473,10 @@ namespace OrangeJuiceModMaker
         private static string[] NewHashStrings()
         {
             using SHA256 sha256 = SHA256.Create();
-            using FileStream unitPakFileStream = File.Open($@"{GameDirectory}\data\units.pak", FileMode.Open);
-            using FileStream cardPakFileStream = File.Open($@"{GameDirectory}\data\cards.pak", FileMode.Open);
-            byte[] unitHash = sha256.ComputeHash(unitPakFileStream);
-            byte[] cardsHash = sha256.ComputeHash(cardPakFileStream);
+            using FileStream graphicsPakFileStream = File.Open($@"{GameDirectory}\data\graphics.pak", FileMode.Open);
+            byte[] unitHash = sha256.ComputeHash(graphicsPakFileStream);
             return [
                 Convert.ToBase64String(unitHash),
-                Convert.ToBase64String(cardsHash)
             ];
         }
 

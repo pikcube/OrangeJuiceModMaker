@@ -21,7 +21,7 @@ namespace OrangeJuiceModMaker
         private const int TotalFilesInitial = 11119;
         private int totalFiles;
         private static int _cardsConverted;
-        private readonly string[] paks = "cards,units".Split(',');
+        private readonly string[] paks = "graphics".Split(',');
         private int paksUnzipped = 1;
         private int finished;
         private readonly Thread timer;
@@ -38,15 +38,14 @@ namespace OrangeJuiceModMaker
             this.gameDirectory = gameDirectory;
             timer = new Thread(() =>
             {
-                while (finished != 2)
+                while (finished != 1)
                 {
                     if (showStatus)
                     {
                         f.Dispatcher.Invoke(() =>
                         {
                             f.Status.Text =
-                                $"Unpacking {(f.paksUnzipped > 2 ? "Complete" : $"{f.paksUnzipped}/2")}{Environment.NewLine}" +
-                                $"Converting {_cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
+                                $"Unpacking {(f.paksUnzipped > 1 ? "Complete" : $"{f.paksUnzipped}/1")}";
                         });
                     }
                     if (_exit)
@@ -57,8 +56,8 @@ namespace OrangeJuiceModMaker
 
                 f.Dispatcher.Invoke(() =>
                 {
-                    f.Status.Text = $"Unpacking {(f.paksUnzipped > 2 ? "Complete" : $"{f.paksUnzipped}/2")}{Environment.NewLine}" +
-                                    $"Converting {_cardsConverted}/{(f.paksUnzipped == 3 ? f.totalFiles : TotalFilesInitial)}";
+                    f.Status.Text =
+                        $"Unpacking {(f.paksUnzipped > 1 ? "Complete" : $"{f.paksUnzipped}/1")}";
                     MainWindow.UnpackComplete = true;
                     f.Close();
                 });
@@ -79,7 +78,7 @@ namespace OrangeJuiceModMaker
                         @continue = true;
                         ProcessStartInfo unpackInfo = new()
                         {
-                            Arguments = $@"e ""{gameDirectory}\data\{pak}.pak"" -opakFiles\{pak} -y",
+                            Arguments = $@"x ""{gameDirectory}\data\{pak}.pak"" -opakFiles -y -mmt=4",
                             FileName = $@"{appData}\7za.exe",
                             //UseShellExecute = true,
                             //WindowStyle = ProcessWindowStyle.Normal,
@@ -140,6 +139,7 @@ namespace OrangeJuiceModMaker
 
         private void ConvertImages(string pak)
         {
+            return;
             string[] unpackedFiles = Directory.GetFiles($@"pakFiles\{pak}", "*.dat", SearchOption.AllDirectories);
 
             totalFiles += unpackedFiles.Length;
