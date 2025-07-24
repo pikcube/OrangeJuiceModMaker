@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Newtonsoft.Json;
+using OrangeJuiceModMaker.Data;
 
 namespace OrangeJuiceModMaker
 {

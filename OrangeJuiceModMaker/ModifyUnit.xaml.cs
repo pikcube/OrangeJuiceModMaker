@@ -14,6 +14,7 @@ using FFmpeg.NET.Enums;
 using ImageMagick;
 using Microsoft.Win32;
 using NAudio.Wave;
+using OrangeJuiceModMaker.Data;
 
 
 namespace OrangeJuiceModMaker
@@ -34,9 +35,9 @@ namespace OrangeJuiceModMaker
         private int selectedCharacterCard;
         private PlayState MediaPlayerState
         {
-/*
-            get => mediaPlayerState;
-*/
+            /*
+                        get => mediaPlayerState;
+            */
             set
             {
                 switch (value)
@@ -44,7 +45,7 @@ namespace OrangeJuiceModMaker
                     case PlayState.Stop when MusicPlayer.Reader is not null:
                         MusicPlayer.Out.Volume = 0;
                         MusicPlayer.Out.Stop();
-                        
+
                         PlayPauseButton.Content = "▶";
                         break;
                     case PlayState.Play when MusicPlayer.Reader is not null:
@@ -70,7 +71,7 @@ namespace OrangeJuiceModMaker
         private int SelectedHyper
         {
             get => selectedHyper;
-            set => selectedHyper = selectedUnit.HyperIds.Length == 0 ? 0 : (value + selectedUnit.HyperIds.Length) % selectedUnit.HyperIds.Length;
+            set => selectedHyper = selectedUnit.HyperCards.Length == 0 ? 0 : (value + selectedUnit.HyperCards.Length) % selectedUnit.HyperCards.Length;
         }
         private int SelectedCharacter
         {
@@ -92,8 +93,8 @@ namespace OrangeJuiceModMaker
         {
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             this.mainWindow = mainWindow;
-            mainWindow.UnitHyperTable.Sort((x, y) => string.Compare(x.UnitName, y.UnitName, StringComparison.Ordinal));
-            selectedUnit = mainWindow.UnitHyperTable.First();
+
+            selectedUnit = mainWindow.Units.First();
             modifiedUnit = new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements);
             MusicPlayer = new();
             MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
@@ -119,10 +120,9 @@ namespace OrangeJuiceModMaker
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            UnitSelectionBox.ItemsSource = mainWindow.UnitHyperTable.Select(z => z.UnitName).OrderBy(z => z);
+            UnitSelectionBox.ItemsSource = mainWindow.Units.Select(z => z.UnitName).OrderBy(z => z);
 
-            int index = mainWindow.UnitHyperTable.FindIndex(z =>
-                new ModifiedUnit(z, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements).IsModified);
+            int index = mainWindow.Units.FindIndexOf(z => new ModifiedUnit(z, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements).IsModified);
             if (index == -1)
             {
                 index = 0;
@@ -166,7 +166,7 @@ namespace OrangeJuiceModMaker
             MediaPlayerState = PlayState.Stop;
 
             //Get Unit
-            selectedUnit = mainWindow.UnitHyperTable.First(z => z.UnitName == unitName);
+            selectedUnit = mainWindow.Units.First(z => z.UnitName == unitName);
             if (modifiedUnitHyperTable.All(z => z.UnitName != unitName))
             {
                 modifiedUnitHyperTable.Add(new ModifiedUnit(selectedUnit, mainWindow.LoadedModPath, mainWindow.LoadedModReplacements));
@@ -192,7 +192,7 @@ namespace OrangeJuiceModMaker
         //Media Functions
         private void ProgressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            
+
             long progress = (long)(MusicPlayer.Duration.Ticks * ProgressSlider.Value / 10);
             MusicPlayer.Position = TimeSpan.FromTicks(progress);
         }
@@ -240,12 +240,12 @@ namespace OrangeJuiceModMaker
                 FaceYBox.Text = modifiedUnit.FaceY.First().ToString();
 
                 //Get Hyper Art
-                if (selectedUnit.HyperIds.Length != 0)
+                if (selectedUnit.HyperCards.Length != 0)
                 {
                     //HyperArt.ImageSource = GetCardImageFromPath(selectedUnit.HyperCardPaths.First());
-                    HyperNameTextBox.Text = selectedUnit.HyperNames.First();
-                    HyperNameUpdateBox.Text = modifiedUnit.HyperNames.First();
-                    HyperFlavorUpdateBox.Text = modifiedUnit.HyperFlavor.First();
+                    HyperNameTextBox.Text = selectedUnit.HyperCards.First().CardName;
+                    HyperNameUpdateBox.Text = modifiedUnit.HyperCards.First().CardName;
+                    HyperFlavorUpdateBox.Text = modifiedUnit.HyperCards.First().FlavorText ?? "";
                     HyperNameUpdateBox.IsEnabled = true;
                 }
                 else
@@ -257,7 +257,7 @@ namespace OrangeJuiceModMaker
                     HyperFlavorUpdateBox.Text = "";
                 }
 
-                bool hyperButtonsEnabled = selectedUnit.HyperIds.Length >= 2;
+                bool hyperButtonsEnabled = selectedUnit.HyperCards.Length >= 2;
                 bool cardButtonsEnabled = selectedUnit.CharacterCards.Length >= 2;
 
                 HyperLeftButton.IsEnabled = hyperButtonsEnabled;
@@ -274,8 +274,8 @@ namespace OrangeJuiceModMaker
                 if (selectedUnit.CharacterCards.Length != 0)
                 {
                     SelectedCharacterCard = 0;
-                    CharacterCardNameTextBox.Text = selectedUnit.CharacterCardNames.First();
-                    CardNameUpdateBox.Text = modifiedUnit.CharacterCardNames.First();
+                    CharacterCardNameTextBox.Text = selectedUnit.CharacterCards.First().CardName;
+                    CardNameUpdateBox.Text = modifiedUnit.CharacterCards.First().CardName;
                     CardNameUpdateBox.IsEnabled = true;
                 }
                 else
@@ -360,10 +360,10 @@ namespace OrangeJuiceModMaker
             ProgressSlider.IsEnabled = musicEnabled;
         }
 
-        private void ReplacePicture(string modifiedUnitCharacterCard, string[] paths256, string[]? paths128, Func<int> getIndex, Action incIndex)
+        private void ReplacePicture(string modifiedUnitCharacterCard, out string[]? paths256, out string[]? paths128, int index, bool ignore128 = false)
         {
             int res = 256;
-            string TempName() => $@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}{getIndex()}{res}.temp";
+            string TempName() => $@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}{index}{res}.temp";
             OpenFileDialog a = new()
             {
                 Filter =
@@ -373,60 +373,74 @@ namespace OrangeJuiceModMaker
             };
             if (a.ShowDialog() is not true)
             {
+                paths256 = null;
+                paths128 = null;
                 return;
             }
 
             UnloadImages();
 
-            MagickImage[] pictures = a.FileNames.Select(z => new MagickImage(z)).ToArray();
+            MagickImage[] pictures = [.. a.FileNames.Select(z => new MagickImage(z))];
 
-            if (pictures.Length % 2 == 1 || paths128 == null)
+            if (pictures.Length % 2 == 1 || ignore128)
             {
-                GeneralCase();
+                paths256 = new string[pictures.Length];
+                paths128 = new string[pictures.Length];
+                GeneralCase(ref paths256, ref paths128);
                 return;
             }
 
             bool allSquares = pictures.All(z => z.Width == z.Height);
             if (!allSquares)
             {
-                GeneralCase();
+                paths256 = new string[pictures.Length];
+                paths128 = new string[pictures.Length];
+                GeneralCase(ref paths256, ref paths128);
                 return;
             }
 
             bool all256 = pictures.All(z => z.Width == 256);
             if (all256)
             {
-                GeneralCase();
+                paths256 = new string[pictures.Length];
+                paths128 = new string[pictures.Length];
+                GeneralCase(ref paths256, ref paths128);
                 return;
             }
 
-            MagickImage[] pictures128 = pictures.Where(z => z.Width == 128).ToArray();
-            MagickImage[] pictures256 = pictures.Where(z => z.Width == 256).ToArray();
+            MagickImage[] pictures128 = [.. pictures.Where(z => z.Width == 128)];
+            MagickImage[] pictures256 = [.. pictures.Where(z => z.Width == 256)];
 
             if (pictures128.Length != pictures256.Length)
             {
                 //General case
-                GeneralCase();
+                paths256 = new string[pictures.Length];
+                paths128 = new string[pictures.Length];
+                GeneralCase(ref paths256, ref paths128);
                 return;
             }
 
-            for (int n = 0; n < pictures128.Length; ++n, incIndex())
+            paths256 = new string[pictures256.Length];
+            paths128 = new string[pictures128.Length];
+
+            for (int n = 0; n < pictures128.Length; ++n)
             {
                 res = 256;
                 pictures256[n].Write(TempName());
-                paths256[getIndex()] = TempName();
+                paths256[n] = TempName();
                 pictures256[n].Dispose();
 
                 res = 128;
                 pictures128[n].Write(TempName());
-                paths128[getIndex()] = TempName();
+                paths128[n] = TempName();
                 pictures128[n].Dispose();
             }
 
-            void GeneralCase()
+            void GeneralCase(ref string[] paths256, ref string[] paths128)
             {
-                foreach (MagickImage m in pictures)
+                for (int n = 0; n < pictures.Length; n++)
                 {
+                    MagickImage m = pictures[n];
                     bool type = m.Format == MagickFormat.Png;
                     bool dim = m.Width == 256 && m.Height == 256;
                     m.Format = MagickFormat.Png;
@@ -445,19 +459,20 @@ namespace OrangeJuiceModMaker
                         m.Write(TempName());
                     }
 
-                    paths256[getIndex()] = TempName();
-                    if (paths128 is not null)
+                    paths256[n] = TempName();
+                    if (!ignore128)
                     {
                         m.FilterType = FilterType.Point;
                         m.Resize(128, 128);
                         m.Write($@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp");
-                        paths128[getIndex()] = $@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp";
+                        paths128[n] = $@"{mainWindow.Temp}\temp{modifiedUnitCharacterCard}128.temp";
                     }
 
                     if (m != pictures.Last())
                     {
-                        incIndex();
+                        ++n;
                     }
+
                     m.Dispose();
                 }
             }
@@ -488,8 +503,8 @@ namespace OrangeJuiceModMaker
 
             if (modifiedUnit.CharacterCards.Length != 0)
             {
-                CardArt.ImageSource = GetCardImageFromPath(modifiedUnit.CharacterCardPaths[SelectedCharacterCard]);
-                SmallCardArt.ImageSource = GetCardImageFromPath(modifiedUnit.CharacterCardPathsLow[SelectedCharacterCard]);
+                CardArt.ImageSource = GetCardImageFromPath(modifiedUnit.CharacterCards[SelectedCharacterCard].Path);
+                SmallCardArt.ImageSource = GetCardImageFromPath(modifiedUnit.CharacterCards[SelectedCharacterCard].PathLow);
             }
             else
             {
@@ -497,10 +512,10 @@ namespace OrangeJuiceModMaker
                 SmallCardArt.ImageSource = null;
             }
 
-            if (modifiedUnit.HyperIds.Length != 0)
+            if (modifiedUnit.HyperCards.Length != 0)
             {
-                HyperArt.ImageSource = GetCardImageFromPath(modifiedUnit.HyperCardPaths[SelectedHyper]);
-                SmallHyperArt.ImageSource = GetCardImageFromPath(modifiedUnit.HyperCardPathsLow[SelectedHyper]);
+                HyperArt.ImageSource = GetCardImageFromPath(modifiedUnit.HyperCards[SelectedHyper].Path);
+                SmallHyperArt.ImageSource = GetCardImageFromPath(modifiedUnit.HyperCards[SelectedHyper].PathLow);
             }
             else
             {

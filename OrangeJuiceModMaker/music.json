@@ -1,0 +1,592 @@
+[
+  {
+    "UnitId": null,
+    "Event": "main_menu",
+    "Description": "The main menu music."
+  },
+  {
+    "UnitId": null,
+    "Event": "standby",
+    "Description": "The music played when waiting in a multiplayer lobby, or on the campaign screen."
+  },
+  {
+    "UnitId": null,
+    "Event": "dialog1",
+    "Description": "A music played in dialogs, often when a campaign or event starts."
+  },
+  {
+    "UnitId": null,
+    "Event": "dialog2",
+    "Description": "A music played in dialogs."
+  },
+  {
+    "UnitId": null,
+    "Event": "dialog3",
+    "Description": "A music played in dialogs, battle themed."
+  },
+  {
+    "UnitId": null,
+    "Event": "conclusion",
+    "Description": "A music played in dialogs, often when you reach the end of a campaign or event."
+  },
+  {
+    "UnitId": null,
+    "Event": "ending1",
+    "Description": "A music played in the credits roll."
+  },
+  {
+    "UnitId": null,
+    "Event": "dialog4",
+    "Description": "A music played in dialogs, in the campaign of Arthur and Nico."
+  },
+  {
+    "UnitId": null,
+    "Event": "final2",
+    "Description": "A music played in dialogs, in the campaign of Arthur and Nico."
+  },
+  {
+    "UnitId": null,
+    "Event": "ending2",
+    "Description": "A music played in the credits, actually only used when you finish Arthur and Nico's campaign."
+  },
+  {
+    "UnitId": null,
+    "Event": "idol_duet",
+    "Description": "A music played when Cuties use their hyper."
+  },
+  {
+    "UnitId": null,
+    "Event": "idol_instrumental",
+    "Description": "A music played when a unit that is not Cuties or Poppo use the Special Stage hyper."
+  },
+  {
+    "UnitId": null,
+    "Event": "idol_poppo",
+    "Description": "A music played when Poppo use the Special Stage hyper."
+  },
+  {
+    "UnitId": null,
+    "Event": "dialog5",
+    "Description": "A music played in Mio's campaign. It's the default dialog song."
+  },
+  {
+    "UnitId": null,
+    "Event": "dialog6",
+    "Description": "A music played in Mio's campaign. It's Kai's appearance song."
+  },
+  {
+    "UnitId": null,
+    "Event": "ending3",
+    "Description": "A music played in Mio's campaign. It's the credits song."
+  },
+  {
+    "UnitId": null,
+    "Event": "tomomo_sweeteater",
+    "Description": "A music played when Tomomo (Casual) plays her hyper."
+  },
+  {
+    "UnitId": null,
+    "Event": "maynie_ragingmode",
+    "Description": "A music played when the Raging Madness hyper is active."
+  },
+  {
+    "UnitId": null,
+    "Event": "finalstage",
+    "Description": "Tomomo's Hell music, played in the campaign."
+  },
+  {
+    "UnitId": null,
+    "Event": "field_wintertown",
+    "Description": "Beginner Town (Winter) Intro Music"
+  },
+  {
+    "UnitId": null,
+    "Event": "field_desert",
+    "Description": "Lonely Railway Intro Music"
+  },
+  {
+    "UnitId": null,
+    "Event": "field_pool",
+    "Description": "Whirlpool Intro Music"
+  },
+  {
+    "UnitId": "alicianrone",
+    "Event": null,
+    "Description": "The theme for Alicianrone"
+  },
+  {
+    "UnitId": "alte",
+    "Event": null,
+    "Description": "The theme for Alte"
+  },
+  {
+    "UnitId": "arnelle",
+    "Event": null,
+    "Description": "The theme for Arnelle"
+  },
+  {
+    "UnitId": "arthur",
+    "Event": null,
+    "Description": "The theme for Arthur"
+  },
+  {
+    "UnitId": "aru",
+    "Event": null,
+    "Description": "The theme for Aru"
+  },
+  {
+    "UnitId": "arus",
+    "Event": null,
+    "Description": "The theme for Aru (Scramble!)"
+  },
+  {
+    "UnitId": "ceor",
+    "Event": null,
+    "Description": "The theme for Ceoreparque"
+  },
+  {
+    "UnitId": "chef",
+    "Event": null,
+    "Description": "The theme for Chef"
+  },
+  {
+    "UnitId": "chicken",
+    "Event": null,
+    "Description": "The theme for Chicken"
+  },
+  {
+    "UnitId": "chris",
+    "Event": null,
+    "Description": "The theme for Chris"
+  },
+  {
+    "UnitId": "cook",
+    "Event": null,
+    "Description": "The theme for Cook"
+  },
+  {
+    "UnitId": "cuties",
+    "Event": null,
+    "Description": "The theme for Cuties"
+  },
+  {
+    "UnitId": "ellie",
+    "Event": null,
+    "Description": "The theme for Ellie"
+  },
+  {
+    "UnitId": "fernet",
+    "Event": null,
+    "Description": "The theme for Fernet"
+  },
+  {
+    "UnitId": "fernetnoble",
+    "Event": null,
+    "Description": "The theme for Fernet (Noble)"
+  },
+  {
+    "UnitId": "castle",
+    "Event": null,
+    "Description": "The theme for Flying Castle"
+  },
+  {
+    "UnitId": "halena",
+    "Event": null,
+    "Description": "The theme for Halena"
+  },
+  {
+    "UnitId": "hime",
+    "Event": null,
+    "Description": "The theme for Hime"
+  },
+  {
+    "UnitId": "himem",
+    "Event": null,
+    "Description": "The theme for Hime (Moonlight)"
+  },
+  {
+    "UnitId": "reika",
+    "Event": null,
+    "Description": "The theme for Hoshino Reika"
+  },
+  {
+    "UnitId": "iru",
+    "Event": null,
+    "Description": "The theme for Iru"
+  },
+  {
+    "UnitId": "islay",
+    "Event": null,
+    "Description": "The theme for Islay"
+  },
+  {
+    "UnitId": "kae",
+    "Event": null,
+    "Description": "The theme for Kae"
+  },
+  {
+    "UnitId": "kai",
+    "Event": null,
+    "Description": "The theme for Kai"
+  },
+  {
+    "UnitId": "kiriko",
+    "Event": null,
+    "Description": "The theme for Kiriko"
+  },
+  {
+    "UnitId": "krila",
+    "Event": null,
+    "Description": "The theme for Krilalaris"
+  },
+  {
+    "UnitId": "kyoko",
+    "Event": null,
+    "Description": "The theme for Kyoko"
+  },
+  {
+    "UnitId": "ksuke",
+    "Event": null,
+    "Description": "The theme for Kyousuke"
+  },
+  {
+    "UnitId": "kyupita",
+    "Event": null,
+    "Description": "The theme for Kyupita"
+  },
+  {
+    "UnitId": "lonerider",
+    "Event": null,
+    "Description": "The theme for Lone Rider"
+  },
+  {
+    "UnitId": "lulu",
+    "Event": null,
+    "Description": "The theme for Lulu"
+  },
+  {
+    "UnitId": "malt",
+    "Event": null,
+    "Description": "The theme for Malt"
+  },
+  {
+    "UnitId": "marc",
+    "Event": null,
+    "Description": "The theme for Marc"
+  },
+  {
+    "UnitId": "marcpilot",
+    "Event": null,
+    "Description": "The theme for Marc (Pilot)"
+  },
+  {
+    "UnitId": "poppo",
+    "Event": null,
+    "Description": "The theme for Marie Poppo"
+  },
+  {
+    "UnitId": "npoppo",
+    "Event": null,
+    "Description": "The theme for Marie Poppo (Mixed)"
+  },
+  {
+    "UnitId": "maynie",
+    "Event": null,
+    "Description": "The theme for Maynie"
+  },
+  {
+    "UnitId": "mei",
+    "Event": null,
+    "Description": "The theme for Mei"
+  },
+  {
+    "UnitId": "merchant",
+    "Event": null,
+    "Description": "The theme for Merchant"
+  },
+  {
+    "UnitId": "mescal",
+    "Event": null,
+    "Description": "The theme for Mescal"
+  },
+  {
+    "UnitId": "mimyuu",
+    "Event": null,
+    "Description": "The theme for Mimyuu"
+  },
+  {
+    "UnitId": "mio",
+    "Event": null,
+    "Description": "The theme for Mio"
+  },
+  {
+    "UnitId": "mira",
+    "Event": null,
+    "Description": "The theme for Mira"
+  },
+  {
+    "UnitId": "miusaki",
+    "Event": null,
+    "Description": "The theme for Miusaki"
+  },
+  {
+    "UnitId": "nanako",
+    "Event": null,
+    "Description": "The theme for Nanako"
+  },
+  {
+    "UnitId": "nath",
+    "Event": null,
+    "Description": "The theme for Nath"
+  },
+  {
+    "UnitId": "natsumi",
+    "Event": null,
+    "Description": "The theme for Natsumi"
+  },
+  {
+    "UnitId": "nico",
+    "Event": null,
+    "Description": "The theme for Nico"
+  },
+  {
+    "UnitId": "non",
+    "Event": null,
+    "Description": "The theme for NoName"
+  },
+  {
+    "UnitId": "peat",
+    "Event": null,
+    "Description": "The theme for Peat"
+  },
+  {
+    "UnitId": "teq_minion",
+    "Event": null,
+    "Description": "The theme for Pirate Crew Member"
+  },
+  {
+    "UnitId": "qp",
+    "Event": null,
+    "Description": "The theme for QP"
+  },
+  {
+    "UnitId": "qpd",
+    "Event": null,
+    "Description": "The theme for QP (Dangerous)"
+  },
+  {
+    "UnitId": "ball",
+    "Event": null,
+    "Description": "The theme for Robo Ball"
+  },
+  {
+    "UnitId": "saki",
+    "Event": null,
+    "Description": "The theme for Saki"
+  },
+  {
+    "UnitId": "seagull",
+    "Event": null,
+    "Description": "The theme for Seagull"
+  },
+  {
+    "UnitId": "sham",
+    "Event": null,
+    "Description": "The theme for Sham"
+  },
+  {
+    "UnitId": "sherry",
+    "Event": null,
+    "Description": "The theme for Sherry"
+  },
+  {
+    "UnitId": "shifu",
+    "Event": null,
+    "Description": "The theme for Shifu"
+  },
+  {
+    "UnitId": "brobo",
+    "Event": null,
+    "Description": "The theme for Shifu Robot"
+  },
+  {
+    "UnitId": "sora",
+    "Event": null,
+    "Description": "The theme for Sora"
+  },
+  {
+    "UnitId": "sorasp",
+    "Event": null,
+    "Description": "The theme for Sora (Military)"
+  },
+  {
+    "UnitId": "starb",
+    "Event": null,
+    "Description": "The theme for Star Breaker"
+  },
+  {
+    "UnitId": "master",
+    "Event": null,
+    "Description": "The theme for Store Manager"
+  },
+  {
+    "UnitId": "suguri",
+    "Event": null,
+    "Description": "The theme for Suguri"
+  },
+  {
+    "UnitId": "sugurib",
+    "Event": null,
+    "Description": "The theme for Suguri Ver.2"
+  },
+  {
+    "UnitId": "suguri46",
+    "Event": null,
+    "Description": "The theme for Suguri (46 Billion Years)"
+  },
+  {
+    "UnitId": "sumika",
+    "Event": null,
+    "Description": "The theme for Sumika"
+  },
+  {
+    "UnitId": "sweetb",
+    "Event": null,
+    "Description": "The theme for Sweet Breaker"
+  },
+  {
+    "UnitId": "syura",
+    "Event": null,
+    "Description": "The theme for Syura"
+  },
+  {
+    "UnitId": "teotoratta",
+    "Event": null,
+    "Description": "The theme for Teotoratta"
+  },
+  {
+    "UnitId": "tequila",
+    "Event": null,
+    "Description": "The theme for Tequila"
+  },
+  {
+    "UnitId": "tomato",
+    "Event": null,
+    "Description": "The theme for Tomato"
+  },
+  {
+    "UnitId": "tomomo",
+    "Event": null,
+    "Description": "The theme for Tomomo"
+  },
+  {
+    "UnitId": "tmsw",
+    "Event": null,
+    "Description": "The theme for Tomomo (Casual)"
+  },
+  {
+    "UnitId": "tsih",
+    "Event": null,
+    "Description": "The theme for Tsih"
+  },
+  {
+    "UnitId": "yuki",
+    "Event": null,
+    "Description": "The theme for Yuki"
+  },
+  {
+    "UnitId": "yukid",
+    "Event": null,
+    "Description": "The theme for Yuki (Dangerous)"
+  },
+  {
+    "UnitId": "yuuki",
+    "Event": null,
+    "Description": "The theme for Yuuki"
+  },
+  {
+    "UnitId": "pomeranius",
+    "Event": null,
+    "Description": "The theme for Pomeranius"
+  },
+  {
+    "UnitId": "watty",
+    "Event": null,
+    "Description": "The theme for Watty"
+  },
+  {
+    "UnitId": "sweetcreator",
+    "Event": null,
+    "Description": "The theme for Sweet Creator"
+  },
+  {
+    "UnitId": "sweetmaker",
+    "Event": null,
+    "Description": "The theme for Saki (Sweet Maker)"
+  },
+  {
+    "UnitId": "sweetblogger",
+    "Event": null,
+    "Description": "The theme for Natsumi (Sweet Blogger)"
+  },
+  {
+    "UnitId": "krilap",
+    "Event": null,
+    "Description": "The theme for Krilalaris (Pajamas)"
+  },
+  {
+    "UnitId": "mimyuuj",
+    "Event": null,
+    "Description": "The theme for Mimyuu (Jailbird)"
+  },
+  {
+    "UnitId": "poppomama",
+    "Event": null,
+    "Description": "The theme for Mother Poppo"
+  },
+  {
+    "UnitId": "luludark",
+    "Event": null,
+    "Description": "The theme for Dark Lulu"
+  },
+  {
+    "UnitId": "kaihero",
+    "Event": null,
+    "Description": "The theme for Kai (Hero)"
+  },
+  {
+    "UnitId": "elliehyper",
+    "Event": null,
+    "Description": "The theme for Hyper Ellie"
+  },
+  {
+    "UnitId": "bourbon",
+    "Event": null,
+    "Description": "The theme for Bourbon"
+  },
+  {
+    "UnitId": "grain",
+    "Event": null,
+    "Description": "The theme for Grain"
+  },
+  {
+    "UnitId": "poyo",
+    "Event": null,
+    "Description": "The theme for Poyo"
+  },
+  {
+    "UnitId": "chuu",
+    "Event": null,
+    "Description": "The theme for Chuu"
+  },
+  {
+    "UnitId": "haruka",
+    "Event": null,
+    "Description": "The theme for Haruka"
+  },
+  {
+    "UnitId": "kanata",
+    "Event": null,
+    "Description": "The theme for Kanata"
+  }
+]

@@ -40,24 +40,17 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Height="128">
+                <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Height="128">
                     <Rectangle.Fill>
                         <ImageBrush x:Name="LowCardArt"/>
                     </Rectangle.Fill>
                 </Rectangle>
                 <TextBlock Grid.Row="1" Grid.Column="2"
-                           Text="Set:"
-                           FontSize="20"/>
-                <TextBlock Grid.Row="3" Grid.Column="2"
                            Text="Card:"
                            FontSize="20"/>
                 <ComboBox Grid.Row="1" Grid.Column="4"
-                          x:Name="SetSelectionBox" SelectionChanged="SetSelectionBox_OnSelectionChanged" FontSize="15"/>
-                <ComboBox Grid.Row="3" Grid.Column="4"
                           x:Name="CardSelectionBox" SelectionChanged="UnitSelectionBox_OnSelectionChanged"  FontSize="15"/>
             </Grid>
 

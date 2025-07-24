@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using Microsoft.Win32;
+using OrangeJuiceModMaker.Data;
 
 namespace OrangeJuiceModMaker
 {
@@ -35,9 +36,8 @@ namespace OrangeJuiceModMaker
         {
             InitializeComponent();
             this.parent = parent;
-            CsvHolder soundTable = parent.CsvFiles.First(z => z.Type == CsvHolder.TypeList.Sound);
-            soundNameTable = soundTable.Rows.Select(z => z[0]).ToArray();
-            soundDescriptionTable = soundTable.Rows.Select(z => z[1]).ToArray();
+            soundNameTable = [.. parent.Sounds.Select(z => z.File)];
+            soundDescriptionTable = [.. parent.Sounds.Select(z => z.Description)];
             moddedSoundEffects = [.. parent.LoadedModReplacements.SoundEffects];
 
         }

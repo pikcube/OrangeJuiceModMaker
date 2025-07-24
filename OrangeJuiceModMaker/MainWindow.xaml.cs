@@ -12,8 +12,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ImageMagick;
-using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
+using OrangeJuiceModMaker.Data;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SearchOption = System.IO.SearchOption;
@@ -24,31 +24,30 @@ namespace OrangeJuiceModMaker
     {
         public static MainWindow? Instance { get; private set; }
         //public readonly UpdateApp? UpdateApp;
-        public readonly bool Debug;
-        public static string? GameDirectory;
-        private static bool _steamVersion;
-        public static bool UnpackComplete = true;
-        public readonly string Temp;
-        public readonly string AppData;
-        public ModReplacements LoadedModReplacements = new();
-        public ModDefinition LoadedModDefinition = new("temp", "desc", "auth", 2);
-        public string LoadedModPath = "";
-        public readonly List<CsvHolder> CsvFiles = [];
-        public readonly List<Unit> UnitHyperTable = [];
-        public CsvHolder? FlavorLookUp;
-        public readonly List<string> Cards = [];
-        public readonly GlobalSettings GlobalSettings;
-        private static bool _exitTime;
-        private List<string> mods = [];
-        private readonly string[] config;
-        private readonly string modsDirectoryPath = "";
-        private readonly string exePath = "";
-        private static string[]? _newHash;
-        private readonly Task flavorTask = Task.CompletedTask;
-        private readonly Task dumpTempFiles = Task.CompletedTask;
-        private readonly Task loadHyperData = Task.CompletedTask;
-        private readonly Task loadOjData = Task.CompletedTask;
-        public static string? WorkshopItemsDirectory = null;
+        public bool Debug { get; set; }
+
+        public UnitRef[] Units { get; set; } = null!;
+        public static string? GameDirectory { get; set; }
+        private static bool _steamVersion { get; set; }
+        public static bool UnpackComplete { get; set; } = true;
+        public string Temp { get; }
+        public string AppData { get; }
+        public ModReplacements LoadedModReplacements { get; set; } = new();
+        public ModDefinition LoadedModDefinition { get; set; } = new("temp", "desc", "auth", 2);
+        public string LoadedModPath { get; set; } = "";
+        public GlobalSettings GlobalSettings { get; set; }
+        private static bool _exitTime { get; set; }
+        private List<string> mods { get; set; } = [];
+        private string[] config { get; set; }
+        private string modsDirectoryPath { get; set; } = "";
+        private string exePath { get; set; } = "";
+        public CardRef[] Cards { get; set; } = null!;
+        public MusicRef[] Musics { get; set; } = null!;
+
+        public SoundRef[] Sounds { get; set; } = null!;
+
+        private static string[]? _newHash { get; set; }
+        public static string? WorkshopItemsDirectory { get; set; } = null;
         public event EventHandler LoadedModsChanged;
 
         private const string DisableMod = " Disable Mod ";
@@ -112,7 +111,7 @@ namespace OrangeJuiceModMaker
                 }
 
                 GlobalSettings = GlobalSettings.LoadSettingsFromFile($@"{AppData}\GlobalSettings.json");
-                
+
                 DebugLogger.LogLine("Setting up app data");
                 exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
@@ -127,11 +126,12 @@ namespace OrangeJuiceModMaker
                 [
                     "7za.dll",
                     "7za.exe",
-                    "HyperLookupTable.csv",
-                    "FlavorLookUp.csv",
                     "ffmpeg.7z",
-                    "csvFiles.7z",
-                    "oj.version"
+                    "oj.version",
+                    "sound.json",
+                    "music.json",
+                    "units.json",
+                    "cards.json",
                 ];
                 if (!File.Exists($@"{AppData}\oj.version") || File.ReadAllBytes($@"{AppData}\oj.version") != File.ReadAllBytes($@"{exeDirectory}\OrangeJuiceModMaker\oj.version"))
                 {
@@ -145,6 +145,12 @@ namespace OrangeJuiceModMaker
                         File.Copy(@$"{exeDirectory}\OrangeJuiceModMaker\{file}", @$"{AppData}\{file}", true);
                     }
                 }
+
+                Units = JsonConvert.DeserializeObject<UnitRef[]>(File.ReadAllText("units.json"))!.OrderBy(z => z.UnitName).ToArray();
+                Cards = JsonConvert.DeserializeObject<CardRef[]>(File.ReadAllText("cards.json"))!.OrderBy(z => z.CardName).ToArray();
+                Musics = JsonConvert.DeserializeObject<MusicRef[]>(File.ReadAllText("music.json"))!.OrderBy(z => z.UnitId ?? z.Event).ToArray();
+                Sounds = JsonConvert.DeserializeObject<SoundRef[]>(File.ReadAllText("sound.json"))!.OrderBy(z => z.File).ToArray();
+
                 _steamVersion = File.Exists(@"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice\100orange.exe");
                 //First Time Setup Code
                 DebugLogger.LogLine("Setting up game directory");
@@ -235,10 +241,8 @@ namespace OrangeJuiceModMaker
                     }
                     File.Delete(@"pakFiles\filesUnpacked.status");
                     File.WriteAllLines($@"{AppData}\pakfiles.hash", _newHash);
-                    
-                }
 
-                Cards = [.. Directory.GetFiles(@"pakFiles\cards")];
+                }
 
                 DebugLogger.LogLine("Loading mods");
                 if (GlobalSettings.ModDirectories.SelectedItem is null)
@@ -262,20 +266,7 @@ namespace OrangeJuiceModMaker
 
                 DebugLogger.LogLine("Main window initialized");
 
-                flavorTask = new Task(() =>
-                {
-                    DebugLogger.LogLine("Reading FlavorLookUp");
-                    FlavorLookUp = new CsvHolder($@"{AppData}\FlavorLookUp.csv");
-                    foreach (string[] t in FlavorLookUp.Rows)
-                    {
-                        for (int m = 0; m < t.Length; ++m)
-                        {
-                            t[m] = t[m].Replace(@"\n", Environment.NewLine);
-                        }
-                    }
-                });
-
-                dumpTempFiles = new Task(() =>
+                _ = new Task(() =>
                 {
                     if (File.Exists("ffmpeg.7z"))
                     {
@@ -303,53 +294,6 @@ namespace OrangeJuiceModMaker
                         File.Delete(f);
                     }
                 });
-                loadOjData = new Task(() =>
-                {
-                    DebugLogger.LogLine("Fetching csvFiles");
-                    if (File.Exists("csvFiles.7z"))
-                    {
-                        DebugLogger.LogLine("Unpacking csv files");
-                        ProcessStartInfo unpackInfo = new()
-                        {
-                            Arguments = @"x csvFiles.7z -y",
-                            FileName = "7za.exe",
-                            UseShellExecute = false,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true
-                        };
-                        Process.Start(unpackInfo)?.WaitForExit();
-                        File.Delete("csvFiles.7z");
-                    }
-                    string[] csvFileList = Directory.GetFiles("csvFiles", "*.csv", SearchOption.AllDirectories);
-                    const int count = 23;
-                    if (csvFileList.Length != count)
-                    {
-                        throw csvFileList.Length > count
-                            ? new Exception($"There's more than {count} csv files. Did you forget to update line 329 again?")
-                            : new Exception("Didn't find all files");
-                    }
-                    foreach (string file in csvFileList)
-                    {
-                        DebugLogger.LogLine($"Reading {file}");
-                        CsvFiles.Add(new CsvHolder(file));
-                    }
-                });
-                loadHyperData = new Task(() =>
-                {
-                    DebugLogger.LogLine("Preparing to load in HyperLookupTable");
-                    using TextFieldParser parser = new("HyperLookupTable.csv");
-                    parser.Delimiters = [","];
-                    parser.HasFieldsEnclosedInQuotes = true;
-                    _ = parser.ReadFields();
-                    loadOjData.Wait();
-                    DebugLogger.LogLine("Loading HyperLookupTable");
-                    CsvHolder charCards = CsvFiles.First(z => z.Name == "CharacterCards");
-                    while (!parser.EndOfData)
-                    {
-                        UnitHyperTable.Add(new Unit(parser.ReadFields() ?? throw new InvalidOperationException(), charCards, this));
-                    }
-                });
-                //CreateLookUp();
             }
             catch (Exception exception)
             {
@@ -462,7 +406,7 @@ namespace OrangeJuiceModMaker
             {
                 return true;
             }
-            
+
             Task<string[]> oldHashTask = File.ReadAllLinesAsync($@"{AppData}\pakfiles.hash");
 
             string[] oldHashStrings = oldHashTask.GetAwaiter().GetResult();
@@ -480,7 +424,7 @@ namespace OrangeJuiceModMaker
             ];
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             EditButton.IsEnabled = false;
             //Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
@@ -499,25 +443,7 @@ namespace OrangeJuiceModMaker
                 SelectedModeComboBox.SelectedIndex = 0;
             }
 
-            loadOjData.Start();
-            loadHyperData.Start();
-            flavorTask.Start();
-            dumpTempFiles.Start();
-
-            await loadOjData;
-            await loadHyperData;
-            await flavorTask;
-            AggregateException? ex = loadOjData.Exception ?? loadHyperData.Exception ?? flavorTask.Exception ?? null;
-
-            
-            if (ex is not null)
-            {
-                MessageBox.Show(ex.Message);
-                Close();
-                return;
-            }
             EditButton.IsEnabled = true;
-            await dumpTempFiles;
         }
 
         //Check the game directory for mod files
@@ -557,7 +483,7 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            string[] possibleMods = mods.Where(z => Root.ReadJson(z)?.ModDefinition.Name == modName).ToArray();
+            string[] possibleMods = [.. mods.Where(z => Root.ReadJson(z)?.ModDefinition.Name == modName)];
             switch (possibleMods.Length)
             {
                 case 1:
@@ -673,7 +599,7 @@ namespace OrangeJuiceModMaker
 
                     return;
                 case EditWindow.ModifyCard:
-                    new ModifyCard(CsvFiles, this) { Owner = this }.ShowDialog();
+                    new ModifyCard(this) { Owner = this }.ShowDialog();
                     return;
                 case EditWindow.ModifyMusic:
                     new ModifyMusic(this) { Owner = this }.ShowDialog();
@@ -809,7 +735,7 @@ namespace OrangeJuiceModMaker
 
         private void RepairModButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Root.RepairMod(ref LoadedModReplacements, LoadedModPath);
+            Root.RepairMod(LoadedModReplacements, LoadedModPath);
             Root.WriteJson(LoadedModPath, LoadedModDefinition, LoadedModReplacements);
         }
 
@@ -879,7 +805,7 @@ namespace OrangeJuiceModMaker
                 {
                     return false;
                 }
-                
+
                 ProcessStartInfo startInfo = new()
                 {
                     FileName = "explorer",
@@ -1014,7 +940,7 @@ namespace OrangeJuiceModMaker
         private void EditNameMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             OpenEditWindow(EditWindow.ModifyModDefinition);
-            
+
         }
 
         private void EditDefinitionMenuItem_OnClick(object sender, RoutedEventArgs e)

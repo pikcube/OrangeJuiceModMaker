@@ -1,0 +1,366 @@
+[
+  {
+    "File": "decision.wav",
+    "Description": "Player selects something"
+  },
+  {
+    "File": "cancel.wav",
+    "Description": "Player cancels selection, going back in a menu"
+  },
+  {
+    "File": "page1.wav",
+    "Description": "Scrolling through pages (Forward)"
+  },
+  {
+    "File": "page2.wav",
+    "Description": "Scrolling through pages (Backward)"
+  },
+  {
+    "File": "trapset.wav",
+    "Description": "Trap card set"
+  },
+  {
+    "File": "cardget.wav",
+    "Description": "Card obtained"
+  },
+  {
+    "File": "carduse.wav",
+    "Description": "Using a card"
+  },
+  {
+    "File": "traptrigger.wav",
+    "Description": "Trap card has been activated"
+  },
+  {
+    "File": "powerup.wav",
+    "Description": "Battle boosts, fireworks, dialogue"
+  },
+  {
+    "File": "healing.wav",
+    "Description": "Recovering HP"
+  },
+  {
+    "File": "ko.wav",
+    "Description": "Unit has been KO'd"
+  },
+  {
+    "File": "throw.wav",
+    "Description": "Throwing dice"
+  },
+  {
+    "File": "normaclear.wav",
+    "Description": "Norma has been cleared"
+  },
+  {
+    "File": "normamiss.wav",
+    "Description": "Norma clear conditions weren't met"
+  },
+  {
+    "File": "chapterstart.wav",
+    "Description": "Chapter start"
+  },
+  {
+    "File": "star.wav",
+    "Description": "Obtaining a star"
+  },
+  {
+    "File": "hit.wav",
+    "Description": "Battle light hit"
+  },
+  {
+    "File": "warp.wav",
+    "Description": "Warp"
+  },
+  {
+    "File": "turnstart.wav",
+    "Description": "Player turn start, countdowns"
+  },
+  {
+    "File": "rebound.wav",
+    "Description": "Dice bounce"
+  },
+  {
+    "File": "encounter.wav",
+    "Description": "Battle start"
+  },
+  {
+    "File": "miracle.wav",
+    "Description": "Miracle"
+  },
+  {
+    "File": "miracle2.wav",
+    "Description": "Revival of Stars, Lulu's Lucky Egg, Arcade animations"
+  },
+  {
+    "File": "discard.wav",
+    "Description": "Card discard"
+  },
+  {
+    "File": "stockeffect.wav",
+    "Description": "Stock effect applied"
+  },
+  {
+    "File": "win.wav",
+    "Description": "Win a game"
+  },
+  {
+    "File": "alert.wav",
+    "Description": "Boss appears on the field"
+  },
+  {
+    "File": "battlewin.wav",
+    "Description": "Either side wins or flees from a battle"
+  },
+  {
+    "File": "criticalhit.wav",
+    "Description": "Battle strong hit"
+  },
+  {
+    "File": "evasion.wav",
+    "Description": "Battle evasion"
+  },
+  {
+    "File": "cannon.wav",
+    "Description": "Explosions, Marc's rockets"
+  },
+  {
+    "File": "blaze.wav",
+    "Description": "Blazing!, bomb explosions, hand discards"
+  },
+  {
+    "File": "status1.wav",
+    "Description": "Battle status effect"
+  },
+  {
+    "File": "status2.wav",
+    "Description": "Battle status effect"
+  },
+  {
+    "File": "chain.wav",
+    "Description": "Binding Chains"
+  },
+  {
+    "File": "airraid.wav",
+    "Description": "Air Raid field event"
+  },
+  {
+    "File": "shield.wav",
+    "Description": "Battle star-guard, several card effects"
+  },
+  {
+    "File": "electricity.wav",
+    "Description": "Turbo Charged, Delta Field"
+  },
+  {
+    "File": "sugurihyper.wav",
+    "Description": "Hyper sound from SUGURI series"
+  },
+  {
+    "File": "lockon.wav",
+    "Description": "Bomb ticking, Extended Photon Rifle's and Rocket Cannon's animation"
+  },
+  {
+    "File": "qps_damage.wav",
+    "Description": "Summer Beast KO, Workshop Mod downvote"
+  },
+  {
+    "File": "synth-sweep2.wav",
+    "Description": "Melting Memories' animation"
+  },
+  {
+    "File": "synthsweep_wind.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "propeller.wav",
+    "Description": "Cutscene, Rival's and Rocket Cannon's animation"
+  },
+  {
+    "File": "wind.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "qps_hyper.wav",
+    "Description": "Melting Memories' animation, cutscenes, Arcade"
+  },
+  {
+    "File": "synthsweep_new.wav",
+    "Description": "Extension, Lulu's Lucky Egg"
+  },
+  {
+    "File": "item_get.wav",
+    "Description": "Getting chocolate or snow from panels"
+  },
+  {
+    "File": "cardflip1.wav",
+    "Description": "Playground! minigames, flipping a piece in Build-A-Castle"
+  },
+  {
+    "File": "cardflip2.wav",
+    "Description": "Playground! minigames"
+  },
+  {
+    "File": "crash.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "crash2.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "destruction.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "schoolchime.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "se_quake.wav",
+    "Description": "Cutscene, Unforgiving Avenger"
+  },
+  {
+    "File": "se_sea_waves.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "wind2.wav",
+    "Description": "White Christsmasher's animations"
+  },
+  {
+    "File": "food_crunch.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "gulp_once.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "gulp_3times.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "phone.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "sms.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "jingle01_full.wav",
+    "Description": "Cutscene logo"
+  },
+  {
+    "File": "jingle01_short.wav",
+    "Description": "Unused"
+  },
+  {
+    "File": "throw01.wav",
+    "Description": "Snowball throwing"
+  },
+  {
+    "File": "throw02.wav",
+    "Description": "Snowball throwing"
+  },
+  {
+    "File": "throw03.wav",
+    "Description": "Snowball throwing"
+  },
+  {
+    "File": "snowball_ground01.wav",
+    "Description": "Snowball land"
+  },
+  {
+    "File": "snowball_ground02.wav",
+    "Description": "Snowball land"
+  },
+  {
+    "File": "snowball_ground03.wav",
+    "Description": "Snowball land"
+  },
+  {
+    "File": "lighter.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "laser.wav",
+    "Description": "Extended Photon Rifle's animation"
+  },
+  {
+    "File": "clang.wav",
+    "Description": "Metallic Monocoque's effect"
+  },
+  {
+    "File": "launch.wav",
+    "Description": "Indiscriminate Fire Support's and Rocket Cannon's animation"
+  },
+  {
+    "File": "missilehit.wav",
+    "Description": "Indiscriminate Fire Support's animation"
+  },
+  {
+    "File": "place_cup.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "sip.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "pour_water.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "explosion.wav",
+    "Description": "Cutscene, Bounty Hunt smoke bomb"
+  },
+  {
+    "File": "ags_weaponattack.wav",
+    "Description": "Full Speed Alicianrone's animation"
+  },
+  {
+    "File": "ags_weaponswing_1.wav",
+    "Description": "Full Speed Alicianrone's animation"
+  },
+  {
+    "File": "ags_weaponswing_2.wav",
+    "Description": "Full Speed Alicianrone's animation"
+  },
+  {
+    "File": "ags_weaponswing_3.wav",
+    "Description": "Full Speed Alicianrone's animation"
+  },
+  {
+    "File": "ags_weaponswing_4.wav",
+    "Description": "Full Speed Alicianrone's animation"
+  },
+  {
+    "File": "ags_whoosh.wav",
+    "Description": "Full Speed Alicianrone's animation"
+  },
+  {
+    "File": "fishsplash.wav",
+    "Description": "Splash from Fish-a-Fish minigame"
+  },
+  {
+    "File": "se_fire.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "cicada_short.wav",
+    "Description": "Cutscene"
+  },
+  {
+    "File": "mudblup.wav",
+    "Description": "Step on a Goo panel"
+  },
+  {
+    "File": "trainpass.wav",
+    "Description": "Unused."
+  },
+  {
+    "File": "motorcycle.wav",
+    "Description": "Lone Rider Hyper"
+  }
+]

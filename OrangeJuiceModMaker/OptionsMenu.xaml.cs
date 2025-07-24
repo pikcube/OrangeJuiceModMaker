@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using OrangeJuiceModMaker.Data;
 using static OrangeJuiceModMaker.GlobalSettings;
 using MessageBox = System.Windows.MessageBox;
 
@@ -49,10 +50,10 @@ namespace OrangeJuiceModMaker
                    new GlobalSettings(true);
         }
 
-        public class SettingsList <T>
+        public class SettingsList<T>
         {
             public readonly List<T> Items;
-            
+
             public int SelectedIndex;
 
             public T? SelectedItem
@@ -70,7 +71,7 @@ namespace OrangeJuiceModMaker
             public SettingsList(List<T> items, int selectedIndex = -1)
             {
                 SelectedIndex = selectedIndex;
-                Items = items.Select(z => z).ToList();
+                Items = [.. items.Select(z => z)];
             }
 
             public static implicit operator List<T>(SettingsList<T> t) => t.Items;
@@ -86,7 +87,7 @@ namespace OrangeJuiceModMaker
             File.WriteAllText(fileLocation, json);
         }
     }
-    
+
     /// <summary>
     /// Interaction logic for OptionsMenu.xaml
     /// </summary>
@@ -94,8 +95,8 @@ namespace OrangeJuiceModMaker
     {
         private readonly MainWindow parent;
         private GlobalSettings GlobalSettings => parent.GlobalSettings;
-        private string[] workshopModNames;
-        private string[] workshopModPaths;
+        private string[] workshopModNames = [];
+        private string[] workshopModPaths = [];
 
         public string? ImportedMod = null;
 
@@ -118,7 +119,7 @@ namespace OrangeJuiceModMaker
 
         private void WorkshopModComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+
         }
 
         private async void OptionsMenu_OnLoaded(object sender, RoutedEventArgs e)
@@ -144,18 +145,16 @@ namespace OrangeJuiceModMaker
                 importButton.IsEnabled = false;
                 await Task.Run(() =>
                 {
-                    string?[] mods = Directory.GetDirectories(MainWindow.WorkshopItemsDirectory)
+                    string?[] mods = [.. Directory.GetDirectories(MainWindow.WorkshopItemsDirectory)
                         .Where(z => File.Exists(z + @"\mod.json"))
-                        .Where(z => Root.IsValidMod(z, out _))
-                        .ToArray();
+                        .Where(z => Root.IsValidMod(z, out _))];
                     if (mods.Length == 0)
                     {
-                        
+
                         return;
                     }
 
-                    string?[] modNames = mods.Select(z => Root.ReadJson(z + @"\mod.json")?.ModDefinition.Name)
-                        .ToArray();
+                    string?[] modNames = [.. mods.Select(z => Root.ReadJson(z + @"\mod.json")?.ModDefinition.Name)];
                     if (modNames.Any(z => z is null) || mods.Any(z => z is null))
                     {
                         for (int n = 0; n < modNames.Length; ++n)
@@ -218,7 +217,7 @@ namespace OrangeJuiceModMaker
                 OptionsMenu_OnLoaded(sender, e);
                 return;
             }
-            
+
             try
             {
                 //Get Selected Index

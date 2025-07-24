@@ -18,9 +18,6 @@ namespace OrangeJuiceModMaker
     public partial class UnpackFiles
     {
         private readonly string gameDirectory;
-        private const int TotalFilesInitial = 11119;
-        private int totalFiles;
-        private static int _cardsConverted;
         private readonly string[] paks = "graphics".Split(',');
         private int paksUnzipped = 1;
         private int finished;
@@ -114,8 +111,6 @@ namespace OrangeJuiceModMaker
                         {
                             return;
                         }
-
-                        ConvertImages(pak);
                         ++finished;
                     });
                     while (!@continue)
@@ -132,95 +127,89 @@ namespace OrangeJuiceModMaker
                 Console.WriteLine(error.AsString());
                 throw;
             }
-
-            _cardsConverted = 0;
             timer.Start();
         }
 
-        private void ConvertImages(string pak)
-        {
-            return;
-            string[] unpackedFiles = Directory.GetFiles($@"pakFiles\{pak}", "*.dat", SearchOption.AllDirectories);
+        //private void ConvertImages(string pak)
+        //{
+        //    return;
+        //    //string[] unpackedFiles = Directory.GetFiles($@"pakFiles\{pak}", "*.dat", SearchOption.AllDirectories);
 
-            totalFiles += unpackedFiles.Length;
+        //    //totalFiles += unpackedFiles.Length;
 
-            const int length = 200;
+        //    //const int length = 200;
 
-            string[][] sets = new string[unpackedFiles.Length / length + 1][];
-            for (int i = 0; i < sets.Length - 1; ++i)
-            {
-                sets[i] = new string[length];
-            }
+        //    //string[][] sets = new string[unpackedFiles.Length / length + 1][];
+        //    //for (int i = 0; i < sets.Length - 1; ++i)
+        //    //{
+        //    //    sets[i] = new string[length];
+        //    //}
 
-            sets[^1] = new string[unpackedFiles.Length % length];
-            for (int i = 0; i < unpackedFiles.Length; ++i)
-            {
-                int set = i / length;
-                int index = i % length;
-                sets[set][index] = unpackedFiles[i];
-            }
+        //    //sets[^1] = new string[unpackedFiles.Length % length];
+        //    //for (int i = 0; i < unpackedFiles.Length; ++i)
+        //    //{
+        //    //    int set = i / length;
+        //    //    int index = i % length;
+        //    //    sets[set][index] = unpackedFiles[i];
+        //    //}
 
-            Task[] tasks = new Task[sets.Length];
+        //    //Task[] tasks = new Task[sets.Length];
 
-            for (int index = 0; index < sets.Length; index++)
-            {
-                tasks[index] = CovertImageLoop(sets[index]);
-            }
+        //    //for (int index = 0; index < sets.Length; index++)
+        //    //{
+        //    //    tasks[index] = CovertImageLoop(sets[index]);
+        //    //}
 
-            Task.WaitAll(tasks);
-        }
+        //    //Task.WaitAll(tasks);
+        //}
 
-        private static Task CovertImageLoop(string[] unpackedFiles)
-        {
-            bool taskRunning = true;
-            Thread t = new(() =>
-            {
-                foreach (string file in unpackedFiles)
-                {
-                    
-                    using MagickImage m = new(file);
-                    m.Format = MagickFormat.Png;
-                    m.Write(Path.ChangeExtension(file, "png"));
-                    ++_cardsConverted;
-                    if (_exit)
-                    {
-                        return;
-                    }
-                }
+        //private static Task CovertImageLoop(string[] unpackedFiles)
+        //{
+        //    bool taskRunning = true;
+        //    Thread t = new(() =>
+        //    {
+        //        foreach (string file in unpackedFiles)
+        //        {
 
-                foreach (string file in unpackedFiles)
-                {
-                    File.Delete(file);
-                    if (_exit)
-                    {
-                        return;
-                    }
-                }
-                taskRunning = false;
-            })
-            {
-                IsBackground = true,
-                Priority = _p
-            };
-            t.Start();
-            Threads.Add(t);
-            return Task.Run(() =>
-            {
-                while (taskRunning)
-                {
-                    Thread.Sleep(1);
-                }
-            });
-        }
+        //            using MagickImage m = new(file);
+        //            m.Format = MagickFormat.Png;
+        //            m.Write(Path.ChangeExtension(file, "png"));
+        //            ++_cardsConverted;
+        //            if (_exit)
+        //            {
+        //                return;
+        //            }
+        //        }
 
-        private static ThreadPriority _p = ThreadPriority.Highest;
-        private static readonly List<Thread> Threads = [];
+        //        foreach (string file in unpackedFiles)
+        //        {
+        //            File.Delete(file);
+        //            if (_exit)
+        //            {
+        //                return;
+        //            }
+        //        }
+        //        taskRunning = false;
+        //    })
+        //    {
+        //        IsBackground = true,
+        //        Priority = _p
+        //    };
+        //    t.Start();
+        //    Threads.Add(t);
+        //    return Task.Run(() =>
+        //    {
+        //        while (taskRunning)
+        //        {
+        //            Thread.Sleep(1);
+        //        }
+        //    });
+        //}
+
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             showStatus = true;
-            _p = ThreadPriority.Lowest;
-            Threads.Where(z => z.IsAlive).ForEach(z => z.Priority = _p);
             if (sender is Button b)
             {
                 b.IsEnabled = false;

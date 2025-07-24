@@ -1,5 +1,10 @@
-﻿using System;
+﻿using FFmpeg.NET;
+using FFmpeg.NET.Enums;
+using Microsoft.Win32;
+using OrangeJuiceModMaker.Data;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -7,9 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using FFmpeg.NET;
-using FFmpeg.NET.Enums;
-using Microsoft.Win32;
+using static OrangeJuiceModMaker.Data.ModMusic;
 
 namespace OrangeJuiceModMaker
 {
@@ -20,13 +23,13 @@ namespace OrangeJuiceModMaker
     {
         private MyMusicPlayer MusicPlayer = new();
         private PlayState mediaPlayerState;
-        private readonly MusicList[] sets;
-        private MusicList songs;
         private readonly List<ModMusic> musicMods = [];
         private ModMusic modifiedMusic;
         private TimeSpan LoopPoint => TickFromSamples(modifiedMusic.LoopPoint ?? 0);
         private static TimeSpan TickFromSamples(long samples) => TimeSpan.FromTicks(samples * 10000 / 43);
         private readonly MainWindow mainWindow;
+        private MusicRef[] Tracks { get; set; }
+        private MusicRef[][] Songs { get; set; }
         private PlayState MediaPlayerState
         {
             get => mediaPlayerState;
@@ -37,8 +40,6 @@ namespace OrangeJuiceModMaker
                     case PlayState.Stop when MusicPlayer.Reader is not null:
                         MusicPlayer.Out.Volume = 0;
                         MusicPlayer.Out.Stop();
-                        //MusicPlayer.Reader.Close();
-                        //MusicPlayer.Position = TimeSpan.Zero;
                         PlayPauseButton.Content = "▶";
                         break;
                     case PlayState.Play when MusicPlayer.Reader is not null:
@@ -67,19 +68,9 @@ namespace OrangeJuiceModMaker
             modifiedMusic = new ModMusic(null, ModMusic.SongType.UnitTheme);
             MusicPlayer.EndOfSong += MusicPlayer_EndOfSong;
             MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
-            //musicPlayer.BufferingEnded += MusicPlayer_BufferingEnded;
+            Tracks = window.Musics;
 
-            sets = mainWindow.CsvFiles.Where(z => z.Type == CsvHolder.TypeList.Music).Select(z => new MusicList(z)).ToArray();
-            if (sets.Length == 0)
-            {
-                throw new Exception("No Music");
-            }
-
-            foreach (MusicList set in sets)
-            {
-                set.Tracks.Sort((first, second) => string.CompareOrdinal(first.Id, second.Id));
-            }
-            songs = sets.First();
+            Songs = Tracks.GroupBy(m => m.UnitId is null).Select(z => z.ToArray()).Reverse().ToArray();
 
             InitializeComponent();
             if (mainWindow.Debug)
@@ -91,9 +82,10 @@ namespace OrangeJuiceModMaker
                 musicMods.Add(new ModMusic(m) { File = $@"{mainWindow.LoadedModPath}\{m.File}.ogg" });
             }
 
-            SetComboBox.ItemsSource = sets.Select(z => z.Name);
-            SelectedSongComboBox.ItemsSource = songs.Tracks.Select(z => z.Id);
-            DescriptionComboBox.ItemsSource = songs.Tracks.Select(z => z.Description);
+            string[] labels = ["Units", "Events"];
+            SetComboBox.ItemsSource = labels;
+            SelectedSongComboBox.ItemsSource = Songs[0].Select(z => z.UnitId);
+            DescriptionComboBox.ItemsSource = Songs[0].Select(z => z.Description);
             SetComboBox.SelectedIndex = 0;
             SelectedSongComboBox.SelectedIndex = 0;
         }
@@ -358,13 +350,23 @@ namespace OrangeJuiceModMaker
 
         private void Set_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            songs = sets[SetComboBox.SelectedIndex];
+            if (SetComboBox.SelectedIndex == -1)
+            {
+                return;
+            }
 
-            SelectedSongComboBox.ItemsSource = songs.Tracks.Select(z => z.Id);
-            SelectedSongComboBox.SelectedIndex = 0;
-
-            DescriptionComboBox.ItemsSource = songs.Tracks.Select(z => z.Description);
-            DescriptionComboBox.SelectedIndex = 0;
+            if (SetComboBox.SelectedIndex == 0)
+            {
+                SelectedSongComboBox.ItemsSource = Songs[0].Select(z => z.UnitId);
+                DescriptionComboBox.ItemsSource = Songs[0].Select(z => z.Description);
+                SelectedSongComboBox.SelectedIndex = 0;
+            }
+            else
+            {
+                SelectedSongComboBox.ItemsSource = Songs[1].Select(z => z.Event);
+                DescriptionComboBox.ItemsSource = Songs[1].Select(z => z.Description);
+                SelectedSongComboBox.SelectedIndex = 0;
+            }
         }
 
         private async void SelectedSong_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -378,9 +380,11 @@ namespace OrangeJuiceModMaker
                 DescriptionComboBox.SelectedIndex = SelectedSongComboBox.SelectedIndex;
             }
 
-            ModMusic.SongType t = songs.Name == "Events" ? ModMusic.SongType.EventTheme : ModMusic.SongType.UnitTheme;
-            string id = songs.Tracks[SelectedSongComboBox.SelectedIndex].Id;
-            if (musicMods.Any(z => z.Id == id && z.Song == t))
+            MusicRef song = Songs[SetComboBox.SelectedIndex][SelectedSongComboBox.SelectedIndex];
+            string id = song.UnitId ?? song.Event ?? throw new NoNullAllowedException();
+            SongType t = (SongType)SetComboBox.SelectedIndex + 1;
+
+            if (musicMods.Any(z => z.Song == t && z.Id == id))
             {
             }
             else
@@ -416,10 +420,10 @@ namespace OrangeJuiceModMaker
             switch (fileToSelect.Song)
             {
                 case ModMusic.SongType.EventTheme:
-                    SetComboBox.SelectedItem = "Events";
+                    SetComboBox.SelectedIndex = 1;
                     break;
                 case ModMusic.SongType.UnitTheme:
-                    SetComboBox.SelectedItem = "UnitThemes";
+                    SetComboBox.SelectedIndex = 0;
                     break;
                 default:
                     return;
@@ -435,7 +439,7 @@ namespace OrangeJuiceModMaker
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            modifiedMusic.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, ref mainWindow.LoadedModReplacements);
+            modifiedMusic.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, mainWindow.LoadedModReplacements);
         }
 
         private void PreviewLoopCheckBox_OnChecked(object sender, RoutedEventArgs e)

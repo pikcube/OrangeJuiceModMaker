@@ -1,0 +1,1255 @@
+[
+  {
+    "UnitId": "arthur",
+    "UnitName": "Arthur",
+    "HyperCards": [
+      "bestrategy",
+      "hobbyshop"
+    ],
+    "CharacterCards": [
+      "arthur"
+    ]
+  },
+  {
+    "UnitId": "chris",
+    "UnitName": "Chris",
+    "HyperCards": [
+      "chefhelp",
+      "managerhelp"
+    ],
+    "CharacterCards": [
+      "chris"
+    ]
+  },
+  {
+    "UnitId": "fernetnoble",
+    "UnitName": "Fernet (Noble)",
+    "HyperCards": [
+      "newnobility",
+      "affluence"
+    ],
+    "CharacterCards": [
+      "fernetnoble"
+    ]
+  },
+  {
+    "UnitId": "krila",
+    "UnitName": "Krilalaris",
+    "HyperCards": [
+      "dancea",
+      "danceb"
+    ],
+    "CharacterCards": [
+      "krila"
+    ]
+  },
+  {
+    "UnitId": "marcpilot",
+    "UnitName": "Marc (Pilot)",
+    "HyperCards": [
+      "rocket",
+      "rocketcannon"
+    ],
+    "CharacterCards": [
+      "marcpilot"
+    ]
+  },
+  {
+    "UnitId": "mei",
+    "UnitName": "Mei",
+    "HyperCards": [
+      "christsmasher",
+      "christsmasher"
+    ],
+    "CharacterCards": [
+      "mei"
+    ]
+  },
+  {
+    "UnitId": "mimyuu",
+    "UnitName": "Mimyuu",
+    "HyperCards": [
+      "evilspyprep",
+      "evilspyexec"
+    ],
+    "CharacterCards": [
+      "mimyuu"
+    ]
+  },
+  {
+    "UnitId": "mira",
+    "UnitName": "Mira",
+    "HyperCards": [
+      "spaceleapm",
+      "spaceleap"
+    ],
+    "CharacterCards": [
+      "mira"
+    ]
+  },
+  {
+    "UnitId": "starb",
+    "UnitName": "Star Breaker",
+    "HyperCards": [
+      "starbfuse",
+      "sbftibomb"
+    ],
+    "CharacterCards": [
+      "starb"
+    ]
+  },
+  {
+    "UnitId": "tequila",
+    "UnitName": "Tequila",
+    "HyperCards": [
+      "piratesfly",
+      "flyingpirate"
+    ],
+    "CharacterCards": [
+      "tequila"
+    ]
+  },
+  {
+    "UnitId": "tmsw",
+    "UnitName": "Tomomo (Casual & Sweet Eater)",
+    "HyperCards": [
+      "mribic",
+      "mrevenge"
+    ],
+    "CharacterCards": [
+      "tmsw_2_",
+      "tmsw"
+    ]
+  },
+  {
+    "UnitId": "yuuki",
+    "UnitName": "Yuuki",
+    "HyperCards": [
+      "angelhand",
+      "devilhand"
+    ],
+    "CharacterCards": [
+      "yuuki"
+    ]
+  },
+  {
+    "UnitId": "bpoppo",
+    "UnitName": "Poppo (Boss)",
+    "HyperCards": [
+      "coop_poppo_bigpoppo"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "alicianrone",
+    "UnitName": "Alicianrone",
+    "HyperCards": [
+      "speedwitch"
+    ],
+    "CharacterCards": [
+      "alicianrone"
+    ]
+  },
+  {
+    "UnitId": "alte",
+    "UnitName": "Alte",
+    "HyperCards": [
+      "selfd"
+    ],
+    "CharacterCards": [
+      "alte"
+    ]
+  },
+  {
+    "UnitId": "arnelle",
+    "UnitName": "Arnelle",
+    "HyperCards": [
+      "intofficer"
+    ],
+    "CharacterCards": [
+      "arnelle"
+    ]
+  },
+  {
+    "UnitId": "aru",
+    "UnitName": "Aru",
+    "HyperCards": [
+      "present"
+    ],
+    "CharacterCards": [
+      "aru"
+    ]
+  },
+  {
+    "UnitId": "arus",
+    "UnitName": "Aru (Scramble!)",
+    "HyperCards": [
+      "santajob"
+    ],
+    "CharacterCards": [
+      "arus"
+    ]
+  },
+  {
+    "UnitId": "ceor",
+    "UnitName": "Ceoreparque",
+    "HyperCards": [
+      "hairlock"
+    ],
+    "CharacterCards": [
+      "ceor"
+    ]
+  },
+  {
+    "UnitId": "chicken",
+    "UnitName": "Chicken",
+    "HyperCards": [
+      "golden"
+    ],
+    "CharacterCards": [
+      "chicken"
+    ]
+  },
+  {
+    "UnitId": "cook",
+    "UnitName": "Cook",
+    "HyperCards": [
+      "guidance"
+    ],
+    "CharacterCards": [
+      "cook"
+    ]
+  },
+  {
+    "UnitId": "cuties",
+    "UnitName": "Cuties",
+    "HyperCards": [
+      "specialstage"
+    ],
+    "CharacterCards": [
+      "cuties"
+    ]
+  },
+  {
+    "UnitId": "ellie",
+    "UnitName": "Ellie",
+    "HyperCards": [
+      "elliemiracle"
+    ],
+    "CharacterCards": [
+      "ellie"
+    ]
+  },
+  {
+    "UnitId": "fernet",
+    "UnitName": "Fernet",
+    "HyperCards": [
+      "bakugeki"
+    ],
+    "CharacterCards": [
+      "fernet"
+    ]
+  },
+  {
+    "UnitId": "castle",
+    "UnitName": "Flying Castle",
+    "HyperCards": [
+      "immovable"
+    ],
+    "CharacterCards": [
+      "castle"
+    ]
+  },
+  {
+    "UnitId": "halena",
+    "UnitName": "Halena",
+    "HyperCards": [
+      "safejourney"
+    ],
+    "CharacterCards": [
+      "halena"
+    ]
+  },
+  {
+    "UnitId": "hime",
+    "UnitName": "Hime",
+    "HyperCards": [
+      "sokubaku"
+    ],
+    "CharacterCards": [
+      "hime"
+    ]
+  },
+  {
+    "UnitId": "himem",
+    "UnitName": "Hime (Moonlight)",
+    "HyperCards": [
+      "dancingmoonnight"
+    ],
+    "CharacterCards": [
+      "himem"
+    ]
+  },
+  {
+    "UnitId": "iru",
+    "UnitName": "Iru",
+    "HyperCards": [
+      "photonrifle"
+    ],
+    "CharacterCards": [
+      "iru"
+    ]
+  },
+  {
+    "UnitId": "islay",
+    "UnitName": "Islay",
+    "HyperCards": [
+      "rival"
+    ],
+    "CharacterCards": [
+      "islay"
+    ]
+  },
+  {
+    "UnitId": "kae",
+    "UnitName": "Kae",
+    "HyperCards": [
+      "blazing"
+    ],
+    "CharacterCards": [
+      "kae"
+    ]
+  },
+  {
+    "UnitId": "kai",
+    "UnitName": "Kai",
+    "HyperCards": [
+      "syuyaku"
+    ],
+    "CharacterCards": [
+      "kai"
+    ]
+  },
+  {
+    "UnitId": "kiriko",
+    "UnitName": "Kiriko",
+    "HyperCards": [
+      "finalsurgery"
+    ],
+    "CharacterCards": [
+      "kiriko"
+    ]
+  },
+  {
+    "UnitId": "kyoko",
+    "UnitName": "Kyoko",
+    "HyperCards": [
+      "crystalb"
+    ],
+    "CharacterCards": [
+      "kyoko"
+    ]
+  },
+  {
+    "UnitId": "ksuke",
+    "UnitName": "Kyousuke",
+    "HyperCards": [
+      "castoff"
+    ],
+    "CharacterCards": [
+      "ksuke"
+    ]
+  },
+  {
+    "UnitId": "kyupita",
+    "UnitName": "Kyupita",
+    "HyperCards": [
+      "saint"
+    ],
+    "CharacterCards": [
+      "kyupita"
+    ]
+  },
+  {
+    "UnitId": "lonerider",
+    "UnitName": "Lone Rider",
+    "HyperCards": [
+      "upshift"
+    ],
+    "CharacterCards": [
+      "lonerider"
+    ]
+  },
+  {
+    "UnitId": "lulu",
+    "UnitName": "Lulu",
+    "HyperCards": [
+      "luckyegg"
+    ],
+    "CharacterCards": [
+      "lulu"
+    ]
+  },
+  {
+    "UnitId": "malt",
+    "UnitName": "Malt",
+    "HyperCards": [
+      "twilight"
+    ],
+    "CharacterCards": [
+      "malt"
+    ]
+  },
+  {
+    "UnitId": "master",
+    "UnitName": "Manager",
+    "HyperCards": [
+      "banned"
+    ],
+    "CharacterCards": [
+      "master"
+    ]
+  },
+  {
+    "UnitId": "marc",
+    "UnitName": "Marc",
+    "HyperCards": [
+      "bigrocket"
+    ],
+    "CharacterCards": [
+      "marc"
+    ]
+  },
+  {
+    "UnitId": "maynie",
+    "UnitName": "Maynie",
+    "HyperCards": [
+      "rmadness"
+    ],
+    "CharacterCards": [
+      "maynie"
+    ]
+  },
+  {
+    "UnitId": "mescal",
+    "UnitName": "Mescal",
+    "HyperCards": [
+      "littlemagnum"
+    ],
+    "CharacterCards": [
+      "mescal"
+    ]
+  },
+  {
+    "UnitId": "merchant",
+    "UnitName": "Merchant",
+    "HyperCards": [
+      "zsalesman"
+    ],
+    "CharacterCards": [
+      "merchant"
+    ]
+  },
+  {
+    "UnitId": "mio",
+    "UnitName": "Mio",
+    "HyperCards": [
+      "inferno"
+    ],
+    "CharacterCards": [
+      "mio"
+    ]
+  },
+  {
+    "UnitId": "miusaki",
+    "UnitName": "Miusaki",
+    "HyperCards": [
+      "heavywitch"
+    ],
+    "CharacterCards": [
+      "miusaki"
+    ]
+  },
+  {
+    "UnitId": "nanako",
+    "UnitName": "Nanako",
+    "HyperCards": [
+      "bitdeploy"
+    ],
+    "CharacterCards": [
+      "nanako"
+    ]
+  },
+  {
+    "UnitId": "nath",
+    "UnitName": "Nath",
+    "HyperCards": [
+      "ultwep"
+    ],
+    "CharacterCards": [
+      "nath"
+    ]
+  },
+  {
+    "UnitId": "natsumi",
+    "UnitName": "Natsumi",
+    "HyperCards": [
+      "cookingtime"
+    ],
+    "CharacterCards": [
+      "natsumi"
+    ]
+  },
+  {
+    "UnitId": "nico",
+    "UnitName": "Nico",
+    "HyperCards": [
+      "miraclewalker"
+    ],
+    "CharacterCards": [
+      "nico"
+    ]
+  },
+  {
+    "UnitId": "non",
+    "UnitName": "NoName",
+    "HyperCards": [
+      "ruler"
+    ],
+    "CharacterCards": [
+      "noname",
+      "nonamehead"
+    ]
+  },
+  {
+    "UnitId": "peat",
+    "UnitName": "Peat",
+    "HyperCards": [
+      "blue2nd"
+    ],
+    "CharacterCards": [
+      "peat"
+    ]
+  },
+  {
+    "UnitId": "poppo",
+    "UnitName": "Marie Poppo",
+    "HyperCards": [
+      "shinsyutu"
+    ],
+    "CharacterCards": [
+      "poppo"
+    ]
+  },
+  {
+    "UnitId": "npoppo",
+    "UnitName": "Marie Poppo (Mixed)",
+    "HyperCards": [
+      "stunnel"
+    ],
+    "CharacterCards": [
+      "npoppo"
+    ]
+  },
+  {
+    "UnitId": "qp",
+    "UnitName": "QP",
+    "HyperCards": [
+      "hypmode"
+    ],
+    "CharacterCards": [
+      "qp"
+    ]
+  },
+  {
+    "UnitId": "qpd",
+    "UnitName": "QP (Dangerous)",
+    "HyperCards": [
+      "sweet"
+    ],
+    "CharacterCards": [
+      "qpd"
+    ]
+  },
+  {
+    "UnitId": "ball",
+    "UnitName": "Robo Ball",
+    "HyperCards": [
+      "reflective"
+    ],
+    "CharacterCards": [
+      "ball"
+    ]
+  },
+  {
+    "UnitId": "saki",
+    "UnitName": "Saki",
+    "HyperCards": [
+      "bigbang"
+    ],
+    "CharacterCards": [
+      "saki"
+    ]
+  },
+  {
+    "UnitId": "seagull",
+    "UnitName": "Seagull",
+    "HyperCards": [
+      "rush"
+    ],
+    "CharacterCards": [
+      "seagull"
+    ]
+  },
+  {
+    "UnitId": "sham",
+    "UnitName": "Sham",
+    "HyperCards": [
+      "delta"
+    ],
+    "CharacterCards": [
+      "sham"
+    ]
+  },
+  {
+    "UnitId": "sherry",
+    "UnitName": "Sherry",
+    "HyperCards": [
+      "whim"
+    ],
+    "CharacterCards": [
+      "sherry"
+    ]
+  },
+  {
+    "UnitId": "shifu",
+    "UnitName": "Shifu",
+    "HyperCards": [
+      "idealworld"
+    ],
+    "CharacterCards": [
+      "shifu"
+    ]
+  },
+  {
+    "UnitId": "brobo",
+    "UnitName": "Shifu Robot",
+    "HyperCards": [
+      "turbo"
+    ],
+    "CharacterCards": [
+      "bossrobo"
+    ]
+  },
+  {
+    "UnitId": "sora",
+    "UnitName": "Sora",
+    "HyperCards": [
+      "detarame"
+    ],
+    "CharacterCards": [
+      "sora"
+    ]
+  },
+  {
+    "UnitId": "sorasp",
+    "UnitName": "Sora (Military)",
+    "HyperCards": [
+      "awakening"
+    ],
+    "CharacterCards": [
+      "sorasp"
+    ]
+  },
+  {
+    "UnitId": "suguri",
+    "UnitName": "Suguri",
+    "HyperCards": [
+      "accel"
+    ],
+    "CharacterCards": [
+      "suguri"
+    ]
+  },
+  {
+    "UnitId": "suguri46",
+    "UnitName": "Suguri (46 billion years)",
+    "HyperCards": [
+      "observer"
+    ],
+    "CharacterCards": [
+      "suguri46"
+    ]
+  },
+  {
+    "UnitId": "sugurib",
+    "UnitName": "Suguri (Ver. 2)",
+    "HyperCards": [
+      "revivalos"
+    ],
+    "CharacterCards": [
+      "sugurib"
+    ]
+  },
+  {
+    "UnitId": "sumika",
+    "UnitName": "Sumika",
+    "HyperCards": [
+      "ssmemory"
+    ],
+    "CharacterCards": [
+      "sumika"
+    ]
+  },
+  {
+    "UnitId": "sweetb",
+    "UnitName": "Sweet Breaker",
+    "HyperCards": [
+      "melting"
+    ],
+    "CharacterCards": [
+      "sweetb"
+    ]
+  },
+  {
+    "UnitId": "syura",
+    "UnitName": "Syura",
+    "HyperCards": [
+      "hell"
+    ],
+    "CharacterCards": [
+      "syura"
+    ]
+  },
+  {
+    "UnitId": "teotoratta",
+    "UnitName": "Teotoratta",
+    "HyperCards": [
+      "beastwitch"
+    ],
+    "CharacterCards": [
+      "teotoratta"
+    ]
+  },
+  {
+    "UnitId": "tomato",
+    "UnitName": "Tomato",
+    "HyperCards": [
+      "warudamachine"
+    ],
+    "CharacterCards": [
+      "tomato"
+    ]
+  },
+  {
+    "UnitId": "tomomo",
+    "UnitName": "Tomomo",
+    "HyperCards": [
+      "saturiku"
+    ],
+    "CharacterCards": [
+      "tomomo"
+    ]
+  },
+  {
+    "UnitId": "tsih",
+    "UnitName": "Tsih",
+    "HyperCards": [
+      "stealth"
+    ],
+    "CharacterCards": [
+      "tsih"
+    ]
+  },
+  {
+    "UnitId": "yuki",
+    "UnitName": "Yuki",
+    "HyperCards": [
+      "gamble"
+    ],
+    "CharacterCards": [
+      "yuki"
+    ]
+  },
+  {
+    "UnitId": "yukid",
+    "UnitName": "Yuki (Dangerous)",
+    "HyperCards": [
+      "evilm"
+    ],
+    "CharacterCards": [
+      "yukid"
+    ]
+  },
+  {
+    "UnitId": "reika",
+    "UnitName": "Hoshino Reika",
+    "HyperCards": [
+      "sutakorekuta"
+    ],
+    "CharacterCards": [
+      "reika"
+    ]
+  },
+  {
+    "UnitId": "lizardit",
+    "UnitName": "Bunnizard (Bounty Hunt)",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "mole",
+    "UnitName": "Emerangler",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "magma",
+    "UnitName": "Globbu",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "ghost",
+    "UnitName": "Gost",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "doll",
+    "UnitName": "Haunted Doll (Bounty Hunt)",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "heliseed",
+    "UnitName": "Heliseed (Bounty Hunt)",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "golem",
+    "UnitName": "Moss Golem (Bounty Hunt)",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "mpoppo",
+    "UnitName": "Mousse (Bounty Hunt)",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "teq_minion",
+    "UnitName": "Pirate Crew Minion",
+    "HyperCards": [],
+    "CharacterCards": [
+      "teq_minion"
+    ]
+  },
+  {
+    "UnitId": "shroom",
+    "UnitName": "Ruffshroom",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "snek",
+    "UnitName": "Terrawyrmer",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "evilguardian",
+    "UnitName": "The Harbinger",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "troll",
+    "UnitName": "Trollite",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "blob",
+    "UnitName": "Turnislime (Bounty Hunt)",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "fluff",
+    "UnitName": "Wolly",
+    "HyperCards": [],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "chef",
+    "UnitName": "Chef",
+    "HyperCards": [],
+    "CharacterCards": [
+      "chef"
+    ]
+  },
+  {
+    "UnitId": "bchicken",
+    "UnitName": "Big the Haruo (Coop Boss)",
+    "HyperCards": [
+      "coop_chicken_beakofthegodbird",
+      "coop_chicken_callofthechicken",
+      "coop_chicken_chickenattack",
+      "coop_chicken_chickenrun",
+      "coop_chicken_doze",
+      "coop_chicken_finalwarning",
+      "coop_chicken_flight",
+      "coop_chicken_groupup",
+      "coop_chicken_headlesschicken",
+      "coop_chicken_henpecked",
+      "coop_chicken_peck",
+      "coop_chicken_piyomarch",
+      "coop_chicken_present",
+      "coop_chicken_regeneration",
+      "coop_chicken_roost",
+      "coop_chicken_savagetalons",
+      "coop_chicken_secondwing",
+      "coop_chicken_swarm"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "seagullboss",
+    "UnitName": "Big the Jonathan",
+    "HyperCards": [
+      "coop_jonathan_airraid",
+      "coop_jonathan_airstrike",
+      "coop_jonathan_auraofterror",
+      "coop_jonathan_chasearound",
+      "coop_jonathan_cloudofseagulls",
+      "coop_jonathan_dive",
+      "coop_jonathan_rush2",
+      "coop_jonathan_falsehope",
+      "coop_jonathan_frantic",
+      "coop_jonathan_hunt",
+      "coop_jonathan_launch",
+      "coop_jonathan_megarush",
+      "coop_jonathan_quake",
+      "coop_jonathan_rake",
+      "coop_jonathan_rush",
+      "coop_jonathan_screech",
+      "coop_jonathan_snacks",
+      "coop_jonathan_snatch",
+      "coop_jonathan_swipe",
+      "coop_jonathan_waveofdespair"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "bball",
+    "UnitName": "M10 (Coop Boss)",
+    "HyperCards": [
+      "coop_robo_assaultfield",
+      "coop_robo_attackdown",
+      "coop_robo_balancecurrents",
+      "coop_robo_defensedown",
+      "coop_robo_emp",
+      "coop_robo_engage",
+      "coop_robo_evasiondown",
+      "coop_robo_healthdown",
+      "coop_robo_imaginarynumbers",
+      "coop_robo_immovableobject",
+      "coop_robo_malfunction",
+      "coop_robo_perfectreflective",
+      "coop_robo_protect",
+      "coop_robo_quickrepair",
+      "coop_robo_recoverymode",
+      "coop_robo_extendedphotonrifle",
+      "coop_robo_deltafield",
+      "coop_robo_selfdestruction",
+      "coop_robo_solidwitch",
+      "coop_robo_turbo"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "ropochi",
+    "UnitName": "Ropochi",
+    "HyperCards": [
+      "coop_ropochi_balancecurrency",
+      "coop_ropochi_beakofdemibird",
+      "coop_ropochi_bigpospecial",
+      "coop_ropochi_catcher",
+      "coop_ropochi_delusionalnumbers",
+      "coop_ropochi_identitycrisis",
+      "coop_ropochi_pluck",
+      "coop_ropochi_po-bomber",
+      "coop_ropochi_poppocare",
+      "coop_ropochi_poppomarch",
+      "coop_ropochi_poppouniverse",
+      "coop_ropochi_potect",
+      "coop_ropochi_premiumregen",
+      "coop_ropochi_refinedtalons",
+      "coop_ropochi_robotax",
+      "coop_ropochi_roostboost",
+      "coop_ropochi_ropobarrage",
+      "coop_ropochi_secondwing",
+      "coop_ropochi_skyrespoppo",
+      "coop_ropochi_turbochicken",
+      "coop_ropochi_wirelesschicken"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "gpoppo",
+    "UnitName": "Star Devourer (Coop Boss)",
+    "HyperCards": [
+      "coop_poppo_deathandtaxes",
+      "coop_poppo_elusive",
+      "coop_poppo_greed",
+      "coop_poppo_highwayrobbery",
+      "coop_poppo_nap",
+      "coop_poppo_poppocalypse",
+      "coop_poppo_poppoformation",
+      "coop_poppo_poppogalaxy",
+      "coop_poppo_poppotax",
+      "coop_poppo_ransomnote",
+      "coop_poppo_skyrespoppo",
+      "coop_poppo_snatcher",
+      "coop_poppo_starmania",
+      "coop_poppo_temptation",
+      "coop_poppo_tithe",
+      "coop_poppo_ubiquitous",
+      "coop_poppo_valuejudgment",
+      "coop_poppo_warpphenomenon"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "bqp",
+    "UnitName": "Summer Beast (Coop Boss)",
+    "HyperCards": [
+      "coop_sbeast_birds",
+      "coop_sbeast_dash",
+      "coop_sbeast_exhaustion",
+      "coop_sbeast_hideandseek",
+      "coop_sbeast_hypeitup",
+      "coop_sbeast_hypemode",
+      "coop_sbeast_play",
+      "coop_sbeast_playtag",
+      "coop_sbeast_playwithbirds",
+      "coop_sbeast_psychedup",
+      "coop_sbeast_puddingbreak",
+      "coop_sbeast_puddingseeker",
+      "coop_sbeast_rampage",
+      "coop_sbeast_rampagehyper",
+      "coop_sbeast_rest",
+      "coop_sbeast_sandwichthieves",
+      "coop_sbeast_seagullfriend",
+      "coop_sbeast_seagullmaster",
+      "coop_sbeast_splashwater",
+      "coop_sbeast_tireout",
+      "coop_sbeast_watermelonsplitting"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "swimmingcoach",
+    "UnitName": "Swimming Coach",
+    "HyperCards": [
+      "coop_ropochi_balancecurrency",
+      "coop_ropochi_beakofdemibird",
+      "coop_ropochi_bigpospecial",
+      "coop_ropochi_catcher",
+      "coop_ropochi_delusionalnumbers",
+      "coop_ropochi_identitycrisis",
+      "coop_ropochi_pluck",
+      "coop_ropochi_po-bomber",
+      "coop_ropochi_poppocare",
+      "coop_ropochi_poppomarch",
+      "coop_ropochi_poppouniverse",
+      "coop_ropochi_potect",
+      "coop_ropochi_premiumregen",
+      "coop_ropochi_refinedtalons",
+      "coop_ropochi_robotax",
+      "coop_ropochi_roostboost",
+      "coop_ropochi_ropobarrage",
+      "coop_ropochi_secondwing",
+      "coop_ropochi_skyrespoppo",
+      "coop_ropochi_turbochicken",
+      "coop_ropochi_wirelesschicken"
+    ],
+    "CharacterCards": []
+  },
+  {
+    "UnitId": "watty",
+    "UnitName": "Watty",
+    "HyperCards": [
+      "torrentofmagic"
+    ],
+    "CharacterCards": [
+      "watty"
+    ]
+  },
+  {
+    "UnitId": "pomeranius",
+    "UnitName": "Pomeranius",
+    "HyperCards": [
+      "goodestboy"
+    ],
+    "CharacterCards": [
+      "pomeranius"
+    ]
+  },
+  {
+    "UnitId": "sweetcreator",
+    "UnitName": "Sweet Creator",
+    "HyperCards": [
+      "sweetparadise",
+      "sweetparadiseb",
+      "sweetparadisec"
+    ],
+    "CharacterCards": [
+      "sweetcreator"
+    ]
+  },
+  {
+    "UnitId": "sweetmaker",
+    "UnitName": "Saki (Sweet Maker)",
+    "HyperCards": [
+      "sweetmakermagic"
+    ],
+    "CharacterCards": [
+      "sweetmaker"
+    ]
+  },
+  {
+    "UnitId": "sweetblogger",
+    "UnitName": "Natsumi (Sweet Blogger)",
+    "HyperCards": [
+      "operationssweets"
+    ],
+    "CharacterCards": [
+      "sweetblogger"
+    ]
+  },
+  {
+    "UnitId": "krilap",
+    "UnitName": "Krilalaris (Pajamas)",
+    "HyperCards": [
+      "slumberb",
+      "slumbera"
+    ],
+    "CharacterCards": [
+      "krilap"
+    ]
+  },
+  {
+    "UnitId": "mimyuuj",
+    "UnitName": "Mimyuu (Jailbird)",
+    "HyperCards": [
+      "prisonbreak"
+    ],
+    "CharacterCards": [
+      "mimyuuj"
+    ]
+  },
+  {
+    "UnitId": "poppomama",
+    "UnitName": "Mother Poppo",
+    "HyperCards": [
+      "mpower"
+    ],
+    "CharacterCards": [
+      "poppomama"
+    ]
+  },
+  {
+    "UnitId": "luludark",
+    "UnitName": "Dark Lulu",
+    "HyperCards": [
+      "lisunlucky"
+    ],
+    "CharacterCards": [
+      "luludark"
+    ]
+  },
+  {
+    "UnitId": "kaihero",
+    "UnitName": "Kai (Hero)",
+    "HyperCards": [
+      "moglory"
+    ],
+    "CharacterCards": [
+      "kaihero"
+    ]
+  },
+  {
+    "UnitId": "elliehyper",
+    "UnitName": "Hyper Ellie",
+    "HyperCards": [
+      "hmiracle"
+    ],
+    "CharacterCards": [
+      "elliehyper"
+    ]
+  },
+  {
+    "UnitId": "bourbon",
+    "UnitName": "Bourbon",
+    "HyperCards": [
+      "gunsready"
+    ],
+    "CharacterCards": [
+      "bourbon"
+    ]
+  },
+  {
+    "UnitId": "grain",
+    "UnitName": "Grain",
+    "HyperCards": [
+      "resistance"
+    ],
+    "CharacterCards": [
+      "grain"
+    ]
+  },
+  {
+    "UnitId": "poyo",
+    "UnitName": "Poyo",
+    "HyperCards": [
+      "youth"
+    ],
+    "CharacterCards": [
+      "poyo"
+    ]
+  },
+  {
+    "UnitId": "chuu",
+    "UnitName": "Chuu",
+    "HyperCards": [
+      "igalit"
+    ],
+    "CharacterCards": [
+      "chuu"
+    ]
+  },
+  {
+    "UnitId": "haruka",
+    "UnitName": "Haruka",
+    "HyperCards": [
+      "hypebringer"
+    ],
+    "CharacterCards": [
+      "haruka"
+    ]
+  },
+  {
+    "UnitId": "kanata",
+    "UnitName": "Kanata",
+    "HyperCards": [
+      "fiveheadbluff"
+    ],
+    "CharacterCards": [
+      "kanata"
+    ]
+  }
+]

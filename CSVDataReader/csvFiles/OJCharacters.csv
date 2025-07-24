@@ -1,78 +1,70 @@
 unit,
 CardName,UnitID
+Arthur,arthur
+Chris,chris
+Fernet (Noble),fernetnoble
+Krilalaris,krila
+Marc (Pilot),marcpilot
+Mei,mei
+Mimyuu,mimyuu
+Mira,mira
+Star Breaker,starb
+Tequila,tequila
+Tomomo (Casual & Sweet Eater),tmsw
+Yuuki,yuuki
+Poppo (Boss),bpoppo
 Alicianrone,alicianrone
 Alte,alte
 Arnelle,arnelle
-Arthur,arthur
 Aru,aru
 Aru (Scramble!),arus
-Robo Ball,ball
-M10 (Coop Boss),bball
-Big the Haruo (Coop Boss),bchicken
-Turnislime (Bounty Hunt),blob
-Poppo (Boss),bpoppo
-Summer Beast (Coop Boss),bqp
-Shifu Robot,brobo
-Flying Castle,castle
 Ceoreparque,ceor
 Chicken,chicken
-Chris,chris
 Cook,cook
 Cuties,cuties
-"Cuties (Sora, different due to separate hair color options)",cuties_sora
-Haunted Doll (Bounty Hunt),doll
 Ellie,ellie
 Fernet,fernet
-Fernet (Noble),fernetnoble
-Moss Golem (Bounty Hunt),golem
-Star Devourer (Coop Boss),gpoppo
+Flying Castle,castle
 Halena,halena
-Heliseed (Bounty Hunt),heliseed
 Hime,hime
 Hime (Moonlight),himem
-Halloween 2019 Pumpkin,hw2019pumpkin
 Iru,iru
 Islay,islay
 Kae,kae
 Kai,kai
 Kiriko,kiriko
-Krila,krila
-Kyousuke,ksuke
 Kyoko,kyoko
+Kyousuke,ksuke
 Kyupita,kyupita
-Bunnizard (Bounty Hunt),lizardit
 Lone Rider,lonerider
 Lulu,lulu
-Marc,marc
-Marc (Pilot),marcpilot
+Malt,malt
 Manager,master
+Marc,marc
 Maynie,maynie
-Mei,mei
+Mescal,mescal
 Merchant,merchant
-Mimyuu,mimyuu
 Mio,mio
-Mira,mira
 Miusaki,miusaki
-Mousse (Bounty Hunt),mpoppo
 Nanako,nanako
 Nath,nath
 Natsumi,natsumi
 Nico,nico
 NoName,non
-Poppo (Mixed),npoppo
 Peat,peat
-Poppo,poppo
+Marie Poppo,poppo
+Marie Poppo (Mixed),npoppo
 QP,qp
 QP (Dangerous),qpd
-Ropochi,ropochi
+Robo Ball,ball
 Saki,saki
 Seagull,seagull
-Big the Jonathan,seagullboss
 Sham,sham
 Sherry,sherry
+Shifu,shifu
+Shifu Robot,brobo
 Sora,sora
 Sora (Military),sorasp
-Star Breaker,starb
 Suguri,suguri
 Suguri (46 billion years),suguri46
 Suguri (Ver. 2),sugurib
@@ -80,27 +72,37 @@ Sumika,sumika
 Sweet Breaker,sweetb
 Syura,syura
 Teotoratta,teotoratta
-Pirate Crew Minion,teq_minion
-Tequila,tequila
-Tomomo (Casual & Sweet Eater),tmsw
 Tomato,tomato
 Tomomo,tomomo
-Trollite,troll
 Tsih,tsih
 Yuki,yuki
 Yuki (Dangerous),yukid
-Yuuki,yuuki
-The Harbinger,evilguardian
-Guardian,guardian
-Wolly,fluff
-Terrawyrmer,snek
-Ruffshroom,shroom
-Gost,ghost
+Hoshino Reika,reika
+Bunnizard (Bounty Hunt),lizardit
 Emerangler,mole
 Globbu,magma
-Aurora,fae
-Pomeranius,pomeranius
+Gost,ghost
+Haunted Doll (Bounty Hunt),doll
+Heliseed (Bounty Hunt),heliseed
+Moss Golem (Bounty Hunt),golem
+Mousse (Bounty Hunt),mpoppo
+Pirate Crew Minion,teq_minion
+Ruffshroom,shroom
+Terrawyrmer,snek
+The Harbinger,evilguardian
+Trollite,troll
+Turnislime (Bounty Hunt),blob
+Wolly,fluff
+Chef,chef
+Big the Haruo (Coop Boss),bchicken
+Big the Jonathan,seagullboss
+M10 (Coop Boss),bball
+Ropochi,ropochi
+Star Devourer (Coop Boss),gpoppo
+Summer Beast (Coop Boss),bqp
+Swimming Coach,swimmingcoach
 Watty,watty
+Pomeranius,pomeranius
 Sweet Creator,sweetcreator
 Saki (Sweet Maker),sweetmaker
 Natsumi (Sweet Blogger),sweetblogger
@@ -112,3 +114,7 @@ Kai (Hero),kaihero
 Hyper Ellie,elliehyper
 Bourbon,bourbon
 Grain,grain
+Poyo,poyo
+Chuu,chuu
+Haruka,haruka
+Kanata,kanata

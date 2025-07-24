@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 using FFmpeg.NET;
 using FFmpeg.NET.Enums;
 using Microsoft.Win32;
+using OrangeJuiceModMaker.Data;
 
 namespace OrangeJuiceModMaker
 {
@@ -25,10 +27,10 @@ namespace OrangeJuiceModMaker
                 return;
             }
             UnloadImages();
-            ReplaceFile(o.FileName, 128, modifiedUnit.CharacterCards[SelectedCharacterCard], out string? path);
+            ReplaceFile(o.FileName, 128, modifiedUnit.CharacterCards[SelectedCharacterCard].CardId, out string? path);
             if (path is not null)
             {
-                modifiedUnit.CharacterCardPathsLow[SelectedCharacterCard] = path;
+                modifiedUnit.CharacterCards[SelectedCharacterCard].PathLow = path;
             }
             ReloadImages();
         }
@@ -45,10 +47,10 @@ namespace OrangeJuiceModMaker
                 return;
             }
             UnloadImages();
-            ReplaceFile(o.FileName, 256, modifiedUnit.CharacterCards[SelectedCharacterCard], out string? path);
+            ReplaceFile(o.FileName, 256, modifiedUnit.CharacterCards[SelectedCharacterCard].CardId, out string? path);
             if (path is not null)
             {
-                modifiedUnit.CharacterCardPaths[SelectedCharacterCard] = path;
+                modifiedUnit.CharacterCards[SelectedCharacterCard].Path = path;
             }
             ReloadImages();
         }
@@ -65,10 +67,10 @@ namespace OrangeJuiceModMaker
                 return;
             }
             UnloadImages();
-            ReplaceFile(o.FileName, 128, modifiedUnit.HyperIds[SelectedCharacterCard], out string? path);
+            ReplaceFile(o.FileName, 128, modifiedUnit.HyperCards[SelectedCharacterCard].CardId, out string? path);
             if (path is not null)
             {
-                modifiedUnit.HyperCardPathsLow[SelectedCharacterCard] = path;
+                modifiedUnit.HyperCards[SelectedCharacterCard].PathLow = path;
             }
             ReloadImages();
         }
@@ -85,10 +87,10 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            ReplaceFile(o.FileName, 256, modifiedUnit.HyperIds[SelectedCharacterCard], out string? path);
+            ReplaceFile(o.FileName, 256, modifiedUnit.HyperCards[SelectedCharacterCard].CardId, out string? path);
             if (path is not null)
             {
-                modifiedUnit.HyperCardPaths[SelectedCharacterCard] = path;
+                modifiedUnit.HyperCards[SelectedCharacterCard].Path = path;
             }
             ReloadImages();
         }
@@ -112,66 +114,82 @@ namespace OrangeJuiceModMaker
         private void HyperRightButton_Click(object sender, RoutedEventArgs e)
         {
             ++SelectedHyper;
-            HyperNameTextBox.Text = selectedUnit.HyperNames[SelectedHyper];
-            HyperNameUpdateBox.Text = modifiedUnit.HyperNames[SelectedHyper];
-            HyperFlavorUpdateBox.Text = modifiedUnit.HyperFlavor[SelectedHyper];
+            HyperNameTextBox.Text = selectedUnit.HyperCards[SelectedHyper].CardName;
+            HyperNameUpdateBox.Text = modifiedUnit.HyperCards[SelectedHyper].CardName;
+            HyperFlavorUpdateBox.Text = modifiedUnit.HyperCards[SelectedHyper].FlavorText ?? "";
             ReloadImages();
         }
 
         private void HyperLeftButton_Click(object sender, RoutedEventArgs e)
         {
             --SelectedHyper;
-            HyperNameTextBox.Text = selectedUnit.HyperNames[SelectedHyper];
-            HyperNameUpdateBox.Text = modifiedUnit.HyperNames[SelectedHyper];
-            HyperFlavorUpdateBox.Text = modifiedUnit.HyperFlavor[SelectedHyper];
+            HyperNameTextBox.Text = selectedUnit.HyperCards[SelectedHyper].CardName;
+            HyperNameUpdateBox.Text = modifiedUnit.HyperCards[SelectedHyper].CardName;
+            HyperFlavorUpdateBox.Text = modifiedUnit.HyperCards[SelectedHyper].FlavorText ?? "";
             ReloadImages();
         }
 
         private void CharacterCardRightButton_OnClick(object sender, RoutedEventArgs e)
         {
             ++SelectedCharacterCard;
-            CharacterCardNameTextBox.Text = selectedUnit.CharacterCardNames[SelectedCharacterCard];
-            CardNameUpdateBox.Text = modifiedUnit.CharacterCardNames[SelectedCharacterCard];
+            CharacterCardNameTextBox.Text = selectedUnit.CharacterCards[SelectedCharacterCard].CardName;
+            CardNameUpdateBox.Text = modifiedUnit.CharacterCards[SelectedCharacterCard].CardName;
             ReloadImages();
         }
 
         private void CharacterCardLeftButton_OnClick(object sender, RoutedEventArgs e)
         {
             --SelectedCharacterCard;
-            CharacterCardNameTextBox.Text = selectedUnit.CharacterCardNames[SelectedCharacterCard];
-            CardNameUpdateBox.Text = modifiedUnit.CharacterCardNames[SelectedCharacterCard];
+            CharacterCardNameTextBox.Text = selectedUnit.CharacterCards[SelectedCharacterCard].CardName;
+            CardNameUpdateBox.Text = modifiedUnit.CharacterCards[SelectedCharacterCard].CardName;
             ReloadImages();
         }
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
             UnloadImages();
-            modifiedUnit.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, ref mainWindow.LoadedModReplacements);
+            modifiedUnit.SaveToMod(mainWindow.LoadedModPath, mainWindow.LoadedModDefinition, mainWindow.LoadedModReplacements);
             ReloadImages();
         }
 
         private void ReplacementHyperButton_OnClick(object sender, RoutedEventArgs e)
         {
-            string modifiedUnitCharacterCard = modifiedUnit.HyperIds[SelectedHyper];
-            string[] paths = modifiedUnit.HyperCardPaths;
-            string[] pathsLow = modifiedUnit.HyperCardPathsLow;
+            ReplacePicture(modifiedUnit.HyperCards[SelectedHyper].CardId, out string[]? p256, out string[]? p128, SelectedHyper);
+            if (p256 is not null && p128 is not null)
+            {
+                int n = SelectedHyper;
+                foreach ((string first, string second) in p256.Zip(p128))
+                {
+                    if (modifiedUnit.HyperCards.Length == n)
+                    {
+                        break;
+                    }
+                    modifiedUnit.HyperCards[n].Path = first;
+                    modifiedUnit.HyperCards[n].PathLow = second;
+                    ++n;
+                }
+            }
 
-            int pre = SelectedHyper;
-            ReplacePicture(modifiedUnitCharacterCard, paths, pathsLow, () => SelectedHyper, () => ++SelectedHyper);
-            SelectedHyper = pre;
             ReloadImages();
         }
 
         private void ReplacementCharacterCardButton_OnClick(object sender, RoutedEventArgs e)
         {
-            string modifiedUnitCharacterCard = modifiedUnit.CharacterCards[SelectedCharacterCard];
-            string[] paths = modifiedUnit.CharacterCardPaths;
-            string[] pathsLow = modifiedUnit.CharacterCardPathsLow;
-
-            int pre = SelectedCharacterCard;
-            ReplacePicture(modifiedUnitCharacterCard, paths, pathsLow, () => SelectedCharacterCard,
-                () => ++SelectedCharacterCard);
-            SelectedCharacterCard = pre;
+            ReplacePicture(modifiedUnit.CharacterCards[SelectedCharacter].CardId, out string[]? p256, out string[]? p128, SelectedCharacterCard);
+            if (p256 is not null && p128 is not null)
+            {
+                int n = SelectedHyper;
+                foreach ((string first, string second) in p256.Zip(p128))
+                {
+                    if (modifiedUnit.CharacterCards.Length == n)
+                    {
+                        break;
+                    }
+                    modifiedUnit.CharacterCards[n].Path = first;
+                    modifiedUnit.CharacterCards[n].PathLow = second;
+                    ++n;
+                }
+            }
             ReloadImages();
         }
 
@@ -181,9 +199,21 @@ namespace OrangeJuiceModMaker
                 Path.GetFileNameWithoutExtension(modifiedUnit.CharacterArt[SelectedCharacter]);
             string[] paths = modifiedUnit.CharacterArt;
 
-            int pre = SelectedCharacter;
-            ReplacePicture(modifiedUnitCharacterCard, paths, null, () => SelectedCharacter, () => ++SelectedCharacter);
-            SelectedCharacter = pre;
+
+            ReplacePicture(modifiedUnitCharacterCard, out string[]? newPaths, out _, SelectedCharacter, true);
+            if (newPaths is not null)
+            {
+                int n = SelectedCharacter;
+                foreach (string p in newPaths)
+                {
+                    if (modifiedUnit.CharacterArt.Length == n)
+                    {
+                        break;
+                    }
+                    modifiedUnit.CharacterArt[n] = p;
+                    ++n;
+                }
+            }
             ReloadImages();
         }
         private async void MusicReplaceButton_OnClick(object sender, RoutedEventArgs e)
@@ -244,7 +274,7 @@ namespace OrangeJuiceModMaker
                 UnitId = modifiedUnit.UnitId,
                 Volume = 0
             };
-            
+
             MusicPlayer.Open(mp3Path);
             LoopPointBox.Text = (modifiedUnit.Music.LoopPoint ?? 0).ToString();
             EnableMusicControls(true);
@@ -283,17 +313,13 @@ namespace OrangeJuiceModMaker
 
         private async void ResetUnitCard_OnClick(object sender, RoutedEventArgs e)
         {
-            modifiedUnit.CharacterCardNames[SelectedCharacterCard] = selectedUnit.CharacterCardNames[SelectedCharacterCard];
-            modifiedUnit.CharacterCardPaths[SelectedCharacterCard] = selectedUnit.CharacterCardPaths[SelectedCharacterCard];
             modifiedUnit.CharacterCards[SelectedCharacterCard] = selectedUnit.CharacterCards[SelectedCharacterCard];
             await RefreshGrid();
         }
 
         private async void ResetHyperCard_OnClick(object sender, RoutedEventArgs e)
         {
-            modifiedUnit.HyperFlavor[SelectedCharacterCard] = selectedUnit.HyperFlavor[SelectedCharacterCard];
-            modifiedUnit.HyperNames[SelectedCharacterCard] = selectedUnit.HyperNames[SelectedCharacterCard];
-            modifiedUnit.HyperCardPaths[SelectedCharacterCard] = selectedUnit.HyperCardPaths[SelectedCharacterCard];
+            modifiedUnit.HyperCards[SelectedCharacterCard] = selectedUnit.HyperCards[SelectedCharacterCard];
             await RefreshGrid();
         }
 
@@ -359,29 +385,29 @@ namespace OrangeJuiceModMaker
 
         private void CardNameUpdateBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (modifiedUnit.CharacterCardNames.Length == 0)
+            if (modifiedUnit.CharacterCards.Length == 0)
             {
                 return;
             }
-            modifiedUnit.CharacterCardNames[SelectedCharacterCard] = CardNameUpdateBox.Text;
+            modifiedUnit.CharacterCards[SelectedCharacterCard].CardName = CardNameUpdateBox.Text;
         }
 
         private void HyperNameUpdateBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (modifiedUnit.HyperNames.Length == 0)
+            if (modifiedUnit.HyperCards.Length == 0)
             {
                 return;
             }
-            modifiedUnit.HyperNames[SelectedHyper] = HyperNameUpdateBox.Text;
+            modifiedUnit.HyperCards[SelectedHyper].CardName = HyperNameUpdateBox.Text;
         }
 
         private void HyperFlavorUpdateBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (modifiedUnit.HyperFlavor.Length == 0)
+            if (modifiedUnit.HyperCards.Length == 0)
             {
                 return;
             }
-            modifiedUnit.HyperFlavor[SelectedHyper] = HyperFlavorUpdateBox.Text;
+            modifiedUnit.HyperCards[SelectedHyper].FlavorText = HyperFlavorUpdateBox.Text;
         }
 
         private void FaceXBox_OnTextChanged(object sender, TextChangedEventArgs e)

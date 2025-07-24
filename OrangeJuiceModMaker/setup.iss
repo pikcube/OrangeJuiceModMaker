@@ -12,7 +12,7 @@
 #define MyAppPublisher "Pikcube"
 #define MyAppURL "https://github.com/pikcube/OrangeJuiceModMaker"
 #define MyAppExeName "OrangeJuiceModMaker.exe"
-#define MyBasePath = "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\Release\net8.0-windows10.0.22621.0"
+#define MyBasePath = "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\bin\x64\Release\net9.0-windows"
 ; #define MyCompression "lzma2/max"
 ; Uncomment to compile in Inno
 
@@ -51,7 +51,7 @@ WizardStyle=modern
 function InitializeSetup: Boolean;
 begin
   #ifdef Dependency_Path_NetCoreCheck
-  Dependency_AddDotNet80Desktop;
+  Dependency_AddDotNet90Desktop;
 
   Result := True;
   #endif
@@ -64,9 +64,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\dependencies\netcorecheck.exe"; Flags: dontcopy noencryption
-Source: "C:\Users\Michael\source\repos\OrangeJuiceModMaker\OrangeJuiceModMaker\dependencies\netcorecheck_x64.exe"; Flags: dontcopy noencryption
-
 Source: "{#MyBasePath}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\OrangeJuiceModMaker.deps.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\OrangeJuiceModMaker.pdb"; DestDir: "{app}"; Flags: ignoreversion
@@ -79,10 +76,11 @@ Source: "{#MyBasePath}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyBasePath}\oj.version"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\7za.exe"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\7za.dll"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "{#MyBasePath}\HyperLookupTable.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "{#MyBasePath}\FlavorLookUp.csv"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 Source: "{#MyBasePath}\ffmpeg.7z"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
-Source: "{#MyBasePath}\csvFiles.7z"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\sound.json"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\music.json"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\cards.json"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
+Source: "{#MyBasePath}\units.json"; DestDir: "{app}\OrangeJuiceModMaker"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

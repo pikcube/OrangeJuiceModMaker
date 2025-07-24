@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using ImageMagick;
 using Microsoft.Win32;
+using OrangeJuiceModMaker.Data;
 
 namespace OrangeJuiceModMaker
 {
@@ -15,44 +16,39 @@ namespace OrangeJuiceModMaker
     /// </summary>
     public partial class ModifyCard
     {
-        private readonly CsvHolder[] files;
-        private string[][] loadedRows;
         private ModTexture? loadedTexture;
+        private readonly CardRef[] cards;
         private readonly List<ModTexture> modifiedTextures = [];
         private ModReplacements replacements;
-        private readonly CsvHolder flavorLookUp;
         private readonly string modPath;
         private readonly ModDefinition definition;
-        public ModifyCard(List<CsvHolder> csvFiles, MainWindow window)
+        public ModifyCard(MainWindow window)
         {
             modPath = window.LoadedModPath;
-            files = csvFiles.Where(z => z.Type == CsvHolder.TypeList.Card).Where(z => z.Rows.Length != 0).ToArray();
             InitializeComponent();
-            loadedRows = files.First().Rows;
-            replacements = window.LoadedModReplacements;
-            flavorLookUp = window.FlavorLookUp ?? throw new Exception("Missing flavor lookup");
             definition = window.LoadedModDefinition ?? throw new Exception("Mod Definition not loaded");
+            replacements = window.LoadedModReplacements;
+            cards = window.Cards;
 
         }
 
         private void ModifyCard_OnLoaded(object sender, RoutedEventArgs e)
         {
+            CardSelectionBox.ItemsSource = cards.Select(z => z.CardName);
             foreach (Texture t in replacements.Textures.Where(z => z.Path.ToLower().StartsWith("cards")))
             {
                 modifiedTextures.Add(new ModTexture(t.Path, replacements, modPath));
             }
-            
+
             if (modifiedTextures.Any())
             {
-                SetSelectionBox.ItemsSource = files.Select(z => z.Name);
+
                 ModTexture itemToSelect = modifiedTextures.First();
-                SetSelectionBox.SelectedItem = files.Last(z => z.Rows.Any(y => y[1] == itemToSelect.Id)).Name;
-                CardSelectionBox.SelectedItem = loadedRows.First(z => z[1] == itemToSelect.Id)[0];
+                CardSelectionBox.SelectedItem = cards.First(z => z.CardId == itemToSelect.Id).CardName;
             }
             else
             {
-                SetSelectionBox.ItemsSource = files.Select(z => z.Name);
-                SetSelectionBox.SelectedIndex = Math.Min(11, files.Length - 1);
+
             }
         }
 
@@ -62,13 +58,13 @@ namespace OrangeJuiceModMaker
             {
                 return;
             }
-            if (modifiedTextures.All(z => z.Id != loadedRows[CardSelectionBox.SelectedIndex][1]))
+            if (modifiedTextures.All(z => z.Id != cards[CardSelectionBox.SelectedIndex].CardId))
             {
-                modifiedTextures.Add(new ModTexture($@"cards\{loadedRows[CardSelectionBox.SelectedIndex][1]}", replacements, modPath));
+                modifiedTextures.Add(new ModTexture($@"cards\{cards[CardSelectionBox.SelectedIndex].CardId}", replacements, modPath));
             }
-            loadedTexture = modifiedTextures.First(z => z.Id == loadedRows[CardSelectionBox.SelectedIndex][1]);
-            CardName.Text = loadedTexture.CustomName ?? loadedRows[CardSelectionBox.SelectedIndex][0];
-            FlavorUpdateBox.Text = loadedTexture.CustomFlavor ?? flavorLookUp.Rows.FirstOrDefault(z => z[1] == loadedRows[CardSelectionBox.SelectedIndex][1])?[3] ?? "";
+            loadedTexture = modifiedTextures.First(z => z.Id == cards[CardSelectionBox.SelectedIndex].CardId);
+            CardName.Text = loadedTexture.CustomName ?? cards[CardSelectionBox.SelectedIndex].CardName;
+            FlavorUpdateBox.Text = loadedTexture.CustomFlavor ?? cards[CardSelectionBox.SelectedIndex].FlavorText ?? "";
             ReloadArt();
             FlavorUpdateBox.IsEnabled = FlavorUpdateBox.Text != "";
 
@@ -147,13 +143,6 @@ namespace OrangeJuiceModMaker
                 return;
             }
             loadedTexture.CustomFlavor = FlavorUpdateBox.Text;
-        }
-
-        private void SetSelectionBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            loadedRows = [.. files[SetSelectionBox.SelectedIndex].Rows.OrderBy(z => z[0])];
-            CardSelectionBox.ItemsSource = loadedRows.Select(z => z[0]);
-            CardSelectionBox.SelectedIndex = 0;
         }
 
         private void ReplaceSmallButton_OnClick(object sender, RoutedEventArgs e)
