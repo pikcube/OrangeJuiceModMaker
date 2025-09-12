@@ -70,7 +70,7 @@ namespace OrangeJuiceModMaker
             MusicPlayer.PositionChanged += MusicPlayer_PositionChanged;
             Tracks = window.Musics;
 
-            Songs = Tracks.GroupBy(m => m.UnitId is null).Select(z => z.ToArray()).Reverse().ToArray();
+            Songs = [.. Tracks.GroupBy(m => m.UnitId is null).Select(z => z.ToArray()).Reverse()];
 
             InitializeComponent();
             if (mainWindow.Debug)

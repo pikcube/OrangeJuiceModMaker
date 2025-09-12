@@ -28,7 +28,7 @@ namespace OrangeJuiceModMaker
 
         public UnitRef[] Units { get; set; } = null!;
         public static string? GameDirectory { get; set; }
-        private static bool _steamVersion { get; set; }
+        private static bool SteamVersion { get; set; }
         public static bool UnpackComplete { get; set; } = true;
         public string Temp { get; }
         public string AppData { get; }
@@ -36,17 +36,17 @@ namespace OrangeJuiceModMaker
         public ModDefinition LoadedModDefinition { get; set; } = new("temp", "desc", "auth", 2);
         public string LoadedModPath { get; set; } = "";
         public GlobalSettings GlobalSettings { get; set; }
-        private static bool _exitTime { get; set; }
-        private List<string> mods { get; set; } = [];
-        private string[] config { get; set; }
-        private string modsDirectoryPath { get; set; } = "";
-        private string exePath { get; set; } = "";
+        private static bool _exitTime;
+        private List<string> Mods { get; set; } = [];
+        private string[] Config { get; set; }
+        private string ModsDirectoryPath { get; set; } = "";
+        private string ExePath { get; set; } = "";
         public CardRef[] Cards { get; set; } = null!;
         public MusicRef[] Musics { get; set; } = null!;
 
         public SoundRef[] Sounds { get; set; } = null!;
 
-        private static string[]? _newHash { get; set; }
+        private static string[]? NewHash { get; set; }
         public static string? WorkshopItemsDirectory { get; set; } = null;
         public event EventHandler LoadedModsChanged;
 
@@ -70,7 +70,7 @@ namespace OrangeJuiceModMaker
 
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            AggregateException exception = e.Exception;
+            Exception exception = e.Exception.InnerException ?? e.Exception;
             string[] error = [
                 DateTime.Now.ToString(CultureInfo.InvariantCulture), exception.GetType().ToString(), exception.Message, exception.StackTrace ?? "",
                 exception.StackTrace ?? ""
@@ -90,7 +90,7 @@ namespace OrangeJuiceModMaker
             Temp = @$"{appData}\OrangeJuiceModMaker\temp";
             AppData = $@"{appData}\OrangeJuiceModMaker";
             InitializeComponent();
-            config = File.Exists($@"{Temp}\oj.config")
+            Config = File.Exists($@"{Temp}\oj.config")
                 ? File.ReadAllLines($@"{Temp}\oj.config")
                 : ["0", "0"];
 
@@ -113,7 +113,7 @@ namespace OrangeJuiceModMaker
                 GlobalSettings = GlobalSettings.LoadSettingsFromFile($@"{AppData}\GlobalSettings.json");
 
                 DebugLogger.LogLine("Setting up app data");
-                exePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
+                ExePath = $@"{Directory.GetCurrentDirectory()}\OrangeJuiceModMaker.exe";
                 string exeDirectory = Directory.GetCurrentDirectory();
                 //UpdateApp = new UpdateApp(app, downloadPath, debug, exeDirectory);
 
@@ -146,15 +146,15 @@ namespace OrangeJuiceModMaker
                     }
                 }
 
-                Units = JsonConvert.DeserializeObject<UnitRef[]>(File.ReadAllText("units.json"))!.OrderBy(z => z.UnitName).ToArray();
-                Cards = JsonConvert.DeserializeObject<CardRef[]>(File.ReadAllText("cards.json"))!.OrderBy(z => z.CardName).ToArray();
-                Musics = JsonConvert.DeserializeObject<MusicRef[]>(File.ReadAllText("music.json"))!.OrderBy(z => z.UnitId ?? z.Event).ToArray();
-                Sounds = JsonConvert.DeserializeObject<SoundRef[]>(File.ReadAllText("sound.json"))!.OrderBy(z => z.File).ToArray();
+                Units = [.. JsonConvert.DeserializeObject<UnitRef[]>(File.ReadAllText("units.json"))!.OrderBy(z => z.UnitName)];
+                Cards = [.. JsonConvert.DeserializeObject<CardRef[]>(File.ReadAllText("cards.json"))!.OrderBy(z => z.CardName)];
+                Musics = [.. JsonConvert.DeserializeObject<MusicRef[]>(File.ReadAllText("music.json"))!.OrderBy(z => z.UnitId ?? z.Event)];
+                Sounds = [.. JsonConvert.DeserializeObject<SoundRef[]>(File.ReadAllText("sound.json"))!.OrderBy(z => z.File)];
 
-                _steamVersion = File.Exists(@"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice\100orange.exe");
+                SteamVersion = File.Exists(@"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice\100orange.exe");
                 //First Time Setup Code
                 DebugLogger.LogLine("Setting up game directory");
-                if (_steamVersion)
+                if (SteamVersion)
                 {
                     GameDirectory = @"C:\Program Files (x86)\Steam\steamapps\common\100 Orange Juice";
                 }
@@ -222,7 +222,7 @@ namespace OrangeJuiceModMaker
 
 
                 //Hash the pak files to see if we need a new unpack. Don't bother making this async, it's load blocking
-                _newHash = NewHashStrings();
+                NewHash = NewHashStrings();
 
                 //Unpack Base Files
                 if (IsNotUnpacked())
@@ -240,7 +240,7 @@ namespace OrangeJuiceModMaker
                         return;
                     }
                     File.Delete(@"pakFiles\filesUnpacked.status");
-                    File.WriteAllLines($@"{AppData}\pakfiles.hash", _newHash);
+                    File.WriteAllLines($@"{AppData}\pakfiles.hash", NewHash);
 
                 }
 
@@ -258,7 +258,7 @@ namespace OrangeJuiceModMaker
                     }
                 }
 
-                modsDirectoryPath = GlobalSettings.ModDirectories.SelectedItem!;
+                ModsDirectoryPath = GlobalSettings.ModDirectories.SelectedItem!;
 
                 OnLoadedModsChanged();
 
@@ -411,7 +411,7 @@ namespace OrangeJuiceModMaker
 
             string[] oldHashStrings = oldHashTask.GetAwaiter().GetResult();
 
-            return oldHashStrings.Zip(_newHash!).Any(z => z.First != z.Second);
+            return oldHashStrings.Zip(NewHash!).Any(z => z.First != z.Second);
         }
 
         private static string[] NewHashStrings()
@@ -428,7 +428,7 @@ namespace OrangeJuiceModMaker
         {
             EditButton.IsEnabled = false;
             //Library.FFmpegDirectory = @$"{AppData}\ffmpeg";
-            SelectedModComboBox.SelectedIndex = config[0].ToInt();
+            SelectedModComboBox.SelectedIndex = Config[0].ToInt();
             SelectedModeComboBox.ItemsSource = new[]
             {
                 "Modify Unit",
@@ -437,7 +437,7 @@ namespace OrangeJuiceModMaker
                 "Modify Sound Effect",
                 "Modify Mod Definition"
             };
-            SelectedModeComboBox.SelectedIndex = config[1].ToInt();
+            SelectedModeComboBox.SelectedIndex = Config[1].ToInt();
             if (SelectedModeComboBox.SelectedIndex is >= 3 or -1)
             {
                 SelectedModeComboBox.SelectedIndex = 0;
@@ -450,22 +450,22 @@ namespace OrangeJuiceModMaker
         private bool UpdateModsLoaded()
         {
             //Load a mod
-            mods = [.. Directory.GetFiles(path: modsDirectoryPath, searchPattern: "*.json", searchOption: SearchOption.AllDirectories)];
+            Mods = [.. Directory.GetFiles(path: ModsDirectoryPath, searchPattern: "*.json", searchOption: SearchOption.AllDirectories)];
 
             //The zero mod case
-            if (mods.Count == 0)
+            if (Mods.Count == 0)
             {
                 new NewMod(this) { Owner = IsLoaded ? this : null }.ShowDialog();
-                mods = [.. Directory.GetFiles(modsDirectoryPath, "*.json", SearchOption.AllDirectories)];
-                if (mods.Count == 0)
+                Mods = [.. Directory.GetFiles(ModsDirectoryPath, "*.json", SearchOption.AllDirectories)];
+                if (Mods.Count == 0)
                 {
                     return false;
                 }
             }
 
-            string?[]? itemsSource = mods.Select(z => Root.ReadJson(z)?.ModDefinition.Name).ToArray() ?? throw new Exception("No mods?");
+            string?[]? itemsSource = Mods.Select(z => Root.ReadJson(z)?.ModDefinition.Name).ToArray() ?? throw new Exception("No mods?");
             SelectedModComboBox.ItemsSource = itemsSource;
-            SelectedModComboBox.SelectedIndex = config[0].ToInt();
+            SelectedModComboBox.SelectedIndex = Config[0].ToInt();
             if (SelectedModComboBox.SelectedIndex >= itemsSource.Length || SelectedModComboBox.SelectedIndex == -1)
             {
                 SelectedModComboBox.SelectedIndex = 0;
@@ -477,13 +477,13 @@ namespace OrangeJuiceModMaker
         //Change selected mod
         private void SelectedModComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            config[0] = SelectedModComboBox.SelectedIndex.ToString();
+            Config[0] = SelectedModComboBox.SelectedIndex.ToString();
             string? modName = SelectedModComboBox.SelectedItem.ToString();
             if (modName is null)
             {
                 return;
             }
-            string[] possibleMods = [.. mods.Where(z => Root.ReadJson(z)?.ModDefinition.Name == modName)];
+            string[] possibleMods = [.. Mods.Where(z => Root.ReadJson(z)?.ModDefinition.Name == modName)];
             switch (possibleMods.Length)
             {
                 case 1:
@@ -550,7 +550,7 @@ namespace OrangeJuiceModMaker
 
         private void SelectedModeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            config[1] = SelectedModeComboBox.SelectedIndex.ToString();
+            Config[1] = SelectedModeComboBox.SelectedIndex.ToString();
         }
 
         public enum EditWindow
@@ -625,7 +625,7 @@ namespace OrangeJuiceModMaker
                 File.Delete(f);
             }
 
-            File.WriteAllLines(@$"{Temp}\oj.config", config);
+            File.WriteAllLines(@$"{Temp}\oj.config", Config);
 
             if (GlobalSettings.MirrorDirectories.SelectedItem is null or "None")
             {
@@ -644,7 +644,7 @@ namespace OrangeJuiceModMaker
                 CreateNoWindow = !Debug,
                 WindowStyle = Debug ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden,
                 FileName = "CMD.exe",
-                Arguments = $"/c robocopy /MIR /MT:8 \"{modsDirectoryPath}\" \"{mirror}\""
+                Arguments = $"/c robocopy /MIR /MT:8 \"{ModsDirectoryPath}\" \"{mirror}\""
             };
             Process.Start(p)?.WaitForExit();
 
@@ -678,7 +678,7 @@ namespace OrangeJuiceModMaker
 
         private void OpenOJ_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_steamVersion)
+            if (SteamVersion)
             {
                 Process.Start(@"C:\Program Files (x86)\Steam\steam.exe", @"steam://rungameid/282800");
             }
@@ -729,7 +729,7 @@ namespace OrangeJuiceModMaker
             }
 
             Directory.Delete(LoadedModPath, true);
-            Process.Start(exePath);
+            Process.Start(ExePath);
             Close();
         }
 
@@ -761,11 +761,11 @@ namespace OrangeJuiceModMaker
 
         private void OpenModDirectory_OnClick(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(modsDirectoryPath))
+            if (Directory.Exists(ModsDirectoryPath))
             {
                 ProcessStartInfo startInfo = new()
                 {
-                    Arguments = modsDirectoryPath,
+                    Arguments = ModsDirectoryPath,
                     FileName = "explorer.exe"
                 };
 
@@ -853,27 +853,27 @@ namespace OrangeJuiceModMaker
                 return;
             }
 
-            if (open.FileName.StartsWith(modsDirectoryPath))
+            if (open.FileName.StartsWith(ModsDirectoryPath))
             {
                 //Do nothing
             }
             else
             {
                 DirectoryInfo? sourceFolder = Directory.GetParent(open.FileName) ?? throw new NullReferenceException();
-                if (Directory.Exists($"{modsDirectoryPath}\\{sourceFolder.Name}"))
+                if (Directory.Exists($"{ModsDirectoryPath}\\{sourceFolder.Name}"))
                 {
                     MessageBoxResult result = MessageBox.Show("Mod already exists in collection, overwrite?",
                         "Folder exists in mod directory", MessageBoxButton.YesNo);
                     if (result == MessageBoxResult.Yes)
                     {
-                        Directory.Delete($"{modsDirectoryPath}\\{sourceFolder.Name}", true);
+                        Directory.Delete($"{ModsDirectoryPath}\\{sourceFolder.Name}", true);
                     }
                     else
                     {
                         return;
                     }
                 }
-                CloneDirectory(sourceFolder.FullName, $"{modsDirectoryPath}\\{sourceFolder.Name}");
+                CloneDirectory(sourceFolder.FullName, $"{ModsDirectoryPath}\\{sourceFolder.Name}");
                 OnLoadedModsChanged();
             }
         }
@@ -918,7 +918,7 @@ namespace OrangeJuiceModMaker
 
             foreach (string directory in Directory.GetDirectories(oldFolder).Where(Directory.Exists))
             {
-                string subFolderPath = newFolder + directory.Remove(0, oldFolder.Length);
+                string subFolderPath = newFolder + directory[oldFolder.Length..];
                 if (!Directory.Exists(subFolderPath))
                 {
                     Directory.CreateDirectory(subFolderPath);
@@ -927,7 +927,7 @@ namespace OrangeJuiceModMaker
 
             foreach (string file in Directory.GetFiles(oldFolder, "*.*", SearchOption.AllDirectories))
             {
-                string newPath = newFolder + file.Remove(0, oldFolder.Length);
+                string newPath = newFolder + file[oldFolder.Length..];
                 File.Copy(file, newPath, true);
             }
         }
